@@ -13,7 +13,7 @@ export const site = {
   name: "HXNS",
   concept: { en: "Cinematic Digital Identity", es: "Identidad digital cinematográfica" },
   /** Public URL of the deployed site (used for SEO, sitemap and Open Graph) */
-  url: "https://appkarta.github.io/hxns-filmmaker-portfolio",
+  url: "https://hxnss.co",
   title: { en: "HXNS® — Filmmaker & Video Editor", es: "HXNS® — Cine y edición de video" },
   description: {
     en: "HXNS is a filmmaker and video editor creating cinematic visuals, brand films and visual stories through motion, rhythm and emotion.",

@@ -2,7 +2,7 @@
 
 **Cinematic Digital Identity.** Portafolio audiovisual de HXNS: una landing page que se recorre como una secuencia cinematográfica — intro tipográfica, showreel a pantalla completa, galería editorial de proyectos con reproductor propio, sección *Behind the lens*, servicios, archivo experimental y contacto.
 
-🔗 **Sitio publicado:** https://appkarta.github.io/hxns-filmmaker-portfolio/ (English) · https://appkarta.github.io/hxns-filmmaker-portfolio/es/ (Español)
+🔗 **Sitio publicado:** https://hxnss.co/ (English) · https://hxnss.co/es/ (Español)
 
 ---
 
@@ -129,6 +129,20 @@ git commit -m "Update projects"
 git push
 ```
 Cada `push` a `main` ejecuta `.github/workflows/deploy.yml`: lint → type-check → build → despliegue en GitHub Pages (1–2 min). El estado se ve en la pestaña **Actions** del repositorio.
+
+## Dominio propio (hxnss.co)
+
+El sitio se sirve desde GitHub Pages con el dominio **hxnss.co** (configurado en *Settings → Pages → Custom domain*; `www.hxnss.co` redirige automáticamente). Registros DNS en Namecheap (*Advanced DNS*):
+
+| Tipo | Host | Valor |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `appkarta.github.io.` |
+
+Sin registros *URL Redirect* ni *parking* para `@` o `www`. Si cambias el dominio, actualiza también `site.url` en `site.config.ts` (canonical, sitemap y Open Graph).
 
 ## Accesibilidad y rendimiento
 
