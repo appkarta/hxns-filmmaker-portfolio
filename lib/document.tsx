@@ -16,10 +16,47 @@ const instrument = Instrument_Serif({
 
 export const fontClasses = `${geist.variable} ${geistMono.variable} ${instrument.variable}`;
 
+/**
+ * Content-Security-Policy for the static site (GitHub Pages can't send headers, so it's a <meta>).
+ * Scripts and styles must allow 'unsafe-inline' because the static export inlines Next.js bootstrap data;
+ * everything else is locked to this origin, the contact worker, YouTube/Vimeo embeds and (optional) Turnstile.
+ */
+function contentSecurityPolicy() {
+  const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || site.contact.formEndpoint;
+  let workerOrigin = "";
+  try {
+    workerOrigin = endpoint ? new URL(endpoint).origin : "";
+  } catch {
+    /* invalid URL → no extra origin */
+  }
+  const turnstile = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? "https://challenges.cloudflare.com" : "";
+  const join = (...v: string[]) => v.filter(Boolean).join(" ");
+  return [
+    "default-src 'self'",
+    `script-src ${join("'self'", "'unsafe-inline'", turnstile)}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https:",
+    "media-src 'self' blob: https:",
+    "font-src 'self' data:",
+    `connect-src ${join("'self'", workerOrigin, turnstile)}`,
+    `frame-src ${join("https://www.youtube-nocookie.com", "https://player.vimeo.com", turnstile)}`,
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "upgrade-insecure-requests",
+  ].join("; ");
+}
+
+export const securityMeta =
+  process.env.NODE_ENV === "production" ? <meta httpEquiv="Content-Security-Policy" content={contentSecurityPolicy()} /> : null;
+
 /** <html>/<body> shell shared by the English and Spanish root layouts. */
 export function RootDocument({ locale, children }: { locale: Locale; children: React.ReactNode }) {
   return (
     <html lang={htmlLang[locale]} className={fontClasses}>
+      {/* App Router root layout: a plain <head> is the supported way to add tags (this rule targets the Pages Router) */}
+      {/* eslint-disable-next-line @next/next/no-head-element */}
+      <head>{securityMeta}</head>
       <body>{children}</body>
     </html>
   );
@@ -67,5 +104,7 @@ export function buildMetadata(locale: Locale): Metadata {
     },
     twitter: { card: "summary_large_image", title, description, images: [image] },
     robots: { index: true, follow: true },
+    referrer: "strict-origin-when-cross-origin",
+    formatDetection: { telephone: false, email: false, address: false },
   };
 }

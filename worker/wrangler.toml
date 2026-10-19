@@ -7,10 +7,24 @@ workers_dev = true
 preview_urls = false
 
 [vars]
-# Sites allowed to send the form (comma-separated)
-ALLOWED_ORIGINS = "https://hxnss.co,https://www.hxnss.co,http://localhost:3000"
+# Sites allowed to send the form (comma-separated). For local testing add
+# ALLOWED_ORIGINS="http://localhost:3000" to worker/.dev.vars instead of here.
+ALLOWED_ORIGINS = "https://hxnss.co,https://www.hxnss.co"
 # Until hxnss.co is verified in Resend, only onboarding@resend.dev can send (and only to your Resend account email).
 # After verifying the domain, change it to e.g. "HXNS <hola@hxnss.co>".
 CONTACT_FROM = "HXNS Website <onboarding@resend.dev>"
 
-# Secrets (not stored here): RESEND_API_KEY, CONTACT_TO
+# Rate limiting (Cloudflare, shared across all edge locations)
+# Per visitor IP: 3 requests per minute
+[[ratelimits]]
+name = "IP_LIMITER"
+namespace_id = "48101"
+simple = { limit = 3, period = 60 }
+
+# Whole form: 10 requests per minute (protects the Resend quota from distributed floods)
+[[ratelimits]]
+name = "GLOBAL_LIMITER"
+namespace_id = "48102"
+simple = { limit = 10, period = 60 }
+
+# Secrets (not stored here): RESEND_API_KEY, CONTACT_TO, optional TURNSTILE_SECRET

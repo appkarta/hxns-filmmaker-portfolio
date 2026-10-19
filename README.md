@@ -157,6 +157,14 @@ El sitio se sirve desde GitHub Pages con el dominio **hxnss.co** (configurado en
 
 Sin registros *URL Redirect* ni *parking* para `@` o `www`. Si cambias el dominio, actualiza también `site.url` en `site.config.ts` (canonical, sitemap y Open Graph).
 
+## Seguridad
+
+- **Content-Security-Policy** (en `<meta>`, porque GitHub Pages no permite cabeceras propias): scripts, estilos, fuentes y conexiones solo del propio sitio, del worker de contacto, de los reproductores de YouTube/Vimeo y, si se activa, de Turnstile. `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `upgrade-insecure-requests`. Bloquea scripts externos, iframes ajenos y envíos de datos a terceros.
+- **Referrer-Policy** `strict-origin-when-cross-origin`; HTTPS forzado en el dominio.
+- **Formulario**: rate limiting, validación estricta y antispam en el worker → ver [`worker/README.md`](worker/README.md#seguridad).
+- **Secretos**: ninguna clave en el código ni en el historial de git; GitHub *secret scanning* y *push protection* activados.
+- **Dependencias**: 0 vulnerabilidades en las dependencias que se publican. `npm audit` señala `braces` (dependencia de ESLint, solo en desarrollo, sin versión corregida y no explotable aquí). Dependabot (`.github/dependabot.yml`) propone actualizaciones cada semana.
+
 ## Accesibilidad y rendimiento
 
 - `prefers-reduced-motion`: sin intro, sin scroll suave, sin parallax ni animaciones de scroll; el archivo pasa a scroll horizontal nativo.

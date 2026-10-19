@@ -6,7 +6,8 @@ name: Deploy contact worker (Resend)
 #   CLOUDFLARE_ACCOUNT_ID  — Cloudflare account ID
 #   RESEND_API_KEY         — Resend API key
 #   CONTACT_TO             — inbox that receives the form messages
-# Without them the job is skipped, so the website keeps deploying normally.
+#   TURNSTILE_SECRET       — optional: Turnstile secret key (turns on the human check)
+# Without the first four the job is skipped, so the website keeps deploying normally.
 
 on:
   push:
@@ -17,11 +18,16 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: worker
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
       HAS_SECRETS: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' && secrets.RESEND_API_KEY != '' && secrets.CONTACT_TO != '' }}
+      HAS_TURNSTILE: ${{ secrets.TURNSTILE_SECRET != '' }}
     steps:
       - name: Missing secrets
         if: env.HAS_SECRETS != 'true'
@@ -31,7 +37,7 @@ jobs:
         if: env.HAS_SECRETS == 'true'
 
       - name: Deploy worker
-        if: env.HAS_SECRETS == 'true'
+        if: env.HAS_SECRETS == 'true' && env.HAS_TURNSTILE != 'true'
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -44,3 +50,20 @@ jobs:
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           CONTACT_TO: ${{ secrets.CONTACT_TO }}
+
+      - name: Deploy worker (with Turnstile)
+        if: env.HAS_SECRETS == 'true' && env.HAS_TURNSTILE == 'true'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          wranglerVersion: "4.151.2"
+          secrets: |
+            RESEND_API_KEY
+            CONTACT_TO
+            TURNSTILE_SECRET
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          CONTACT_TO: ${{ secrets.CONTACT_TO }}
+          TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}

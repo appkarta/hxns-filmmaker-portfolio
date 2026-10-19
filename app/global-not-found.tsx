@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { fontClasses } from "@/lib/document";
+import { fontClasses, securityMeta } from "@/lib/document";
 import { localeHref } from "@/lib/i18n";
 
 export const metadata: Metadata = {
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function GlobalNotFound() {
   return (
     <html lang="en" className={fontClasses}>
+      <head>{securityMeta}</head>
       <body>
         <main className="nf-page">
           <p className="mono dim">

@@ -1,15 +1,28 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Check, RotateCcw } from "lucide-react";
 import { site } from "@/site.config";
 import { ui, type Locale } from "@/lib/i18n";
 import styles from "./ContactForm.module.css";
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sending" | "sent" | "error" | "limited" | "captcha";
 type Field = "name" | "email" | "message";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Same rule as the worker: no spaces, quotes, commas or second "@"
+const EMAIL_RE = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}$/;
+const TURNSTILE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
+
+type Turnstile = {
+  render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+  reset: (id?: string) => void;
+  remove: (id: string) => void;
+};
+declare global {
+  interface Window {
+    turnstile?: Turnstile;
+  }
+}
 
 /**
  * Project inquiry form. Sends JSON to the Resend worker configured in
@@ -22,6 +35,46 @@ export default function ContactForm({ locale }: { locale: Locale }) {
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const openedAt = useRef(0);
   const formRef = useRef<HTMLFormElement>(null);
+  const captchaEl = useRef<HTMLDivElement>(null);
+  const captchaId = useRef<string | null>(null);
+  const captchaToken = useRef("");
+
+  // Optional Cloudflare Turnstile (only when a site key is configured)
+  useEffect(() => {
+    const el = captchaEl.current;
+    if (!TURNSTILE_KEY || !endpoint || !el || status === "sent") return;
+    let cancelled = false;
+    const mount = () => {
+      if (cancelled || !window.turnstile || captchaId.current) return;
+      captchaId.current = window.turnstile.render(el, {
+        sitekey: TURNSTILE_KEY,
+        theme: "dark",
+        language: locale,
+        callback: (token: string) => (captchaToken.current = token),
+        "expired-callback": () => (captchaToken.current = ""),
+        "error-callback": () => (captchaToken.current = ""),
+      });
+    };
+    if (window.turnstile) mount();
+    else {
+      const id = "cf-turnstile-script";
+      let script = document.getElementById(id) as HTMLScriptElement | null;
+      if (!script) {
+        script = document.createElement("script");
+        script.id = id;
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        document.head.appendChild(script);
+      }
+      script.addEventListener("load", mount);
+    }
+    return () => {
+      cancelled = true;
+      if (captchaId.current && window.turnstile) window.turnstile.remove(captchaId.current);
+      captchaId.current = null;
+      captchaToken.current = "";
+    };
+  }, [endpoint, locale, status === "sent"]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validate = (data: FormData) => {
     const next: Partial<Record<Field, string>> = {};
@@ -29,6 +82,7 @@ export default function ContactForm({ locale }: { locale: Locale }) {
     const email = String(data.get("email") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
     if (!name) next.name = f.required;
+    else if (name.length < 2) next.name = f.shortName;
     if (!email) next.email = f.required;
     else if (!EMAIL_RE.test(email)) next.email = f.invalidEmail;
     if (!message) next.message = f.required;
@@ -47,6 +101,10 @@ export default function ContactForm({ locale }: { locale: Locale }) {
       e.currentTarget.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
     }
+    if (TURNSTILE_KEY && !captchaToken.current) {
+      setStatus("captcha");
+      return;
+    }
     setStatus("sending");
     try {
       const res = await fetch(endpoint, {
@@ -61,14 +119,23 @@ export default function ContactForm({ locale }: { locale: Locale }) {
           website: String(data.get("website") ?? ""), // honeypot, must stay empty
           elapsed: openedAt.current ? Date.now() - openedAt.current : 0,
           locale,
-          page: window.location.href,
+          page: window.location.origin + window.location.pathname,
+          turnstile: captchaToken.current,
         }),
       });
-      if (!res.ok) throw new Error(String(res.status));
-      setStatus("sent");
-      formRef.current?.reset();
+      if (res.status === 429) setStatus("limited");
+      else if (res.status === 403 && TURNSTILE_KEY) setStatus("captcha");
+      else if (!res.ok) throw new Error(String(res.status));
+      else {
+        setStatus("sent");
+        formRef.current?.reset();
+      }
     } catch {
       setStatus("error");
+    } finally {
+      // a Turnstile token is single-use
+      if (captchaId.current && window.turnstile) window.turnstile.reset(captchaId.current);
+      captchaToken.current = "";
     }
   };
 
@@ -165,13 +232,25 @@ export default function ContactForm({ locale }: { locale: Locale }) {
         </div>
       </div>
 
+      {TURNSTILE_KEY && endpoint && <div ref={captchaEl} className={styles.captcha} />}
+
       <div className={styles.foot}>
         <button type="submit" className="btn btn--solid" disabled={!endpoint || status === "sending"} aria-disabled={!endpoint || undefined}>
           {status === "sending" ? f.sending : f.send}
           {status === "sending" ? <span className={styles.spin} aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
         </button>
         <p className={`mono ${styles.note}`} role="status" aria-live="polite">
-          {!endpoint ? f.offline : status === "error" ? <span className={styles.errText}>{f.error}</span> : f.privacy}
+          {!endpoint ? (
+            f.offline
+          ) : status === "error" ? (
+            <span className={styles.errText}>{f.error}</span>
+          ) : status === "limited" ? (
+            <span className={styles.errText}>{f.rateLimited}</span>
+          ) : status === "captcha" ? (
+            <span className={styles.errText}>{f.captcha}</span>
+          ) : (
+            f.privacy
+          )}
         </p>
       </div>
     </form>

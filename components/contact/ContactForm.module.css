@@ -160,3 +160,7 @@
     grid-template-columns: 1fr;
   }
 }
+
+.captcha {
+  min-height: 65px;
+}

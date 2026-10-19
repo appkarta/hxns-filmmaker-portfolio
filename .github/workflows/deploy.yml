@@ -43,6 +43,8 @@ jobs:
           NEXT_TELEMETRY_DISABLED: 1
           # URL of the contact worker (Settings → Secrets and variables → Actions → Variables)
           NEXT_PUBLIC_CONTACT_ENDPOINT: ${{ vars.CONTACT_ENDPOINT }}
+          # Optional Cloudflare Turnstile site key (public) for the contact form
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
 
       - run: touch out/.nojekyll
 

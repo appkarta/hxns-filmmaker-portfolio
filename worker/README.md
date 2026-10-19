@@ -45,3 +45,24 @@ cd worker
 npx wrangler@4.151.2 dev
 ```
 Para que funcione en local, crea `worker/.dev.vars` (está ignorado por git) con `RESEND_API_KEY=...` y `CONTACT_TO=...`.
+
+## Seguridad
+
+| Protección | Detalle |
+| --- | --- |
+| Límite de envíos | Rate limiting de Cloudflare (compartido en toda la red): **3 peticiones/minuto por IP** y **10/minuto en total** para proteger la cuota de Resend. Las peticiones inválidas también cuentan. Respuesta `429` + `Retry-After`. |
+| Origen | Solo acepta peticiones con `Origin` de `https://hxnss.co` o `https://www.hxnss.co`; sin `Origin` (scripts, curl) → `403`. |
+| Formato | Solo `POST` con `Content-Type: application/json` (bloquea formularios CSRF simples), cuerpo máx. 16 KB, JSON tipo objeto. |
+| Bots | Campo trampa oculto, tiempo mínimo de 2,5 s y, opcionalmente, **Cloudflare Turnstile** (ver abajo). Los bots detectados reciben un falso "OK" y no se envía nada. |
+| Contenido | Se eliminan caracteres de control y saltos de línea en nombre y asunto (sin inyección de cabeceras); correo con validación estricta (sin comas, comillas ni `<>`); tipo de proyecto y plazo solo de la lista del formulario; la URL de origen solo si es de hxnss.co; todo el HTML del correo se escapa. |
+| Secretos | La clave de Resend solo vive en Cloudflare (secreto del worker) y en GitHub Secrets. Los errores de Resend se registran sin su contenido. |
+
+> El dominio `localhost` ya no está permitido en producción. Para probar en local, crea `worker/.dev.vars` con `ALLOWED_ORIGINS="http://localhost:3000"`.
+
+### Activar Cloudflare Turnstile (recomendado contra spam)
+1. Cloudflare → **Turnstile → Add widget**: nombre `hxnss.co`, dominios `hxnss.co` y `www.hxnss.co`, modo **Managed**.
+2. Copia la **Site Key** (es pública) → GitHub *Settings → Secrets and variables → Actions → Variables*: `TURNSTILE_SITE_KEY`.
+3. Copia la **Secret Key** → GitHub *Secrets*: `TURNSTILE_SECRET`.
+4. Ejecuta *Deploy contact worker (Resend)* y después *Deploy to GitHub Pages*.
+
+Con eso el formulario muestra la verificación de Cloudflare y el worker rechaza cualquier mensaje sin un token válido.
