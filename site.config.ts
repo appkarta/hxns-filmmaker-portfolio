@@ -106,10 +106,10 @@ export const site = {
     text: { en: "Let's create something that deserves to be seen.", es: "Creemos algo que merezca ser visto." },
     /**
      * Contact form → Resend. URL of the deployed worker (see worker/README.md),
-     * e.g. "https://hxns-contact.<your-subdomain>.workers.dev". TODO: paste it here once deployed.
-     * While it is empty the form is shown but tells visitors it isn't active yet.
+     * Can be overridden at build time with the CONTACT_ENDPOINT repository variable.
+     * If it is empty the form is shown but tells visitors it isn't active yet.
      */
-    formEndpoint: "",
+    formEndpoint: "https://hxns-contact.hxnss-info.workers.dev",
     // TODO: fill in your real details. Empty values are hidden on the site.
     email: "",
     instagram: "", // e.g. "https://www.instagram.com/yourhandle"

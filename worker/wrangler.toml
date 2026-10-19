@@ -4,6 +4,7 @@ name = "hxns-contact"
 main = "src/index.ts"
 compatibility_date = "2026-09-01"
 workers_dev = true
+preview_urls = false
 
 [vars]
 # Sites allowed to send the form (comma-separated)
