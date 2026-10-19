@@ -1,3 +1,6 @@
+import type { L } from "./i18n";
+
+/** Every text field is written in both languages: { en: "...", es: "..." } */
 export type Category =
   | "Commercial Films"
   | "Brand Content"
@@ -33,13 +36,13 @@ export type WorkLayout = "feature" | "wide" | "wideRight" | "tall" | "mid" | "ha
 
 export type Project = {
   slug: string;
-  title: string;
+  title: L;
   category: Category;
   year: number;
-  /** Type of work, e.g. "Direction · Edit · Color" */
-  role: string;
+  /** Type of work, e.g. { en: "Direction · Edit · Color", es: "Dirección · Edición · Color" } */
+  role: L;
   /** One or two sentences */
-  description: string;
+  description: L;
   aspect: Aspect;
   layout: WorkLayout;
   /** Cover image shown in the grid (also used as the player poster) */
@@ -48,28 +51,28 @@ export type Project = {
   preview?: string;
   video: VideoSource;
   /** Extra lines shown inside the player, e.g. { label: "Client", value: "..." } */
-  details?: { label: string; value: string }[];
+  details?: { label: L; value: L }[];
   /** true = placeholder footage, shows a "Demo" tag. Set false for your real work. */
   demo?: boolean;
 };
 
 export type ArchiveItem = {
   id: string;
-  title: string;
-  kind: string;
+  title: L;
+  kind: L;
   year: number;
   image: string;
   /** Optional muted loop */
   loop?: string;
   aspect: Aspect;
-  alt: string;
+  alt: L;
 };
 
 export type Service = {
-  title: string;
-  description: string;
+  title: L;
+  description: L;
   /** Small technical note shown as a graphic detail */
-  detail: string;
+  detail: L;
   glyph: "frame" | "timeline" | "brand" | "vertical" | "wave" | "wheel";
   image: string;
 };

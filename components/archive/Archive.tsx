@@ -6,11 +6,14 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { archive } from "@/site.config";
 import { asset } from "@/lib/asset";
+import { tr, ui, type Locale } from "@/lib/i18n";
+import AccentTitle from "../AccentTitle";
 import styles from "./Archive.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Archive() {
+export default function Archive({ locale }: { locale: Locale }) {
+  const t = ui[locale];
   const section = useRef<HTMLElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLUListElement>(null);
@@ -75,29 +78,29 @@ export default function Archive() {
     <section id="archive" ref={section} className={styles.section} aria-labelledby="archive-title">
       <div className={`container ${styles.head}`}>
         <p className="section-label mono" data-reveal="fade">
-          (04) Visual playground
+          {t.archiveLabel}
         </p>
         <h2 id="archive-title" className="display">
           <span data-reveal="lines">
-            Archive <span className="serif">/ unclassified</span>
+            <AccentTitle parts={t.archiveTitle} />
           </span>
         </h2>
         <div className={styles.lead} data-reveal="stagger">
-          <p>Personal edits, color and camera tests, motion studies and stills. Work without a client — where the language gets tested first.</p>
+          <p>{t.archiveLead}</p>
           <p className="mono dim">
-            {archive.length} entries <span aria-hidden="true">— scroll →</span>
+            {t.archiveCount(archive.length)} <span aria-hidden="true">{t.archiveHint}</span>
           </p>
         </div>
       </div>
 
-      <div ref={viewport} className={styles.viewport} tabIndex={0} aria-label="Archive reel, scroll horizontally" role="region">
+      <div ref={viewport} className={styles.viewport} tabIndex={0} aria-label={t.archiveAria} role="region">
         <ul ref={track} className={styles.track}>
           {archive.map((item, i) => {
             const vertical = item.aspect === "9:16" || item.aspect === "4:5";
             return (
               <li key={item.id} className={`${styles.item} ${vertical ? styles.vertical : ""} ${i % 3 === 1 ? styles.low : ""}`}>
                 <div className={styles.frame} style={{ aspectRatio: item.aspect.replace(":", " / ") }}>
-                  <Image src={asset(item.image)} alt={item.alt} fill sizes="(max-width: 760px) 70vw, 40vw" className={styles.img} />
+                  <Image src={asset(item.image)} alt={tr(item.alt, locale)} fill sizes="(max-width: 760px) 70vw, 40vw" className={styles.img} />
                   {item.loop && (
                     <video
                       className={styles.loop}
@@ -118,9 +121,9 @@ export default function Archive() {
                   <span className="mono" style={{ color: "var(--ice)" }}>
                     {item.id}
                   </span>
-                  <span className={styles.itemTitle}>{item.title}</span>
+                  <span className={styles.itemTitle}>{tr(item.title, locale)}</span>
                   <span className="mono dim">
-                    {item.kind} · {item.year}
+                    {tr(item.kind, locale)} · {item.year}
                   </span>
                 </div>
               </li>

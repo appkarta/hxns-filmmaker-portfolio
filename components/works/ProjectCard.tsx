@@ -6,13 +6,17 @@ import { ArrowUpRight, Play } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { asset, pad2 } from "@/lib/asset";
 import { usePlayer } from "@/components/player/PlayerProvider";
+import { categoryLabels, tr, ui, type Locale } from "@/lib/i18n";
 import styles from "./Works.module.css";
 
-type Props = { project: Project; index: number; total: number };
+type Props = { project: Project; index: number; total: number; locale: Locale };
 
 type NetInfo = { saveData?: boolean };
 
-export default function ProjectCard({ project, index, total }: Props) {
+export default function ProjectCard({ project, index, total, locale }: Props) {
+  const t = ui[locale];
+  const title = tr(project.title, locale);
+  const category = tr(categoryLabels[project.category], locale);
   const { open } = usePlayer();
   const video = useRef<HTMLVideoElement>(null);
   const card = useRef<HTMLElement>(null);
@@ -78,7 +82,7 @@ export default function ProjectCard({ project, index, total }: Props) {
         onFocus={start}
         onBlur={stop}
         data-cursor="play"
-        aria-label={`Play ${project.title} — ${project.category}, ${project.year}`}
+        aria-label={t.playAria(title, category, project.year)}
       >
         <div className={styles.reveal} data-reveal="media">
           <div className={styles.mediaInner}>
@@ -100,27 +104,27 @@ export default function ProjectCard({ project, index, total }: Props) {
           {pad2(index + 1)} / {pad2(total)}
         </span>
         <span className={`${styles.corner} ${styles.tr} mono`} aria-hidden="true">
-          {project.demo && <span className={styles.demoTag}>Demo</span>}
+          {project.demo && <span className={styles.demoTag}>{t.demo}</span>}
           {project.aspect}
         </span>
         <span className={`${styles.corner} ${styles.bl} mono`} aria-hidden="true">
-          <Play aria-hidden="true" /> Play film
+          <Play aria-hidden="true" /> {t.playFilm}
         </span>
       </a>
 
       <div className={styles.caption}>
         <div className={styles.capTop}>
-          <h3 className={styles.name}>{project.title}</h3>
+          <h3 className={styles.name}>{title}</h3>
           <p className="mono dim">
-            {project.category} — {project.year}
+            {category} — {project.year}
           </p>
         </div>
         <div className={styles.capBottom}>
-          <p className={styles.desc}>{project.description}</p>
+          <p className={styles.desc}>{tr(project.description, locale)}</p>
           <div className={styles.capMeta}>
-            <span className="mono dim">{project.role}</span>
+            <span className="mono dim">{tr(project.role, locale)}</span>
             <button type="button" className={`${styles.view} mono`} onClick={onOpen}>
-              View project <ArrowUpRight aria-hidden="true" />
+              {t.viewProject} <ArrowUpRight aria-hidden="true" />
             </button>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 **Cinematic Digital Identity.** Portafolio audiovisual de HXNS: una landing page que se recorre como una secuencia cinematográfica — intro tipográfica, showreel a pantalla completa, galería editorial de proyectos con reproductor propio, sección *Behind the lens*, servicios, archivo experimental y contacto.
 
-🔗 **Sitio publicado:** https://appkarta.github.io/hxns-filmmaker-portfolio/
+🔗 **Sitio publicado:** https://appkarta.github.io/hxns-filmmaker-portfolio/ (English) · https://appkarta.github.io/hxns-filmmaker-portfolio/es/ (Español)
 
 ---
 
@@ -20,10 +20,18 @@
 ## Estructura
 
 ```
-site.config.ts          ← ✏️ TODO el contenido editable: textos, contacto, proyectos, servicios, archivo
+site.config.ts          ← ✏️ TODO el contenido editable (en inglés y español): textos, contacto, proyectos, servicios, archivo
+lib/i18n.ts             ← idiomas, etiquetas de interfaz (botones, menús, aria) y nombres de categorías en EN / ES
 lib/types.ts            ← tipos de Project / Service / ArchiveItem y fuentes de video
-app/                    ← layout, metadatos SEO/Open Graph, sitemap, robots, 404, favicon
+lib/document.tsx        ← <html lang>, fuentes y metadatos SEO por idioma (canonical, hreflang, Open Graph)
+app/
+  (en)/                 ← página en inglés  → /
+  (es)/es/              ← página en español → /es/
+  global-not-found.tsx  ← 404 bilingüe
+  sitemap.ts, robots.ts, icon.svg
 components/
+  Site.tsx              ← la landing completa, renderizada una vez por idioma
+  LanguageSwitch.tsx    ← selector EN / ES (header y footer)
   Intro.tsx             ← intro HXNS + apertura tipo letterbox
   Hero.tsx              ← showreel de fondo, wordmark a ancho completo, timecode en vivo
   works/                ← galería editorial (Selected Works)
@@ -43,6 +51,17 @@ public/og-image.png     ← imagen para compartir en redes (1200×630)
 
 Todo se cambia en **`site.config.ts`**. Lo marcado con `TODO` es un marcador de posición.
 
+### Idiomas (inglés / español)
+El sitio existe en dos versiones estáticas: **inglés en `/`** y **español en `/es/`**, cada una con su `lang`, título, descripción y enlaces `hreflang` para Google. El selector **EN / ES** del header y del footer cambia de versión conservando la sección o el proyecto abierto (`#services`, `#work/nocturne`…), y recuerda la elección del visitante.
+
+Cada texto de `site.config.ts` se escribe en ambos idiomas:
+```ts
+subtitle: { en: "Filmmaker · Video Editor · Visual Storytelling", es: "Cine · Edición de video · Narrativa visual" },
+```
+Las etiquetas de interfaz (botones, menú, reproductor, títulos de sección) están en `lib/i18n.ts` → `ui.en` / `ui.es`; TypeScript avisa si a una de las dos le falta una clave.
+
+> Los textos en español usan formulaciones neutras ("hago cine y edición de video") para no asumir género; cámbialas a tu gusto (p. ej. "soy editor/editora de video").
+
 ### Contacto
 ```ts
 contact: {
@@ -52,7 +71,7 @@ contact: {
   youtube: "https://www.youtube.com/@tuusuario",
 }
 ```
-Los campos vacíos se ocultan automáticamente. Con `email` relleno aparece el botón **Start a project** (mailto).
+Los campos vacíos se ocultan automáticamente. Con `email` relleno aparece el botón **Start a project / Empezar un proyecto** (mailto).
 
 ### Añadir o sustituir un proyecto
 1. Copia tus archivos a `public/`:
@@ -63,11 +82,11 @@ Los campos vacíos se ocultan automáticamente. Con `email` relleno aparece el b
 ```ts
 {
   slug: "mi-proyecto",
-  title: "Mi Proyecto",
-  category: "Brand Content",          // ver lista en lib/types.ts
+  title: { en: "My Project", es: "Mi Proyecto" },
+  category: "Brand Content",          // ver lista en lib/types.ts (se traduce sola en /es/)
   year: 2026,
-  role: "Direction · Edit · Color",
-  description: "Una o dos frases.",
+  role: { en: "Direction · Edit · Color", es: "Dirección · Edición · Color" },
+  description: { en: "One or two sentences.", es: "Una o dos frases." },
   aspect: "16:9",                      // o "9:16" para vertical
   layout: "wide",                      // feature | wide | wideRight | tall | mid | half
   cover: "/images/projects/mi-proyecto.webp",

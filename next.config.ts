@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: { unoptimized: true },
   env: { NEXT_PUBLIC_BASE_PATH: basePath },
+  // The site has two root layouts (English at /, Spanish at /es/), so the 404 is defined once in app/global-not-found.tsx
+  experimental: { globalNotFound: true },
 };
 
 export default nextConfig;

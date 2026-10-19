@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { projects } from "@/site.config";
+import type { Locale } from "@/lib/i18n";
 import PlayerModal from "./PlayerModal";
 
 type PlayerCtx = { open: (slug: string) => void };
@@ -12,7 +13,7 @@ export const usePlayer = () => useContext(Ctx);
 const HASH = "#work/";
 
 /** Holds which project is open and keeps it in the URL (#work/<slug>) so it can be shared. */
-export default function PlayerProvider({ children }: { children: React.ReactNode }) {
+export default function PlayerProvider({ children, locale }: { children: React.ReactNode; locale: Locale }) {
   const [index, setIndex] = useState<number | null>(null);
   const opener = useRef<HTMLElement | null>(null);
   const pushed = useRef(false);
@@ -73,6 +74,7 @@ export default function PlayerProvider({ children }: { children: React.ReactNode
       {children}
       {index !== null && (
         <PlayerModal
+          locale={locale}
           project={projects[index]}
           index={index}
           total={projects.length}

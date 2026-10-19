@@ -1,9 +1,12 @@
 import { ArrowUpRight, Mail } from "lucide-react";
 import { site } from "@/site.config";
+import { tr, ui, type Locale } from "@/lib/i18n";
+import LanguageSwitch from "./LanguageSwitch";
 import Year from "./Year";
 import styles from "./Contact.module.css";
 
-export default function Contact() {
+export default function Contact({ locale }: { locale: Locale }) {
+  const t = ui[locale];
   const { contact } = site;
   const channels = [
     { label: "Email", value: contact.email, href: contact.email ? `mailto:${contact.email}` : "" },
@@ -19,11 +22,11 @@ export default function Contact() {
         <div className={styles.glow} aria-hidden="true" />
         <div className={`container ${styles.inner}`}>
           <p className="section-label mono" data-reveal="fade">
-            (05) Contact
+            {t.contactLabel}
           </p>
 
           <h2 id="contact-title" className={styles.headline}>
-            {contact.headline.map((line, i) => (
+            {tr(contact.headline, locale).map((line, i) => (
               <span key={line} className={i === 1 ? styles.indent : undefined} data-reveal="lines">
                 {i === 1 ? (
                   <>
@@ -38,21 +41,21 @@ export default function Contact() {
 
           <div className={styles.row}>
             <div className={styles.cta} data-reveal="stagger">
-              <p className={styles.text}>{contact.text}</p>
+              <p className={styles.text}>{tr(contact.text, locale)}</p>
               {contact.email ? (
-                <a className="btn btn--solid" href={`mailto:${contact.email}?subject=${encodeURIComponent("New project — HXNS")}`}>
-                  <Mail aria-hidden="true" /> Start a project
+                <a className="btn btn--solid" href={`mailto:${contact.email}?subject=${encodeURIComponent(t.mailSubject)}`}>
+                  <Mail aria-hidden="true" /> {t.startProject}
                 </a>
               ) : configured[0] ? (
                 <a className="btn btn--solid" href={configured[0].href} target="_blank" rel="noopener noreferrer">
-                  Get in touch on {configured[0].label} <ArrowUpRight aria-hidden="true" />
+                  {t.getInTouchOn(configured[0].label)} <ArrowUpRight aria-hidden="true" />
                 </a>
               ) : (
-                <p className={`mono ${styles.pending}`}>Contact channels opening soon.</p>
+                <p className={`mono ${styles.pending}`}>{t.contactPending}</p>
               )}
               {site.availability.open && (
                 <p className={`mono ${styles.avail}`}>
-                  <span className="dot" aria-hidden="true" /> {site.availability.label}
+                  <span className="dot" aria-hidden="true" /> {tr(site.availability.label, locale)}
                 </p>
               )}
             </div>
@@ -80,26 +83,27 @@ export default function Contact() {
 
       <footer className={styles.footer}>
         <div className={`container ${styles.footInner}`}>
-          <a href="#top" className={styles.footMark} aria-label={`${site.name} — back to top`}>
+          <a href="#top" className={styles.footMark} aria-label={`${site.name} — ${t.backToTop}`}>
             HXNS<sup>®</sup>
           </a>
-          <nav aria-label="Footer" className={styles.footNav}>
+          <nav aria-label={t.footerNav} className={styles.footNav}>
             {site.nav.map((n) => (
               <a key={n.href} href={n.href} className="mono">
-                {n.label}
+                {tr(n.label, locale)}
               </a>
             ))}
           </nav>
           <div className={`${styles.footMeta} mono dim`}>
             <span>
-              © <Year /> {site.name}. {site.concept}.
+              © <Year /> {site.name}. {tr(site.concept, locale)}.
             </span>
             {site.mediaCredit && (
               <a href={site.mediaCredit.url} target="_blank" rel="noopener noreferrer">
-                {site.mediaCredit.label}
+                {tr(site.mediaCredit.label, locale)}
               </a>
             )}
-            <a href="#top">Back to top ↑</a>
+            <LanguageSwitch locale={locale} className={styles.footLang} />
+            <a href="#top">{t.backToTopLink}</a>
           </div>
         </div>
       </footer>

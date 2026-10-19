@@ -5,17 +5,22 @@ import { gsap } from "gsap";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { site } from "@/site.config";
 import { asset, timecode } from "@/lib/asset";
+import { tr, ui, type Locale } from "@/lib/i18n";
 import { REVEAL_EVENT } from "./Intro";
 import styles from "./Hero.module.css";
 
 type NetInfo = { saveData?: boolean; effectiveType?: string };
 
-export default function Hero() {
+export default function Hero({ locale }: { locale: Locale }) {
   const root = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const tc = useRef<HTMLSpanElement>(null);
   const [playing, setPlaying] = useState(false);
   const { hero } = site;
+  const t = ui[locale];
+  const headline = tr(hero.headline, locale);
+  const specialty = tr(hero.meta.specialty, locale);
+  const location = tr(hero.meta.location, locale);
 
   // Pick the right reel: vertical crop on phones, nothing on data-saver / 2G
   useEffect(() => {
@@ -118,7 +123,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="top" ref={root} className={styles.hero} aria-label="Introduction">
+    <section id="top" ref={root} className={styles.hero} aria-label={t.heroLabel}>
       <div className={styles.mediaWrap} aria-hidden="true">
         <div className={styles.media}>
           <picture>
@@ -150,16 +155,16 @@ export default function Hero() {
       <div className={styles.top}>
         <p className={`mono ${styles.meta}`} data-hero-fade>
           <span className={styles.rec}>
-            <span className={styles.recDot} /> Showreel
+            <span className={styles.recDot} /> {t.showreel}
           </span>
           <span ref={tc}>00:00:00:00</span>
         </p>
         <p className={`mono ${styles.meta} ${styles.metaRight}`} data-hero-fade>
-          {hero.meta.specialty && <span>{hero.meta.specialty}</span>}
-          {hero.meta.location && <span>{hero.meta.location}</span>}
+          {specialty && <span>{specialty}</span>}
+          {location && <span>{location}</span>}
           {site.availability.open && (
             <span className={styles.avail}>
-              <span className="dot" aria-hidden="true" /> {site.availability.label}
+              <span className="dot" aria-hidden="true" /> {tr(site.availability.label, locale)}
             </span>
           )}
         </p>
@@ -168,12 +173,12 @@ export default function Hero() {
       <div className={styles.content}>
         <h1 className={styles.headline}>
           <span className="sr-only">
-            {site.name} — {hero.headline.join(" ")}
+            {site.name} — {headline.join(" ")}
           </span>
-          {hero.headline.map((line, i) => (
+          {headline.map((line, i) => (
             <span key={i} className="line-mask" data-hero-line aria-hidden="true">
               <span>
-                {i === hero.headline.length - 1 ? (
+                {i === headline.length - 1 ? (
                   <>
                     {line.replace(/\.$/, "")}
                     <span className={styles.period}>.</span>
@@ -186,15 +191,15 @@ export default function Hero() {
           ))}
         </h1>
         <p className={styles.subtitle} data-hero-fade>
-          {hero.subtitle}
+          {tr(hero.subtitle, locale)}
         </p>
         <div className={styles.ctas} data-hero-fade>
           <a href="#work" className="btn btn--solid">
-            {hero.primaryCta}
+            {tr(hero.primaryCta, locale)}
             <ArrowDownRight aria-hidden="true" />
           </a>
           <a href="#contact" className="btn">
-            {hero.secondaryCta}
+            {tr(hero.secondaryCta, locale)}
             <ArrowUpRight aria-hidden="true" />
           </a>
         </div>
@@ -208,7 +213,7 @@ export default function Hero() {
 
       <a href="#work" className={`${styles.scroll} mono`} data-hero-fade>
         <span className={styles.scrollLine} aria-hidden="true" />
-        Scroll
+        {t.scroll}
       </a>
     </section>
   );

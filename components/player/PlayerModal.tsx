@@ -5,11 +5,13 @@ import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 import { pad2 } from "@/lib/asset";
+import { categoryLabels, tr, ui, type Locale } from "@/lib/i18n";
 import VideoPlayer from "./VideoPlayer";
 import EmbedPlayer from "./EmbedPlayer";
 import styles from "./Player.module.css";
 
 type Props = {
+  locale: Locale;
   project: Project;
   index: number;
   total: number;
@@ -20,7 +22,9 @@ type Props = {
   onClose: () => void;
 };
 
-export default function PlayerModal({ project, index, total, prev, next, onPrev, onNext, onClose }: Props) {
+export default function PlayerModal({ locale, project, index, total, prev, next, onPrev, onNext, onClose }: Props) {
+  const t = ui[locale];
+  const title = tr(project.title, locale);
   const dialog = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
   const vertical = project.aspect === "9:16" || project.aspect === "4:5";
@@ -75,10 +79,10 @@ export default function PlayerModal({ project, index, total, prev, next, onPrev,
 
       <div className={styles.bar}>
         <span className="mono dim">
-          Selected Works — <span className={styles.white}>{pad2(index + 1)}</span> / {pad2(total)}
+          {t.selectedWorks} — <span className={styles.white}>{pad2(index + 1)}</span> / {pad2(total)}
         </span>
         <button ref={closeBtn} type="button" className={`${styles.close} mono`} onClick={onClose}>
-          Close <span className="dim">(Esc)</span>
+          {t.close} <span className="dim">(Esc)</span>
           <X aria-hidden="true" />
         </button>
       </div>
@@ -86,9 +90,9 @@ export default function PlayerModal({ project, index, total, prev, next, onPrev,
       <div className={`${styles.stage} ${vertical ? styles.vertical : ""}`} key={project.slug}>
         <div className={styles.screen} style={{ aspectRatio: project.aspect.replace(":", " / ") }}>
           {project.video.type === "mp4" ? (
-            <VideoPlayer src={project.video.src} poster={project.video.poster ?? project.cover} title={project.title} />
+            <VideoPlayer src={project.video.src} poster={project.video.poster ?? project.cover} title={title} locale={locale} />
           ) : (
-            <EmbedPlayer source={project.video} title={project.title} />
+            <EmbedPlayer source={project.video} title={title} locale={locale} />
           )}
         </div>
       </div>
@@ -96,48 +100,48 @@ export default function PlayerModal({ project, index, total, prev, next, onPrev,
       <div className={styles.info} key={`${project.slug}-info`}>
         <div className={styles.titleBlock}>
           <p className="mono dim">
-            {project.category}
-            {project.demo && <span className={styles.demo}>Demo</span>}
+            {tr(categoryLabels[project.category], locale)}
+            {project.demo && <span className={styles.demo}>{t.demo}</span>}
           </p>
           <h2 id="player-title" className={styles.title}>
-            {project.title}
+            {title}
           </h2>
-          <p className={styles.desc}>{project.description}</p>
+          <p className={styles.desc}>{tr(project.description, locale)}</p>
         </div>
 
         <dl className={`${styles.meta} mono`}>
           <div>
-            <dt>Year</dt>
+            <dt>{t.year}</dt>
             <dd>{project.year}</dd>
           </div>
           <div>
-            <dt>Work</dt>
-            <dd>{project.role}</dd>
+            <dt>{t.work}</dt>
+            <dd>{tr(project.role, locale)}</dd>
           </div>
           <div>
-            <dt>Format</dt>
+            <dt>{t.format}</dt>
             <dd>{project.aspect}</dd>
           </div>
           {project.details?.map((d) => (
-            <div key={d.label}>
-              <dt>{d.label}</dt>
-              <dd>{d.value}</dd>
+            <div key={d.label.en}>
+              <dt>{tr(d.label, locale)}</dt>
+              <dd>{tr(d.value, locale)}</dd>
             </div>
           ))}
         </dl>
 
-        <nav className={styles.pager} aria-label="Project navigation">
+        <nav className={styles.pager} aria-label={t.projectNav}>
           <button type="button" onClick={onPrev} className={styles.pageBtn}>
             <ArrowLeft aria-hidden="true" />
             <span>
-              <span className="mono dim">Previous</span>
-              <span className={styles.pageTitle}>{prev.title}</span>
+              <span className="mono dim">{t.previous}</span>
+              <span className={styles.pageTitle}>{tr(prev.title, locale)}</span>
             </span>
           </button>
           <button type="button" onClick={onNext} className={`${styles.pageBtn} ${styles.pageNext}`}>
             <span>
-              <span className="mono dim">Next</span>
-              <span className={styles.pageTitle}>{next.title}</span>
+              <span className="mono dim">{t.next}</span>
+              <span className={styles.pageTitle}>{tr(next.title, locale)}</span>
             </span>
             <ArrowRight aria-hidden="true" />
           </button>

@@ -248,9 +248,3 @@
 }
 
 
-/* The header already shows availability on wide screens */
-@media (min-width: 1101px) {
-  .avail {
-    display: none;
-  }
-}

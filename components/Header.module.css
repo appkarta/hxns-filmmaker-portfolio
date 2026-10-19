@@ -94,7 +94,7 @@
   justify-self: end;
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
 }
 .status {
   display: inline-flex;
@@ -226,5 +226,11 @@
   }
   .menuFoot .status {
     display: inline-flex;
+  }
+}
+
+@media (max-width: 860px) {
+  .right {
+    gap: 6px;
   }
 }

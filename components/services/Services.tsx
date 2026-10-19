@@ -5,10 +5,13 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { services } from "@/site.config";
 import { asset, pad2 } from "@/lib/asset";
+import { tr, ui, type Locale } from "@/lib/i18n";
+import AccentTitle from "../AccentTitle";
 import Glyph from "./Glyph";
 import styles from "./Services.module.css";
 
-export default function Services() {
+export default function Services({ locale }: { locale: Locale }) {
+  const t = ui[locale];
   const list = useRef<HTMLDivElement>(null);
   const float = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState<number | null>(null);
@@ -35,15 +38,15 @@ export default function Services() {
     <section id="services" className={styles.section} aria-labelledby="services-title">
       <div className={`container ${styles.head}`}>
         <p className="section-label mono" data-reveal="fade">
-          (03) Services
+          {t.servicesLabel}
         </p>
         <h2 id="services-title" className="display">
           <span data-reveal="lines">
-            What <span className="serif">I</span> make
+            <AccentTitle parts={t.servicesTitle} />
           </span>
         </h2>
         <p className={styles.lead} data-reveal="fade">
-          From the first frame to the final grade — one eye across camera, edit and color, so the film keeps a single voice.
+          {t.servicesLead}
         </p>
       </div>
 
@@ -51,17 +54,17 @@ export default function Services() {
         <ol className={styles.list}>
         {services.map((s, i) => (
           <li
-            key={s.title}
+            key={s.title.en}
             className={`${styles.row} ${current === i ? styles.on : ""}`}
             onPointerEnter={() => setCurrent(i)}
             data-reveal="fade"
           >
             <span className={`${styles.num} mono`}>{pad2(i + 1)}</span>
-            <h3 className={styles.name}>{s.title}</h3>
-            <p className={styles.desc}>{s.description}</p>
+            <h3 className={styles.name}>{tr(s.title, locale)}</h3>
+            <p className={styles.desc}>{tr(s.description, locale)}</p>
             <div className={styles.detail}>
               <Glyph name={s.glyph} className={styles.glyph} />
-              <span className="mono dim">{s.detail}</span>
+              <span className="mono dim">{tr(s.detail, locale)}</span>
             </div>
           </li>
         ))}
@@ -69,7 +72,7 @@ export default function Services() {
 
         <div ref={float} className={`${styles.float} ${current !== null ? styles.floatOn : ""}`} aria-hidden="true">
           {services.map((s, i) => (
-            <div key={s.title} className={`${styles.floatImg} ${current === i ? styles.floatCurrent : ""}`}>
+            <div key={s.title.en} className={`${styles.floatImg} ${current === i ? styles.floatCurrent : ""}`}>
               <Image src={asset(s.image)} alt="" fill sizes="320px" className={styles.img} />
             </div>
           ))}

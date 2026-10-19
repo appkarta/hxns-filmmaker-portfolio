@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { site } from "@/site.config";
+import { tr, type Locale } from "@/lib/i18n";
 import styles from "./Intro.module.css";
 
 export const REVEAL_EVENT = "hxns:reveal";
@@ -19,7 +21,7 @@ function reveal() {
 }
 
 /** Short title card: HXNS rises through a mask, then the frame opens like a letterbox. */
-export default function Intro() {
+export default function Intro({ locale }: { locale: Locale }) {
   const root = useRef<HTMLDivElement>(null);
   const counter = useRef<HTMLSpanElement>(null);
 
@@ -95,7 +97,7 @@ export default function Intro() {
           ))}
         </div>
         <div className={`${styles.meta} mono`}>
-          <span>Cinematic Digital Identity</span>
+          <span>{tr(site.concept, locale)}</span>
           <span>
             <span ref={counter}>000</span> / 100
           </span>

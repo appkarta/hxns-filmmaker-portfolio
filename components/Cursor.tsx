@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { ui, type Locale } from "@/lib/i18n";
 import styles from "./Cursor.module.css";
 
 /** Desktop-only cursor: a small dot that opens into a "Play" lens over films. */
-export default function Cursor() {
+export default function Cursor({ locale }: { locale: Locale }) {
   const el = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"" | "play" | "link">("");
   const [enabled, setEnabled] = useState(false);
@@ -65,7 +66,7 @@ export default function Cursor() {
   if (!enabled) return null;
   return (
     <div ref={el} className={`${styles.cursor} ${mode ? styles[mode] : ""}`} aria-hidden="true">
-      <span className={`${styles.label} mono`}>Play</span>
+      <span className={`${styles.label} mono`}>{ui[locale].playCursor}</span>
     </div>
   );
 }

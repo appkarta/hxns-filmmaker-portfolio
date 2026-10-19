@@ -3,11 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Maximize, Minimize, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { asset, timecode } from "@/lib/asset";
+import { ui, type Locale } from "@/lib/i18n";
 import styles from "./Player.module.css";
 
-type Props = { src: string; poster?: string; title: string };
+type Props = { src: string; poster?: string; title: string; locale: Locale };
 
-export default function VideoPlayer({ src, poster, title }: Props) {
+export default function VideoPlayer({ src, poster, title, locale }: Props) {
+  const t = ui[locale];
   const wrap = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -142,19 +144,19 @@ export default function VideoPlayer({ src, poster, title }: Props) {
           setError(true);
           setWaiting(false);
         }}
-        aria-label={`${title} — video`}
+        aria-label={`${title} — ${t.videoSuffix}`}
       />
 
       {waiting && !error && (
         <div className={styles.loading} role="status">
           <span className={styles.spinner} aria-hidden="true" />
-          <span className="sr-only">Loading video</span>
+          <span className="sr-only">{t.loadingVideo}</span>
         </div>
       )}
 
       {error && (
         <div className={styles.error} role="alert">
-          <p className="mono">This video couldn&apos;t be loaded.</p>
+          <p className="mono">{t.videoError}</p>
           <button
             type="button"
             className="btn"
@@ -165,19 +167,19 @@ export default function VideoPlayer({ src, poster, title }: Props) {
               video.current?.play().catch(() => {});
             }}
           >
-            <RotateCcw aria-hidden="true" /> Try again
+            <RotateCcw aria-hidden="true" /> {t.retry}
           </button>
         </div>
       )}
 
       {!playing && !waiting && !error && (
-        <button type="button" className={styles.bigPlay} onClick={toggle} aria-label="Play">
+        <button type="button" className={styles.bigPlay} onClick={toggle} aria-label={t.play}>
           <Play aria-hidden="true" />
         </button>
       )}
 
       <div className={styles.controls}>
-        <button type="button" className={styles.ctrl} onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
+        <button type="button" className={styles.ctrl} onClick={toggle} aria-label={playing ? t.pause : t.play}>
           {playing ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
         </button>
         <span className={`${styles.tc} mono`} aria-hidden="true">
@@ -191,8 +193,8 @@ export default function VideoPlayer({ src, poster, title }: Props) {
             step={0.04}
             value={time}
             onChange={(e) => seek(parseFloat(e.target.value))}
-            aria-label="Seek"
-            aria-valuetext={`${Math.floor(time)} of ${Math.floor(duration)} seconds`}
+            aria-label={t.seek}
+            aria-valuetext={t.seekText(Math.floor(time), Math.floor(duration))}
           />
         </div>
         <span className={`${styles.tc} ${styles.tcDim} mono`} aria-hidden="true">
@@ -205,11 +207,11 @@ export default function VideoPlayer({ src, poster, title }: Props) {
             const v = video.current;
             if (v) v.muted = !v.muted;
           }}
-          aria-label={muted ? "Unmute" : "Mute"}
+          aria-label={muted ? t.unmute : t.mute}
         >
           {muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
         </button>
-        <button type="button" className={styles.ctrl} onClick={toggleFull} aria-label={full ? "Exit fullscreen" : "Fullscreen"}>
+        <button type="button" className={styles.ctrl} onClick={toggleFull} aria-label={full ? t.exitFullscreen : t.fullscreen}>
           {full ? <Minimize aria-hidden="true" /> : <Maximize aria-hidden="true" />}
         </button>
       </div>

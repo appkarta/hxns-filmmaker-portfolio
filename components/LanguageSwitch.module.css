@@ -1,0 +1,44 @@
+.switch {
+  display: inline-flex;
+  align-items: center;
+}
+.item {
+  display: inline-flex;
+  align-items: center;
+}
+.sep {
+  color: var(--mist);
+  opacity: 0.5;
+  margin-inline: 2px;
+}
+.current,
+.link {
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  min-height: 44px;
+  padding-inline: 4px;
+}
+.current {
+  color: var(--white);
+  position: relative;
+}
+.current::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+.link {
+  color: var(--mist);
+  transition: color 0.3s ease;
+}
+.link:hover,
+.link:focus-visible {
+  color: var(--ice);
+}

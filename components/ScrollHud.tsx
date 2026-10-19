@@ -2,19 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { timecode } from "@/lib/asset";
+import { ui, type Locale } from "@/lib/i18n";
 import styles from "./ScrollHud.module.css";
 
-const SECTIONS: [string, string][] = [
-  ["top", "00 — Showreel"],
-  ["work", "01 — Selected works"],
-  ["about", "02 — Behind the lens"],
-  ["services", "03 — Services"],
-  ["archive", "04 — Archive"],
-  ["contact", "05 — Contact"],
-];
+const SECTION_IDS = ["top", "work", "about", "services", "archive", "contact"];
 
 /** The page reads like a timeline: scroll progress bar + running timecode + current "scene". */
-export default function ScrollHud() {
+export default function ScrollHud({ locale }: { locale: Locale }) {
+  const scenes = ui[locale].scenes;
   const bar = useRef<HTMLDivElement>(null);
   const tc = useRef<HTMLSpanElement>(null);
   const scene = useRef<HTMLSpanElement>(null);
@@ -30,11 +25,11 @@ export default function ScrollHud() {
       if (tc.current) tc.current.textContent = timecode(p * RUNTIME);
       if (scene.current) {
         const mid = window.innerHeight * 0.45;
-        let label = SECTIONS[0][1];
-        for (const [id, name] of SECTIONS) {
+        let label = scenes[0];
+        SECTION_IDS.forEach((id, i) => {
           const el = document.getElementById(id);
-          if (el && el.getBoundingClientRect().top <= mid) label = name;
-        }
+          if (el && el.getBoundingClientRect().top <= mid) label = scenes[i];
+        });
         if (scene.current.textContent !== label) scene.current.textContent = label;
       }
     };
@@ -49,7 +44,7 @@ export default function ScrollHud() {
       window.removeEventListener("resize", onScroll);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [scenes]);
 
   return (
     <div className={styles.hud} aria-hidden="true">
@@ -59,7 +54,7 @@ export default function ScrollHud() {
         <span ref={tc}>00:00:00:00</span>
       </div>
       <div className={`${styles.scene} mono`}>
-        <span ref={scene}>{SECTIONS[0][1]}</span>
+        <span ref={scene}>{scenes[0]}</span>
       </div>
     </div>
   );

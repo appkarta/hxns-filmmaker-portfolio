@@ -4,9 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { site } from "@/site.config";
 import { lockScroll, scrollToTarget, unlockScroll } from "@/lib/scroll";
 import { pad2 } from "@/lib/asset";
+import { tr, ui, type Locale } from "@/lib/i18n";
+import LanguageSwitch from "./LanguageSwitch";
 import styles from "./Header.module.css";
 
-export default function Header() {
+export default function Header({ locale }: { locale: Locale }) {
+  const t = ui[locale];
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
@@ -72,18 +75,18 @@ export default function Header() {
       className={`${styles.header} ${hidden && !open ? styles.hidden : ""} ${solid ? styles.solid : ""} ${open ? styles.isOpen : ""}`}
     >
       <div className={styles.inner}>
-        <a href="#top" className={styles.logo} aria-label={`${site.name} — back to top`} onClick={(e) => go(e, "#top")}>
+        <a href="#top" className={styles.logo} aria-label={`${site.name} — ${t.backToTop}`} onClick={(e) => go(e, "#top")}>
           HXNS<sup>®</sup>
         </a>
 
-        <nav className={styles.nav} aria-label="Primary">
+        <nav className={styles.nav} aria-label={t.primaryNav}>
           <ul>
             {site.nav.map((item, i) => (
               <li key={item.href}>
                 <a href={item.href} className={styles.link}>
                   <span className={styles.num}>{pad2(i + 1)}</span>
-                  <span className={styles.label} data-text={item.label}>
-                    {item.label}
+                  <span className={styles.label} data-text={tr(item.label, locale)}>
+                    {tr(item.label, locale)}
                   </span>
                 </a>
               </li>
@@ -92,14 +95,9 @@ export default function Header() {
         </nav>
 
         <div className={styles.right}>
-          {site.availability.open && (
-            <span className={`${styles.status} mono`}>
-              <span className="dot" aria-hidden="true" />
-              {site.availability.label}
-            </span>
-          )}
+          <LanguageSwitch locale={locale} />
           <a href="#contact" className={`${styles.talk} mono`}>
-            Let&apos;s talk
+            {t.letsTalk}
           </a>
           <button
             ref={toggleRef}
@@ -109,9 +107,9 @@ export default function Header() {
             aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+            <span className="sr-only">{open ? t.closeMenu : t.openMenu}</span>
             <span className={styles.toggleLabel} aria-hidden="true">
-              {open ? "Close" : "Menu"}
+              {open ? t.close : t.menu}
             </span>
             <span className={styles.burger} aria-hidden="true" />
           </button>
@@ -119,13 +117,13 @@ export default function Header() {
       </div>
 
       <div id="mobile-menu" ref={menuRef} className={styles.menu} hidden={!open}>
-        <nav aria-label="Mobile">
+        <nav aria-label={t.mobileNav}>
           <ul>
             {site.nav.map((item, i) => (
               <li key={item.href} style={{ "--i": i } as React.CSSProperties}>
                 <a href={item.href} onClick={(e) => go(e, item.href)}>
                   <span className="mono dim">{pad2(i + 1)}</span>
-                  {item.label}
+                  {tr(item.label, locale)}
                 </a>
               </li>
             ))}
@@ -134,10 +132,10 @@ export default function Header() {
         <div className={`${styles.menuFoot} mono dim`}>
           {site.availability.open && (
             <span className={styles.status}>
-              <span className="dot" aria-hidden="true" /> {site.availability.label}
+              <span className="dot" aria-hidden="true" /> {tr(site.availability.label, locale)}
             </span>
           )}
-          <span>{site.concept}</span>
+          <span>{tr(site.concept, locale)}</span>
         </div>
       </div>
     </header>
