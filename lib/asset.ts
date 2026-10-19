@@ -19,3 +19,9 @@ export function timecode(seconds: number, fps = 24): string {
 export function pad2(n: number): string {
   return String(n).padStart(2, "0");
 }
+
+/** "16:9" → 1.7778 (width / height) */
+export function ratio(aspect: string): number {
+  const [w, h] = aspect.split(":").map(Number);
+  return w && h ? w / h : 16 / 9;
+}

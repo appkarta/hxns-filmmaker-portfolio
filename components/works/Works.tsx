@@ -7,13 +7,13 @@ import ProjectCard from "./ProjectCard";
 import styles from "./Works.module.css";
 
 const CATEGORIES: Category[] = [
-  "Commercial Films",
-  "Brand Content",
+  "Social Media Videos",
   "Music Videos",
-  "Social Media Films",
-  "Event Films",
-  "Cinematic Edits",
-  "Creative Experiments",
+  "Music Visuals",
+  "Graphic Pieces",
+  "Motion Graphics",
+  "Brand Content",
+  "Video Edits",
 ];
 
 export default function Works({ locale }: { locale: Locale }) {

@@ -6,8 +6,7 @@ import type { Project } from "@/lib/types";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 import { pad2 } from "@/lib/asset";
 import { categoryLabels, tr, ui, type Locale } from "@/lib/i18n";
-import VideoPlayer from "./VideoPlayer";
-import EmbedPlayer from "./EmbedPlayer";
+import ProjectStage from "./ProjectStage";
 import styles from "./Player.module.css";
 
 type Props = {
@@ -27,7 +26,6 @@ export default function PlayerModal({ locale, project, index, total, prev, next,
   const title = tr(project.title, locale);
   const dialog = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
-  const vertical = project.aspect === "9:16" || project.aspect === "4:5";
 
   useEffect(() => {
     lockScroll();
@@ -87,15 +85,7 @@ export default function PlayerModal({ locale, project, index, total, prev, next,
         </button>
       </div>
 
-      <div className={`${styles.stage} ${vertical ? styles.vertical : ""}`} key={project.slug}>
-        <div className={styles.screen} style={{ aspectRatio: project.aspect.replace(":", " / ") }}>
-          {project.video.type === "mp4" ? (
-            <VideoPlayer src={project.video.src} poster={project.video.poster ?? project.cover} title={title} locale={locale} />
-          ) : (
-            <EmbedPlayer source={project.video} title={title} locale={locale} />
-          )}
-        </div>
-      </div>
+      <ProjectStage key={project.slug} project={project} locale={locale} />
 
       <div className={styles.info} key={`${project.slug}-info`}>
         <div className={styles.titleBlock}>
@@ -120,7 +110,7 @@ export default function PlayerModal({ locale, project, index, total, prev, next,
           </div>
           <div>
             <dt>{t.format}</dt>
-            <dd>{project.aspect}</dd>
+            <dd>{project.media.type === "gallery" ? [...new Set(project.media.images.map((i) => i.aspect))].join(" · ") : project.aspect}</dd>
           </div>
           {project.details?.map((d) => (
             <div key={d.label.en}>

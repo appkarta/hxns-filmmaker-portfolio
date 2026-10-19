@@ -74,13 +74,11 @@
   }
 }
 .screen {
-  --r: 1.7778;
-  width: min(100cqw, calc(100cqh * var(--r)));
+  width: min(100cqw, calc(100cqh * var(--r, 1.7778)));
+  aspect-ratio: var(--r, 1.7778);
   background: #000;
   box-shadow: 0 40px 120px -40px rgb(66 107 255 / 0.25);
-}
-.vertical .screen {
-  --r: 0.5625;
+  transition: width 0.6s var(--ease-out);
 }
 
 .player {
@@ -378,10 +376,7 @@
     padding-bottom: 32px;
   }
   .stage {
-    height: calc((100vw - 2 * var(--gutter)) * 0.5625);
-  }
-  .vertical {
-    height: min(70svh, calc((100vw - 2 * var(--gutter)) * 1.7778));
+    height: min(70svh, calc((100vw - 2 * var(--gutter)) / var(--r, 1.7778)));
   }
   .info {
     grid-template-columns: 1fr;
@@ -394,4 +389,69 @@
     gap: 4px;
     padding-inline: 6px;
   }
+}
+
+/* Gallery (graphic pieces) */
+.gallery {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  background: var(--carbon);
+}
+.galleryImg {
+  position: absolute;
+  inset: 0;
+  animation: pieceIn 0.7s var(--ease-out) both;
+}
+@keyframes pieceIn {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+}
+.galleryPic {
+  object-fit: contain;
+}
+.galleryNav {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border-radius: 50%;
+  background: rgb(8 10 13 / 0.6);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(6px);
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+.galleryNav:hover,
+.galleryNav:focus-visible {
+  background: var(--white);
+  color: var(--black);
+}
+.galleryNav svg {
+  width: 18px;
+  height: 18px;
+}
+.galleryPrev {
+  left: 12px;
+}
+.galleryNext {
+  right: 12px;
+}
+.galleryCap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 28px 14px 12px;
+  background: linear-gradient(180deg, transparent, rgb(8 10 13 / 0.85));
+  color: var(--white);
 }

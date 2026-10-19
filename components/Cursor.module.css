@@ -29,7 +29,8 @@
   mix-blend-mode: normal;
   backdrop-filter: invert(1) grayscale(1);
 }
-.play::before {
+.play::before,
+.view::before {
   transform: scale(11);
   background: rgb(242 245 248 / 0.94);
   mix-blend-mode: normal;
@@ -45,7 +46,8 @@
     opacity 0.3s ease,
     transform 0.5s var(--ease-out);
 }
-.play .label {
+.play .label,
+.view .label {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }

@@ -1,0 +1,15 @@
+# Cloudflare Worker that delivers the HXNS contact form through Resend.
+# Deployed by .github/workflows/deploy-worker.yml (or manually: npx wrangler deploy, from this folder).
+name = "hxns-contact"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[vars]
+# Sites allowed to send the form (comma-separated)
+ALLOWED_ORIGINS = "https://hxnss.co,https://www.hxnss.co,http://localhost:3000"
+# Until hxnss.co is verified in Resend, only onboarding@resend.dev can send (and only to your Resend account email).
+# After verifying the domain, change it to e.g. "HXNS <hola@hxnss.co>".
+CONTACT_FROM = "HXNS Website <onboarding@resend.dev>"
+
+# Secrets (not stored here): RESEND_API_KEY, CONTACT_TO

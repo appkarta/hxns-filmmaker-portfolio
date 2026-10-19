@@ -11,26 +11,29 @@ import type { ArchiveItem, Project, Service } from "@/lib/types";
 
 export const site = {
   name: "HXNS",
-  concept: { en: "Cinematic Digital Identity", es: "Identidad digital cinematográfica" },
+  concept: { en: "Visual identity in motion", es: "Identidad visual en movimiento" },
   /** Public URL of the deployed site (used for SEO, sitemap and Open Graph) */
   url: "https://hxnss.co",
-  title: { en: "HXNS® — Filmmaker & Video Editor", es: "HXNS® — Cine y edición de video" },
+  title: {
+    en: "HXNS® — Social Video, Music Visuals & Graphic Design",
+    es: "HXNS® — Videos para redes, música y piezas gráficas",
+  },
   description: {
-    en: "HXNS is a filmmaker and video editor creating cinematic visuals, brand films and visual stories through motion, rhythm and emotion.",
-    es: "HXNS hace cine y edición de video: visuales cinematográficos, films de marca e historias visuales a través del movimiento, el ritmo y la emoción.",
+    en: "HXNS creates social media videos, music videos and visuals, motion graphics and graphic pieces — edits and designs built on rhythm and emotion.",
+    es: "HXNS crea videos para redes sociales, videoclips y visuales musicales, motion graphics y piezas gráficas: edición y diseño con ritmo y emoción.",
   },
 
   hero: {
     headline: { en: ["I turn moments", "into motion."], es: ["Convierto momentos", "en movimiento."] },
     subtitle: {
-      en: "Filmmaker · Video Editor · Visual Storytelling",
-      es: "Cine · Edición de video · Narrativa visual",
+      en: "Social Video · Music Visuals · Graphic Design",
+      es: "Videos para redes · Visuales musicales · Diseño gráfico",
     },
     primaryCta: { en: "Explore my work", es: "Explora mi trabajo" },
-    secondaryCta: { en: "Let's work together", es: "Cuéntame tu proyecto" },
+    secondaryCta: { en: "Start a project", es: "Cuéntame tu proyecto" },
     /** Small editorial labels around the hero. Leave a value empty to hide it. */
     meta: {
-      specialty: { en: "Film · Edit · Color", es: "Cine · Edición · Color" },
+      specialty: { en: "Edit · Motion · Design", es: "Edición · Motion · Diseño" },
       // TODO: add your city / country, e.g. { en: "Based in Madrid, ES", es: "Desde Madrid, ES" }
       location: { en: "", es: "" },
     },
@@ -42,7 +45,7 @@ export const site = {
     },
   },
 
-  /** Availability badge (header, hero and contact). Set `open: false` to hide it. */
+  /** Availability badge (hero, mobile menu and contact). Set `open: false` to hide it. */
   availability: {
     open: true, // TODO: confirm
     label: { en: "Available for new projects", es: "Disponible para nuevos proyectos" },
@@ -52,22 +55,22 @@ export const site = {
     // TODO: replace with your own portrait (4:5 works best)
     portrait: "/images/portraits/portrait-placeholder.webp",
     portraitAlt: {
-      en: "Close-up of a 35mm cinema lens in cold blue light — portrait placeholder",
-      es: "Primer plano de un objetivo de cine de 35 mm con luz azul fría — marcador de posición del retrato",
+      en: "Close-up of a camera lens in cold blue light — portrait placeholder",
+      es: "Primer plano de un objetivo con luz azul fría — marcador de posición del retrato",
     },
     portraitIsPlaceholder: true,
     statement: {
-      en: "I’m HXNS — a filmmaker and video editor focused on creating visual stories with intention, rhythm and emotion. I work at the intersection of cinematography, editing and digital culture.",
-      es: "Soy HXNS: hago cine y edición de video para crear historias visuales con intención, ritmo y emoción. Trabajo en la intersección entre la cinematografía, la edición y la cultura digital.",
+      en: "I’m HXNS — a video editor and visual creator making content for social media, music and brands. I build every piece with intention, rhythm and emotion, at the intersection of editing, motion and graphic design.",
+      es: "Soy HXNS: edito video y creo piezas visuales para redes sociales, música y marcas. Construyo cada pieza con intención, ritmo y emoción, en la intersección entre la edición, el motion y el diseño gráfico.",
     },
     // TODO: rewrite these two paragraphs in your own words
     vision: {
-      en: "Cinema is not only what we see, it is how long we are allowed to look. I care about the frame, the pause before the cut and the feeling that stays after the image is gone.",
-      es: "El cine no es solo lo que vemos, sino cuánto tiempo se nos permite mirar. Me importan el encuadre, la pausa antes del corte y la sensación que queda cuando la imagen ya se ha ido.",
+      en: "On a feed you have one second to make someone stop. I care about that first frame, the cut that lands on the beat and the detail that makes people watch it twice.",
+      es: "En un feed tienes un segundo para que alguien se detenga. Me importan ese primer fotograma, el corte que cae justo en el beat y el detalle que hace que lo vean dos veces.",
     },
     approach: {
-      en: "Every project starts with listening. From there, image, sound and edit are designed together — so the rhythm of the piece is built from the first shot, not fixed at the end.",
-      es: "Cada proyecto empieza escuchando. A partir de ahí, imagen, sonido y edición se diseñan juntos, para que el ritmo de la pieza se construya desde el primer plano y no se arregle al final.",
+      en: "Every piece starts from the platform and the sound. Format, edit and design are planned together — vertical, square or wide — so each version feels native, not adapted.",
+      es: "Cada pieza parte de la plataforma y del sonido. Formato, edición y diseño se planean juntos —vertical, cuadrado o panorámico— para que cada versión se sienta nativa, no adaptada.",
     },
     principles: [
       { en: "Intention", es: "Intención" },
@@ -76,24 +79,24 @@ export const site = {
     ],
     stills: [
       {
-        src: "/images/stills/bts-slate.webp",
-        alt: { en: "Clapperboard in front of a cinema camera, blue light", es: "Claqueta delante de una cámara de cine, luz azul" },
-        caption: { en: "Slate — roll 04", es: "Claqueta — rollo 04" },
-      },
-      {
         src: "/images/stills/bts-edit.webp",
         alt: { en: "Editor working on a timeline in a red-lit edit suite", es: "Persona editando una línea de tiempo en una sala de edición con luz roja" },
         caption: { en: "Edit suite", es: "Sala de edición" },
       },
       {
-        src: "/images/stills/bts-film.webp",
-        alt: { en: "Filmmaker holding a vintage 8mm camera", es: "Persona filmando con una cámara vintage de 8 mm" },
-        caption: { en: "Super 8 tests", es: "Pruebas en Super 8" },
+        src: "/images/graphics/nocturne-poster.webp",
+        alt: { en: "Release poster design with large NOCTURNE lettering in blue duotone", es: "Diseño de póster de lanzamiento con la palabra NOCTURNE en duotono azul" },
+        caption: { en: "Release poster", es: "Póster de lanzamiento" },
       },
       {
-        src: "/images/stills/bts-camera.webp",
-        alt: { en: "Broadcast video camera on a tripod in a dark studio", es: "Cámara de video profesional sobre trípode en un estudio oscuro" },
-        caption: { en: "On set", es: "En rodaje" },
+        src: "/images/graphics/nocturne-cover.webp",
+        alt: { en: "Square single artwork with the word Nocturne in italic serif", es: "Portada cuadrada de single con la palabra Nocturne en serif cursiva" },
+        caption: { en: "Single artwork", es: "Portada de single" },
+      },
+      {
+        src: "/images/projects/type-in-motion.webp",
+        alt: { en: "Kinetic typography frame reading “on the BEAT.” over blue smoke", es: "Fotograma de tipografía animada con el texto “on the BEAT.” sobre humo azul" },
+        caption: { en: "Motion type", es: "Tipografía en movimiento" },
       },
     ],
   },
@@ -101,11 +104,18 @@ export const site = {
   contact: {
     headline: { en: ["Have a story", "worth telling?"], es: ["¿Tienes una historia", "que merece contarse?"] },
     text: { en: "Let's create something that deserves to be seen.", es: "Creemos algo que merezca ser visto." },
+    /**
+     * Contact form → Resend. URL of the deployed worker (see worker/README.md),
+     * e.g. "https://hxns-contact.<your-subdomain>.workers.dev". TODO: paste it here once deployed.
+     * While it is empty the form is shown but tells visitors it isn't active yet.
+     */
+    formEndpoint: "",
     // TODO: fill in your real details. Empty values are hidden on the site.
     email: "",
     instagram: "", // e.g. "https://www.instagram.com/yourhandle"
     vimeo: "", // e.g. "https://vimeo.com/yourhandle"
     youtube: "", // e.g. "https://www.youtube.com/@yourhandle"
+    tiktok: "", // e.g. "https://www.tiktok.com/@yourhandle"
   },
 
   nav: [
@@ -125,9 +135,9 @@ export const site = {
 
 /* ─────────────────────────────────────────────────────────────────────────────
  *  PROJECTS — Selected Works
- *  All current entries are DEMO placeholders built from licensed stock footage.
+ *  All current entries are DEMO placeholders (licensed stock footage and demo designs).
  *  Replace title / description / media with your real work and set demo: false.
- *  Video can be a local MP4, a YouTube ID or a Vimeo ID (see lib/types.ts).
+ *  media can be an MP4, a YouTube ID, a Vimeo ID or a gallery of images (see lib/types.ts).
  * ──────────────────────────────────────────────────────────────────────────── */
 export const projects: Project[] = [
   {
@@ -135,76 +145,42 @@ export const projects: Project[] = [
     title: { en: "Nocturne", es: "Nocturne" },
     category: "Music Videos",
     year: 2026,
-    role: { en: "Direction · Edit · Color", es: "Dirección · Edición · Color" },
+    role: { en: "Concept · Edit · Color", es: "Concepto · Edición · Color" },
     description: {
-      en: "A single figure, one hard light and a body that writes the rhythm. Concept piece for a slow, dark track.",
-      es: "Una sola figura, una luz dura y un cuerpo que escribe el ritmo. Pieza conceptual para un tema lento y oscuro.",
+      en: "A single figure, one hard light and a body that writes the rhythm. Music video concept for a slow, dark track.",
+      es: "Una sola figura, una luz dura y un cuerpo que escribe el ritmo. Concepto de videoclip para un tema lento y oscuro.",
     },
     aspect: "16:9",
     layout: "feature",
     cover: "/images/projects/nocturne.webp",
     preview: "/videos/projects/nocturne-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/nocturne.mp4" },
+    media: { type: "mp4", src: "/videos/projects/nocturne.mp4" },
     details: [{ label: { en: "Type", es: "Tipo" }, value: { en: "Concept / demo", es: "Concepto / demo" } }],
     demo: true,
   },
   {
-    slug: "low-visibility",
-    title: { en: "Low Visibility", es: "Low Visibility" },
-    category: "Commercial Films",
+    slug: "type-in-motion",
+    title: { en: "Type in Motion", es: "Type in Motion" },
+    category: "Motion Graphics",
     year: 2026,
-    role: { en: "Edit · Sound design · Color", es: "Edición · Diseño sonoro · Color" },
+    role: { en: "Motion design · Kinetic type", es: "Motion design · Tipografía animada" },
     description: {
-      en: "Fog, sodium lights and a tunnel that opens into daylight — an automotive-style spot built on tension and release.",
-      es: "Niebla, farolas de sodio y un túnel que se abre a la luz del día: un spot de estilo automovilístico construido sobre la tensión y la liberación.",
+      en: "Kinetic typography cut on the beat: titles, transitions and format frames for vertical, square and wide deliveries.",
+      es: "Tipografía animada que corta en el beat: títulos, transiciones y marcos de formato para entregas verticales, cuadradas y panorámicas.",
     },
     aspect: "16:9",
     layout: "wide",
-    cover: "/images/projects/low-visibility.webp",
-    preview: "/videos/projects/low-visibility-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/low-visibility.mp4" },
-    demo: true,
-  },
-  {
-    slug: "violet-hour",
-    title: { en: "Violet Hour", es: "Violet Hour" },
-    category: "Music Videos",
-    year: 2026,
-    role: { en: "Vertical edit · Color", es: "Edición vertical · Color" },
-    description: {
-      en: "Neon, haze and movement cut for the vertical frame. A 9:16 visualiser designed to live on the phone screen.",
-      es: "Neón, bruma y movimiento editados para el formato vertical. Un visualizer 9:16 pensado para vivir en la pantalla del móvil.",
-    },
-    aspect: "9:16",
-    layout: "tall",
-    cover: "/images/projects/violet-hour.webp",
-    preview: "/videos/projects/violet-hour-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/violet-hour.mp4" },
-    demo: true,
-  },
-  {
-    slug: "second-hand",
-    title: { en: "Second Hand", es: "Second Hand" },
-    category: "Brand Content",
-    year: 2026,
-    role: { en: "Product film · Edit", es: "Film de producto · Edición" },
-    description: {
-      en: "Macro light on steel and glass. A short product film about precision, made to loop on social and in store.",
-      es: "Luz macro sobre acero y cristal. Un film de producto breve sobre la precisión, hecho para funcionar en loop en redes y en tienda.",
-    },
-    aspect: "16:9",
-    layout: "mid",
-    cover: "/images/projects/second-hand.webp",
-    preview: "/videos/projects/second-hand-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/second-hand.mp4" },
+    cover: "/images/projects/type-in-motion.webp",
+    preview: "/videos/projects/type-in-motion-preview.mp4",
+    media: { type: "mp4", src: "/videos/projects/type-in-motion.mp4" },
     demo: true,
   },
   {
     slug: "signal",
     title: { en: "Signal", es: "Signal" },
-    category: "Social Media Films",
+    category: "Social Media Videos",
     year: 2026,
-    role: { en: "Vertical film · Edit · Color", es: "Film vertical · Edición · Color" },
+    role: { en: "Vertical edit · Color", es: "Edición vertical · Color" },
     description: {
       en: "Laser light and a single performer. Built for Reels and TikTok: strong first frame, clean loop, no wasted seconds.",
       es: "Luz láser y una sola figura en escena. Pensado para Reels y TikTok: primer fotograma potente, loop limpio y ningún segundo de más.",
@@ -213,58 +189,113 @@ export const projects: Project[] = [
     layout: "tall",
     cover: "/images/projects/signal.webp",
     preview: "/videos/projects/signal-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/signal.mp4" },
+    media: { type: "mp4", src: "/videos/projects/signal.mp4" },
+    demo: true,
+  },
+  {
+    slug: "nocturne-release-kit",
+    title: { en: "Nocturne — Release Kit", es: "Nocturne — Kit de lanzamiento" },
+    category: "Graphic Pieces",
+    year: 2026,
+    role: { en: "Artwork · Poster · Story", es: "Portada · Póster · Story" },
+    description: {
+      en: "The visual system for a single release: square artwork, a print-ready poster and a story template that all speak the same language.",
+      es: "El sistema visual de un lanzamiento: portada cuadrada, póster listo para imprimir y plantilla de story que hablan el mismo idioma.",
+    },
+    aspect: "4:5",
+    layout: "mid",
+    cover: "/images/graphics/nocturne-poster.webp",
+    media: {
+      type: "gallery",
+      images: [
+        {
+          src: "/images/graphics/nocturne-cover.webp",
+          aspect: "1:1",
+          alt: { en: "Square single artwork with the word Nocturne in italic serif over a blue duotone photo", es: "Portada cuadrada con la palabra Nocturne en serif cursiva sobre una foto en duotono azul" },
+          caption: { en: "Single artwork · 1:1", es: "Portada del single · 1:1" },
+        },
+        {
+          src: "/images/graphics/nocturne-poster.webp",
+          aspect: "4:5",
+          alt: { en: "Release poster with large NOCTURNE lettering, a framed photo and the words Out now", es: "Póster de lanzamiento con NOCTURNE en grande, una foto enmarcada y el texto Out now" },
+          caption: { en: "Release poster · 4:5", es: "Póster de lanzamiento · 4:5" },
+        },
+        {
+          src: "/images/graphics/nocturne-story.webp",
+          aspect: "9:16",
+          alt: { en: "Vertical story design announcing a new single with a Listen now button", es: "Diseño vertical de story que anuncia un nuevo single con un botón Listen now" },
+          caption: { en: "Story template · 9:16", es: "Plantilla de story · 9:16" },
+        },
+      ],
+    },
+    demo: true,
+  },
+  {
+    slug: "violet-hour",
+    title: { en: "Violet Hour", es: "Violet Hour" },
+    category: "Music Visuals",
+    year: 2026,
+    role: { en: "Visualizer · Canvas · Color", es: "Visualizer · Canvas · Color" },
+    description: {
+      en: "Neon, haze and movement cut for the vertical frame. A 9:16 visualizer and Spotify Canvas loop designed to live on the phone screen.",
+      es: "Neón, bruma y movimiento editados para el formato vertical. Un visualizer 9:16 y un loop para Spotify Canvas pensados para la pantalla del móvil.",
+    },
+    aspect: "9:16",
+    layout: "tall",
+    cover: "/images/projects/violet-hour.webp",
+    preview: "/videos/projects/violet-hour-preview.mp4",
+    media: { type: "mp4", src: "/videos/projects/violet-hour.mp4" },
     demo: true,
   },
   {
     slug: "mass",
     title: { en: "Mass", es: "Mass" },
-    category: "Event Films",
+    category: "Brand Content",
     year: 2026,
-    role: { en: "Event recap · Edit", es: "Resumen de evento · Edición" },
+    role: { en: "Event recap · Social cutdowns", es: "Resumen de evento · Versiones para redes" },
     description: {
-      en: "Hands up, lights down. An event recap that cuts on the crowd’s energy instead of the timetable.",
-      es: "Manos arriba, luces abajo. Un resumen de evento que corta con la energía del público, no con el horario.",
+      en: "Hands up, lights down. An event recap that cuts on the crowd’s energy, delivered as a main edit plus short versions for every platform.",
+      es: "Manos arriba, luces abajo. Un resumen de evento que corta con la energía del público, entregado como pieza principal y versiones cortas para cada plataforma.",
     },
     aspect: "16:9",
     layout: "wideRight",
     cover: "/images/projects/mass.webp",
     preview: "/videos/projects/mass-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/mass.mp4" },
+    media: { type: "mp4", src: "/videos/projects/mass.mp4" },
     demo: true,
   },
   {
-    slug: "dust-line",
-    title: { en: "Dust Line", es: "Dust Line" },
-    category: "Cinematic Edits",
+    slug: "second-hand",
+    title: { en: "Second Hand", es: "Second Hand" },
+    category: "Brand Content",
     year: 2026,
-    role: { en: "Aerial edit · Color", es: "Edición aérea · Color" },
+    role: { en: "Product video · Edit", es: "Video de producto · Edición" },
     description: {
-      en: "One rider, one line across an empty desert. A study in scale, distance and the sound of nothing.",
-      es: "Una moto, una línea a través de un desierto vacío. Un estudio sobre la escala, la distancia y el sonido de la nada.",
+      en: "Macro light on steel and glass. A short product video about precision, made to loop on social and in store.",
+      es: "Luz macro sobre acero y cristal. Un video de producto breve sobre la precisión, hecho para funcionar en loop en redes y en tienda.",
     },
     aspect: "16:9",
     layout: "half",
-    cover: "/images/projects/dust-line.webp",
-    preview: "/videos/projects/dust-line-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/dust-line.mp4" },
+    cover: "/images/projects/second-hand.webp",
+    preview: "/videos/projects/second-hand-preview.mp4",
+    media: { type: "mp4", src: "/videos/projects/second-hand.mp4" },
     demo: true,
   },
   {
     slug: "after-rain",
     title: { en: "After Rain", es: "After Rain" },
-    category: "Cinematic Edits",
+    category: "Video Edits",
     year: 2026,
     role: { en: "City edit · Color", es: "Edición urbana · Color" },
     description: {
-      en: "Wet asphalt and reflected signs from two cities, cut as one night. A personal edit on light after the storm.",
-      es: "Asfalto mojado y letreros reflejados de dos ciudades, editados como una sola noche. Un edit personal sobre la luz después de la tormenta.",
+      en: "Wet asphalt and reflected signs from two cities, cut as one night. A personal edit on rhythm and light.",
+      es: "Asfalto mojado y letreros reflejados de dos ciudades, editados como una sola noche. Un edit personal sobre el ritmo y la luz.",
     },
     aspect: "16:9",
     layout: "half",
     cover: "/images/projects/after-rain.webp",
     preview: "/videos/projects/after-rain-preview.mp4",
-    video: { type: "mp4", src: "/videos/projects/after-rain.mp4" },
+    media: { type: "mp4", src: "/videos/projects/after-rain.mp4" },
     demo: true,
   },
 ];
@@ -274,69 +305,69 @@ export const projects: Project[] = [
  * ──────────────────────────────────────────────────────────────────────────── */
 export const services: Service[] = [
   {
-    title: { en: "Filmmaking & Videography", es: "Cine y videografía" },
+    title: { en: "Social Media Videos", es: "Videos para redes sociales" },
     description: {
-      en: "Concept, shooting and camera work with a cinematic eye — framing, light and movement designed for the story.",
-      es: "Concepto, rodaje y cámara con mirada cinematográfica: encuadre, luz y movimiento al servicio de la historia.",
+      en: "Reels, TikToks and Shorts that stop the scroll: hooks in the first second, pacing for each platform, subtitles and clean loops.",
+      es: "Reels, TikToks y Shorts que detienen el scroll: gancho en el primer segundo, ritmo para cada plataforma, subtítulos y loops limpios.",
     },
-    detail: { en: "Frame / Light / Movement", es: "Encuadre / Luz / Movimiento" },
-    glyph: "frame",
-    image: "/images/stills/bts-camera.webp",
-  },
-  {
-    title: { en: "Video Editing & Post-production", es: "Edición y postproducción" },
-    description: {
-      en: "Structure, pacing and sound. The edit is where the story finds its rhythm — and where every second earns its place.",
-      es: "Estructura, ritmo y sonido. En la edición la historia encuentra su ritmo y cada segundo se gana su lugar.",
-    },
-    detail: { en: "Cut / Pace / Sound", es: "Corte / Ritmo / Sonido" },
-    glyph: "timeline",
-    image: "/images/stills/bts-edit.webp",
-  },
-  {
-    title: { en: "Commercial & Brand Films", es: "Publicidad y films de marca" },
-    description: {
-      en: "Films that make a brand feel like something, not just look like something. From short spots to brand stories.",
-      es: "Piezas que hacen que una marca se sienta, no solo que se vea. Desde spots breves hasta historias de marca.",
-    },
-    detail: { en: "Spot / Story / Identity", es: "Spot / Historia / Identidad" },
-    glyph: "brand",
-    image: "/images/projects/second-hand.webp",
-  },
-  {
-    title: { en: "Social Media Content", es: "Contenido para redes sociales" },
-    description: {
-      en: "Vertical-first edits for Reels, TikTok and Shorts: strong first frames, clean loops and native pacing.",
-      es: "Edits pensados en vertical para Reels, TikTok y Shorts: primeros fotogramas potentes, loops limpios y ritmo nativo.",
-    },
-    detail: { en: "9:16 / Loop / Hook", es: "9:16 / Loop / Gancho" },
+    detail: { en: "9:16 / Hook / Loop", es: "9:16 / Gancho / Loop" },
     glyph: "vertical",
     image: "/images/projects/signal.webp",
   },
   {
-    title: { en: "Music Videos & Creative Projects", es: "Videoclips y proyectos creativos" },
+    title: { en: "Music Videos & Visualizers", es: "Videoclips y visualizers" },
     description: {
-      en: "Visual worlds for artists and ideas — performance, concept and experimentation built around the music.",
-      es: "Mundos visuales para artistas e ideas: performance, concepto y experimentación construidos alrededor de la música.",
+      en: "Music videos, visualizers, lyric videos and Spotify Canvas loops — visuals built around the track and its release.",
+      es: "Videoclips, visualizers, lyric videos y loops para Spotify Canvas: visuales construidos alrededor del tema y su lanzamiento.",
     },
-    detail: { en: "Beat / Image / Concept", es: "Beat / Imagen / Concepto" },
+    detail: { en: "Beat / Visualizer / Canvas", es: "Beat / Visualizer / Canvas" },
     glyph: "wave",
     image: "/images/projects/violet-hour.webp",
   },
   {
-    title: { en: "Color Grading & Visual Finishing", es: "Etalonaje y acabado visual" },
+    title: { en: "Graphic Pieces", es: "Piezas gráficas" },
     description: {
-      en: "A consistent look across every shot: grading, contrast and texture that give the film its final identity.",
-      es: "Un look coherente en cada plano: color, contraste y textura que dan al film su identidad final.",
+      en: "Single and album artwork, posters, flyers, carousels and story templates that give a release or a brand one visual language.",
+      es: "Portadas de singles y álbumes, pósters, flyers, carruseles y plantillas de stories que dan a un lanzamiento o a una marca un mismo lenguaje visual.",
     },
-    detail: { en: "Grade / Contrast / Texture", es: "Color / Contraste / Textura" },
-    glyph: "wheel",
-    image: "/images/archive/arc-10.webp",
+    detail: { en: "Cover / Poster / Feed", es: "Portada / Póster / Feed" },
+    glyph: "poster",
+    image: "/images/graphics/nocturne-poster.webp",
+  },
+  {
+    title: { en: "Motion Graphics", es: "Motion graphics" },
+    description: {
+      en: "Animated titles, kinetic typography, transitions and graphic packs that make videos feel designed, not just edited.",
+      es: "Títulos animados, tipografía cinética, transiciones y paquetes gráficos para que los videos se sientan diseñados, no solo editados.",
+    },
+    detail: { en: "Type / Titles / Transitions", es: "Tipografía / Títulos / Transiciones" },
+    glyph: "type",
+    image: "/images/projects/type-in-motion.webp",
+  },
+  {
+    title: { en: "Video Editing & Post-production", es: "Edición y postproducción" },
+    description: {
+      en: "Structure, pacing, sound and color for any format — from long edits to every short cutdown they need.",
+      es: "Estructura, ritmo, sonido y color para cualquier formato: desde la pieza larga hasta todas las versiones cortas que necesite.",
+    },
+    detail: { en: "Cut / Sound / Color", es: "Corte / Sonido / Color" },
+    glyph: "timeline",
+    image: "/images/stills/bts-edit.webp",
+  },
+  {
+    title: { en: "Brand & Event Content", es: "Contenido para marcas y eventos" },
+    description: {
+      en: "Campaign pieces, product videos and event recaps for brands and artists, delivered in every size each channel needs.",
+      es: "Piezas de campaña, videos de producto y resúmenes de eventos para marcas y artistas, entregados en todos los tamaños que pide cada canal.",
+    },
+    detail: { en: "Campaign / Event / Formats", es: "Campaña / Evento / Formatos" },
+    glyph: "brand",
+    image: "/images/projects/second-hand.webp",
   },
 ];
 
 /* ─────────────────────────────────────────────────────────────────────────────
- *  VISUAL PLAYGROUND / ARCHIVE — personal tests, color, camera, motion, stills
+ *  VISUAL PLAYGROUND / ARCHIVE — personal tests, color, motion, graphics, stills
  *  Demo placeholders. Replace with your own experiments.
  * ──────────────────────────────────────────────────────────────────────────── */
 export const archive: ArchiveItem[] = [
@@ -352,6 +383,15 @@ export const archive: ArchiveItem[] = [
   },
   {
     id: "ARC-002",
+    title: { en: "Mass — Live", es: "Mass — Live" },
+    kind: { en: "Event poster", es: "Póster de evento" },
+    year: 2026,
+    image: "/images/graphics/mass-poster.webp",
+    aspect: "4:5",
+    alt: { en: "Event poster with huge MASS lettering over a blue-tinted concert crowd", es: "Póster de evento con MASS en grande sobre un público de concierto en azul" },
+  },
+  {
+    id: "ARC-003",
     title: { en: "Smoke plate", es: "Placa de humo" },
     kind: { en: "Motion study", es: "Estudio de motion" },
     year: 2026,
@@ -361,7 +401,7 @@ export const archive: ArchiveItem[] = [
     alt: { en: "White smoke curling over a black background", es: "Humo blanco ondulando sobre un fondo negro" },
   },
   {
-    id: "ARC-003",
+    id: "ARC-004",
     title: { en: "Neon vertical", es: "Neón vertical" },
     kind: { en: "Photography", es: "Fotografía" },
     year: 2026,
@@ -370,17 +410,16 @@ export const archive: ArchiveItem[] = [
     alt: { en: "Vertical neon signs with Japanese characters at night", es: "Letreros de neón verticales con caracteres japoneses de noche" },
   },
   {
-    id: "ARC-004",
-    title: { en: "Shutter cycle", es: "Ciclo de obturador" },
-    kind: { en: "Camera test", es: "Prueba de cámara" },
+    id: "ARC-005",
+    title: { en: "Stop the scroll", es: "Stop the scroll" },
+    kind: { en: "Carousel slide", es: "Carrusel" },
     year: 2026,
-    image: "/images/archive/arc-04.webp",
-    loop: "/videos/archive/arc-04.mp4",
-    aspect: "16:9",
-    alt: { en: "Close-up of a camera aperture opening and closing", es: "Primer plano del diafragma de una cámara abriéndose y cerrándose" },
+    image: "/images/graphics/stop-the-scroll.webp",
+    aspect: "1:1",
+    alt: { en: "Square carousel slide reading Stop the scroll with three tips and a blue-lit performer", es: "Diapositiva cuadrada de carrusel con el texto Stop the scroll, tres consejos y una figura iluminada en azul" },
   },
   {
-    id: "ARC-005",
+    id: "ARC-006",
     title: { en: "Haze", es: "Bruma" },
     kind: { en: "Color test", es: "Prueba de color" },
     year: 2026,
@@ -390,22 +429,14 @@ export const archive: ArchiveItem[] = [
     alt: { en: "Silhouette of a dancer in purple haze with blue light bars", es: "Silueta de una figura bailando entre bruma violeta y barras de luz azul" },
   },
   {
-    id: "ARC-006",
-    title: { en: "35mm", es: "35 mm" },
-    kind: { en: "Still life", es: "Bodegón" },
-    year: 2026,
-    image: "/images/archive/arc-03.webp",
-    aspect: "16:9",
-    alt: { en: "Roll of 35mm film negative on a reflective surface", es: "Rollo de negativo de 35 mm sobre una superficie reflectante" },
-  },
-  {
     id: "ARC-007",
-    title: { en: "Storm piano", es: "Piano en tormenta" },
-    kind: { en: "Sequence", es: "Secuencia" },
+    title: { en: "Shutter cycle", es: "Ciclo de obturador" },
+    kind: { en: "Loop", es: "Loop" },
     year: 2026,
-    image: "/images/archive/arc-11.webp",
+    image: "/images/archive/arc-04.webp",
+    loop: "/videos/archive/arc-04.mp4",
     aspect: "16:9",
-    alt: { en: "Silhouette of a pianist under a stormy sky with flying debris", es: "Silueta de una persona tocando el piano bajo un cielo de tormenta" },
+    alt: { en: "Close-up of a camera aperture opening and closing", es: "Primer plano del diafragma de una cámara abriéndose y cerrándose" },
   },
   {
     id: "ARC-008",
@@ -437,20 +468,20 @@ export const archive: ArchiveItem[] = [
   },
   {
     id: "ARC-011",
+    title: { en: "Storm piano", es: "Piano en tormenta" },
+    kind: { en: "Sequence", es: "Secuencia" },
+    year: 2026,
+    image: "/images/archive/arc-11.webp",
+    aspect: "16:9",
+    alt: { en: "Silhouette of a pianist under a stormy sky with flying debris", es: "Silueta de una persona tocando el piano bajo un cielo de tormenta" },
+  },
+  {
+    id: "ARC-012",
     title: { en: "Glass", es: "Cristal" },
     kind: { en: "Camera test", es: "Prueba de cámara" },
     year: 2026,
     image: "/images/archive/arc-05.webp",
     aspect: "16:9",
     alt: { en: "Close-up of a camera lens with reflections", es: "Primer plano de un objetivo con reflejos" },
-  },
-  {
-    id: "ARC-012",
-    title: { en: "Grey room", es: "Sala gris" },
-    kind: { en: "Movement study", es: "Estudio de movimiento" },
-    year: 2026,
-    image: "/images/archive/arc-09.webp",
-    aspect: "16:9",
-    alt: { en: "Dancer moving in a grey, foggy room", es: "Figura bailando en una sala gris con niebla" },
   },
 ];

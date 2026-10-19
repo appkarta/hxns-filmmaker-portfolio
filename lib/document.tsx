@@ -46,8 +46,8 @@ export function buildMetadata(locale: Locale): Metadata {
     applicationName: site.name,
     keywords:
       locale === "es"
-        ? ["cineasta", "edición de video", "videografía", "etalonaje", "videoclips", "films de marca", "HXNS"]
-        : ["filmmaker", "video editor", "videographer", "color grading", "music videos", "brand films", "HXNS"],
+        ? ["videos para redes sociales", "edición de video", "videoclips", "visualizers", "piezas gráficas", "motion graphics", "diseño de portadas", "HXNS"]
+        : ["social media videos", "video editor", "music videos", "visualizers", "graphic design", "motion graphics", "cover art", "HXNS"],
     alternates: {
       canonical: url,
       languages: {

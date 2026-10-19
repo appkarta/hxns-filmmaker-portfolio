@@ -1,6 +1,6 @@
-# HXNS® — Filmmaker & Video Editor
+# HXNS® — Social Video, Music Visuals & Graphic Design
 
-**Cinematic Digital Identity.** Portafolio audiovisual de HXNS: una landing page que se recorre como una secuencia cinematográfica — intro tipográfica, showreel a pantalla completa, galería editorial de proyectos con reproductor propio, sección *Behind the lens*, servicios, archivo experimental y contacto.
+**Visual identity in motion.** Portafolio de HXNS: videos para redes sociales, videoclips y visuales musicales, motion graphics y piezas gráficas. Intro tipográfica, showreel a pantalla completa, galería editorial de proyectos (video y piezas gráficas), *Behind the edit*, servicios, archivo experimental y formulario de contacto conectado a Resend.
 
 🔗 **Sitio publicado:** https://hxnss.co/ (English) · https://hxnss.co/es/ (Español)
 
@@ -34,9 +34,9 @@ components/
   LanguageSwitch.tsx    ← selector EN / ES (header y footer)
   Intro.tsx             ← intro HXNS + apertura tipo letterbox
   Hero.tsx              ← showreel de fondo, wordmark a ancho completo, timecode en vivo
-  works/                ← galería editorial (Selected Works)
+  works/                ← galería editorial (Selected Works): videos y galerías de piezas gráficas
   player/               ← modal de reproducción: MP4 propio, YouTube o Vimeo
-  About.tsx             ← Behind the lens
+  About.tsx             ← Behind the edit
   services/             ← lista de servicios con glifos y preview flotante
   archive/              ← Visual playground (scroll horizontal fijado en escritorio)
   Contact.tsx           ← contacto + footer
@@ -71,7 +71,7 @@ contact: {
   youtube: "https://www.youtube.com/@tuusuario",
 }
 ```
-Los campos vacíos se ocultan automáticamente. Con `email` relleno aparece el botón **Start a project / Empezar un proyecto** (mailto).
+Los campos vacíos se ocultan automáticamente (también `tiktok`). El **formulario de contacto** envía los mensajes con Resend a través de un pequeño worker: ver [`worker/README.md`](worker/README.md) para activarlo (unos 10 minutos, se puede hacer desde el móvil).
 
 ### Añadir o sustituir un proyecto
 1. Copia tus archivos a `public/`:
@@ -83,7 +83,8 @@ Los campos vacíos se ocultan automáticamente. Con `email` relleno aparece el b
 {
   slug: "mi-proyecto",
   title: { en: "My Project", es: "Mi Proyecto" },
-  category: "Brand Content",          // ver lista en lib/types.ts (se traduce sola en /es/)
+  category: "Music Visuals",          // Social Media Videos, Music Videos, Music Visuals, Graphic Pieces,
+                                       // Motion Graphics, Brand Content, Video Edits, Creative Experiments
   year: 2026,
   role: { en: "Direction · Edit · Color", es: "Dirección · Edición · Color" },
   description: { en: "One or two sentences.", es: "Una o dos frases." },
@@ -91,9 +92,9 @@ Los campos vacíos se ocultan automáticamente. Con `email` relleno aparece el b
   layout: "wide",                      // feature | wide | wideRight | tall | mid | half
   cover: "/images/projects/mi-proyecto.webp",
   preview: "/videos/projects/mi-proyecto-preview.mp4",
-  video: { type: "mp4", src: "/videos/projects/mi-proyecto.mp4" },
-  // video: { type: "youtube", id: "dQw4w9WgXcQ" },
-  // video: { type: "vimeo", id: "123456789" },
+  media: { type: "mp4", src: "/videos/projects/mi-proyecto.mp4" },
+  // media: { type: "youtube", id: "dQw4w9WgXcQ" },
+  // media: { type: "vimeo", id: "123456789" },
   demo: false,
 }
 ```
@@ -105,6 +106,18 @@ ffmpeg -i master.mov -vf "scale=1280:-2" -c:v libx264 -crf 24 -preset slow -pix_
 ffmpeg -ss 5 -t 5 -i master.mov -vf "scale=640:-2" -c:v libx264 -crf 28 -an -movflags +faststart mi-proyecto-preview.mp4
 ```
 Para videos largos o pesados, súbelos a YouTube/Vimeo y usa su ID (GitHub no admite archivos > 100 MB).
+
+### Piezas gráficas (portadas, pósters, carruseles…)
+Un proyecto puede ser una galería de imágenes en vez de un video. Cada imagen lleva su propio formato y el visor se adapta (1:1, 4:5, 9:16…); se navega con flechas o con ← / →:
+```ts
+media: {
+  type: "gallery",
+  images: [
+    { src: "/images/graphics/mi-portada.webp", aspect: "1:1", alt: { en: "…", es: "…" }, caption: { en: "Cover", es: "Portada" } },
+    { src: "/images/graphics/mi-poster.webp", aspect: "4:5", alt: { en: "…", es: "…" } },
+  ],
+},
+```
 
 ### Showreel del hero
 Sustituye `public/videos/hero/hero-reel.mp4` (16:9) y `hero-reel-mobile.mp4` (vertical) y sus pósters en `public/images/stills/`.
@@ -154,6 +167,6 @@ Sin registros *URL Redirect* ni *parking* para `@` o `www`. Si cambias el domini
 
 ## Créditos de recursos de demostración
 
-Todo el metraje de demostración procede de **[Mixkit](https://mixkit.co/)** bajo la [Mixkit Stock Video Free License](https://mixkit.co/license/#videoFree) (uso comercial y personal, sin atribución obligatoria). Se recortó, re-etalonó (look frío HXNS) y comprimió para web. Clips usados (ID Mixkit): 1038, 9678, 2026, 50438, 51275, 44070, 48509, 43097, 4332, 4451, 46353, 33936, 51757, 50951, 47301, 2374, 48529, 50957, 41154, 4447, 3637, 33896, 51283, 1512, 46351, 44075, 49646.
+Todo el metraje de demostración procede de **[Mixkit](https://mixkit.co/)** bajo la [Mixkit Stock Video Free License](https://mixkit.co/license/#videoFree) (uso comercial y personal, sin atribución obligatoria). Se recortó, re-etalonó (look frío HXNS) y comprimió para web. Clips usados (ID Mixkit): 1038, 48509, 33896, 51757, 50438, 51275, 44070, 4332, 4451, 50951, 4447, 2374, 41154, 50957, 33936, 48529, 51283, 46351, 44075. Las piezas gráficas (`public/images/graphics/`) y el video *Type in Motion* son diseños de demostración hechos para este sitio.
 
 Sustitúyelos por tu propio material antes de presentar el portafolio como trabajo propio.

@@ -40,9 +40,12 @@
 
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: var(--gutter);
-  align-items: end;
+  align-items: start;
+}
+.formCol {
+  min-width: 0;
 }
 .cta {
   display: grid;
@@ -68,6 +71,8 @@
 }
 
 .channels {
+  margin-top: 8px;
+  width: 100%;
   border-top: 1px solid var(--line);
 }
 .channel {

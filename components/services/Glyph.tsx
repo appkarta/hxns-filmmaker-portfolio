@@ -65,5 +65,23 @@ export default function Glyph({ name, className }: { name: Service["glyph"]; cla
           <path d="M24 4v4M24 40v4M4 24h4M40 24h4" />
         </svg>
       );
+    case "poster":
+      return (
+        <svg {...common}>
+          <rect x="11" y="5" width="26" height="38" />
+          <path d="M15 11h18M15 15h12" />
+          <rect x="15" y="20" width="18" height="14" strokeDasharray="2 2" />
+          <path d="M15 38h8" />
+          <circle cx="31" cy="38" r="1.6" fill="currentColor" />
+        </svg>
+      );
+    case "type":
+      return (
+        <svg {...common}>
+          <path d="M8 12h20M18 12v26" />
+          <path d="M26 24h14M33 24v14" strokeDasharray="2 2" />
+          <path d="M6 42c10-3 26-3 36 0" />
+        </svg>
+      );
   }
 }

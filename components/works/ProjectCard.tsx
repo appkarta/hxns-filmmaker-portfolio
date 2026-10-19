@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight, Images, Play } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { asset, pad2 } from "@/lib/asset";
 import { usePlayer } from "@/components/player/PlayerProvider";
@@ -69,6 +69,7 @@ export default function ProjectCard({ project, index, total, locale }: Props) {
   };
 
   const vertical = project.aspect === "9:16" || project.aspect === "4:5";
+  const isGallery = project.media.type === "gallery";
 
   return (
     <article ref={card} className={`${styles.card} ${styles[project.layout]} ${active ? styles.active : ""}`}>
@@ -81,8 +82,8 @@ export default function ProjectCard({ project, index, total, locale }: Props) {
         onPointerLeave={(e) => e.pointerType === "mouse" && stop()}
         onFocus={start}
         onBlur={stop}
-        data-cursor="play"
-        aria-label={t.playAria(title, category, project.year)}
+        data-cursor={isGallery ? "view" : "play"}
+        aria-label={isGallery ? `${t.viewPieces}: ${title} — ${category}, ${project.year}` : t.playAria(title, category, project.year)}
       >
         <div className={styles.reveal} data-reveal="media">
           <div className={styles.mediaInner}>
@@ -108,7 +109,7 @@ export default function ProjectCard({ project, index, total, locale }: Props) {
           {project.aspect}
         </span>
         <span className={`${styles.corner} ${styles.bl} mono`} aria-hidden="true">
-          <Play aria-hidden="true" /> {t.playFilm}
+          {isGallery ? <Images aria-hidden="true" /> : <Play aria-hidden="true" fill="currentColor" />} {isGallery ? t.viewPieces : t.playFilm}
         </span>
       </a>
 

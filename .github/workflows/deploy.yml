@@ -41,6 +41,8 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           NEXT_TELEMETRY_DISABLED: 1
+          # URL of the contact worker (Settings → Secrets and variables → Actions → Variables)
+          NEXT_PUBLIC_CONTACT_ENDPOINT: ${{ vars.CONTACT_ENDPOINT }}
 
       - run: touch out/.nojekyll
 

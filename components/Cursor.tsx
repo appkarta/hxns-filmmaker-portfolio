@@ -8,7 +8,7 @@ import styles from "./Cursor.module.css";
 /** Desktop-only cursor: a small dot that opens into a "Play" lens over films. */
 export default function Cursor({ locale }: { locale: Locale }) {
   const el = useRef<HTMLDivElement>(null);
-  const [mode, setMode] = useState<"" | "play" | "link">("");
+  const [mode, setMode] = useState<"" | "play" | "view" | "link">("");
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
@@ -42,7 +42,8 @@ export default function Cursor({ locale }: { locale: Locale }) {
       x(e.clientX);
       y(e.clientY);
       const t = e.target as HTMLElement;
-      if (t.closest('[data-cursor="play"]')) setMode("play");
+      const lens = t.closest<HTMLElement>("[data-cursor]")?.dataset.cursor;
+      if (lens === "play" || lens === "view") setMode(lens);
       else if (t.closest("a, button, input, [role='button']")) setMode("link");
       else setMode("");
     };
@@ -66,7 +67,7 @@ export default function Cursor({ locale }: { locale: Locale }) {
   if (!enabled) return null;
   return (
     <div ref={el} className={`${styles.cursor} ${mode ? styles[mode] : ""}`} aria-hidden="true">
-      <span className={`${styles.label} mono`}>{ui[locale].playCursor}</span>
+      <span className={`${styles.label} mono`}>{mode === "view" ? ui[locale].viewCursor : ui[locale].playCursor}</span>
     </div>
   );
 }
