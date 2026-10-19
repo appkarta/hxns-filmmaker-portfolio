@@ -1,0 +1,202 @@
+.section {
+  position: relative;
+  padding-block: clamp(96px, 12vw, 200px);
+  background:
+    radial-gradient(50% 50% at 0% 30%, rgb(66 107 255 / 0.08), transparent 70%),
+    linear-gradient(180deg, var(--black), var(--carbon) 30%, var(--carbon) 70%, var(--black));
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: clamp(48px, 6vw, 96px);
+}
+.label {
+  grid-column: 1 / -1;
+}
+
+.portrait {
+  grid-column: 1 / 6;
+  grid-row: 2 / 4;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+  align-self: start;
+}
+.portraitMedia {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--graphite);
+}
+.parallaxInner {
+  position: absolute;
+  inset: -8% 0;
+}
+.img {
+  object-fit: cover;
+}
+.portrait figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.text {
+  grid-column: 7 / -1;
+  grid-row: 2;
+  display: grid;
+  gap: clamp(32px, 4vw, 56px);
+  align-content: start;
+}
+.title {
+  font-size: clamp(44px, 7vw, 124px);
+}
+.statement {
+  font-size: var(--fs-lead);
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  max-width: 30ch;
+}
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gutter);
+  color: var(--mist);
+  font-size: var(--fs-small);
+}
+.cols p:first-child {
+  margin-bottom: 12px;
+}
+
+.principles {
+  grid-column: 7 / -1;
+  grid-row: 3;
+  align-self: end;
+  border-top: 1px solid var(--line);
+}
+.principles li {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.principle {
+  font-size: clamp(32px, 4vw, 64px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+.principles li:nth-child(2) .principle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.02em;
+  color: var(--ice);
+}
+
+/* Asymmetric contact-sheet of stills */
+.stills {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: start;
+  margin-top: clamp(24px, 4vw, 64px);
+}
+.still {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.still figcaption span {
+  color: var(--ice);
+  margin-right: 8px;
+}
+.stillMedia {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--graphite);
+}
+.stillInner {
+  position: absolute;
+  inset: 0;
+}
+.s1 {
+  grid-column: 1 / 5;
+}
+.s2 {
+  grid-column: 6 / 9;
+  margin-top: 10vw;
+}
+.s2 .stillMedia {
+  aspect-ratio: 4 / 5;
+}
+.s3 {
+  grid-column: 10 / -1;
+  margin-top: 3vw;
+}
+.s3 .stillMedia {
+  aspect-ratio: 1 / 1;
+}
+.s4 {
+  grid-column: 2 / 6;
+  margin-top: -6vw;
+}
+
+@media (max-width: 1024px) {
+  .portrait {
+    grid-column: 1 / 6;
+    grid-row: 2;
+  }
+  .text {
+    grid-column: 6 / -1;
+  }
+  .principles {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .portrait,
+  .text,
+  .principles,
+  .stills {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .portrait {
+    width: 86%;
+  }
+  .stills {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    row-gap: 32px;
+  }
+  .s1 {
+    grid-column: 1 / -1;
+  }
+  .s2 {
+    grid-column: 1 / 4;
+    margin-top: 0;
+  }
+  .s3 {
+    grid-column: 4 / -1;
+    margin-top: 18vw;
+  }
+  .s4 {
+    grid-column: 2 / -1;
+    margin-top: 0;
+  }
+}

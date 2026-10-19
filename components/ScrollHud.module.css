@@ -1,0 +1,41 @@
+.hud {
+  pointer-events: none;
+}
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 120;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--ice));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.readout,
+.scene {
+  position: fixed;
+  bottom: 20px;
+  z-index: 80;
+  color: var(--white);
+  mix-blend-mode: difference;
+  font-variant-numeric: tabular-nums;
+}
+.readout {
+  left: var(--gutter);
+  display: flex;
+  gap: 10px;
+}
+.tcLabel {
+  color: var(--ice);
+}
+.scene {
+  right: var(--gutter);
+}
+
+@media (max-width: 860px) {
+  .readout,
+  .scene {
+    display: none;
+  }
+}
