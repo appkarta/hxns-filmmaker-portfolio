@@ -1,0 +1,126 @@
+# HXNS® — Filmmaker & Video Editor
+
+**Cinematic Digital Identity.** Portafolio audiovisual de HXNS: una landing page que se recorre como una secuencia cinematográfica — intro tipográfica, showreel a pantalla completa, galería editorial de proyectos con reproductor propio, sección *Behind the lens*, servicios, archivo experimental y contacto.
+
+🔗 **Sitio publicado:** https://appkarta.github.io/hxns-filmmaker-portfolio/
+
+---
+
+## Stack
+
+| Área | Elección | Por qué |
+| --- | --- | --- |
+| Framework | **Next.js 16** (App Router) + **React 19** + **TypeScript** | Componentes de servidor para el contenido, cliente solo donde hay interacción. |
+| Estilos | **CSS Modules** + tokens en `app/globals.css` | Control total de la composición editorial sin utilidades genéricas. |
+| Movimiento | **GSAP** (ScrollTrigger, SplitText) + **Lenis** | Una sola librería de animación; Lenis solo para scroll suave en escritorio. |
+| Iconos | **lucide-react** | Solo en controles del reproductor y botones. |
+| Tipografía | Geist · Geist Mono · Instrument Serif (`next/font`) | Titulares compactos, metadatos tipo timecode y contrapunto editorial en cursiva. |
+| Hosting | **GitHub Pages** vía GitHub Actions (export estático) | Despliegue automático en cada `push` a `main`. |
+
+## Estructura
+
+```
+site.config.ts          ← ✏️ TODO el contenido editable: textos, contacto, proyectos, servicios, archivo
+lib/types.ts            ← tipos de Project / Service / ArchiveItem y fuentes de video
+app/                    ← layout, metadatos SEO/Open Graph, sitemap, robots, 404, favicon
+components/
+  Intro.tsx             ← intro HXNS + apertura tipo letterbox
+  Hero.tsx              ← showreel de fondo, wordmark a ancho completo, timecode en vivo
+  works/                ← galería editorial (Selected Works)
+  player/               ← modal de reproducción: MP4 propio, YouTube o Vimeo
+  About.tsx             ← Behind the lens
+  services/             ← lista de servicios con glifos y preview flotante
+  archive/              ← Visual playground (scroll horizontal fijado en escritorio)
+  Contact.tsx           ← contacto + footer
+  motion/Motion.tsx     ← Lenis + revelados por atributos data-reveal / data-parallax
+public/
+  images/{projects,portraits,stills,archive}/
+  videos/{hero,projects,archive}/
+public/og-image.png     ← imagen para compartir en redes (1200×630)
+```
+
+## Editar contenido
+
+Todo se cambia en **`site.config.ts`**. Lo marcado con `TODO` es un marcador de posición.
+
+### Contacto
+```ts
+contact: {
+  email: "tu@correo.com",
+  instagram: "https://www.instagram.com/tuusuario",
+  vimeo: "https://vimeo.com/tuusuario",
+  youtube: "https://www.youtube.com/@tuusuario",
+}
+```
+Los campos vacíos se ocultan automáticamente. Con `email` relleno aparece el botón **Start a project** (mailto).
+
+### Añadir o sustituir un proyecto
+1. Copia tus archivos a `public/`:
+   - portada: `public/images/projects/mi-proyecto.webp` (o .jpg)
+   - loop corto opcional (3–6 s, sin audio, ~640 px): `public/videos/projects/mi-proyecto-preview.mp4`
+   - video completo: `public/videos/projects/mi-proyecto.mp4`
+2. Añade una entrada en `projects`:
+```ts
+{
+  slug: "mi-proyecto",
+  title: "Mi Proyecto",
+  category: "Brand Content",          // ver lista en lib/types.ts
+  year: 2026,
+  role: "Direction · Edit · Color",
+  description: "Una o dos frases.",
+  aspect: "16:9",                      // o "9:16" para vertical
+  layout: "wide",                      // feature | wide | wideRight | tall | mid | half
+  cover: "/images/projects/mi-proyecto.webp",
+  preview: "/videos/projects/mi-proyecto-preview.mp4",
+  video: { type: "mp4", src: "/videos/projects/mi-proyecto.mp4" },
+  // video: { type: "youtube", id: "dQw4w9WgXcQ" },
+  // video: { type: "vimeo", id: "123456789" },
+  demo: false,
+}
+```
+> Los proyectos actuales están marcados `demo: true` y muestran la etiqueta **Demo**: son placeholders con metraje de stock, no trabajos reales.
+
+**Recomendación para MP4 propios** (ligeros y con inicio rápido):
+```bash
+ffmpeg -i master.mov -vf "scale=1280:-2" -c:v libx264 -crf 24 -preset slow -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 128k mi-proyecto.mp4
+ffmpeg -ss 5 -t 5 -i master.mov -vf "scale=640:-2" -c:v libx264 -crf 28 -an -movflags +faststart mi-proyecto-preview.mp4
+```
+Para videos largos o pesados, súbelos a YouTube/Vimeo y usa su ID (GitHub no admite archivos > 100 MB).
+
+### Showreel del hero
+Sustituye `public/videos/hero/hero-reel.mp4` (16:9) y `hero-reel-mobile.mp4` (vertical) y sus pósters en `public/images/stills/`.
+
+### Retrato
+Sustituye `public/images/portraits/portrait-placeholder.webp` (4:5) y pon `portraitIsPlaceholder: false`.
+
+## Desarrollo local
+
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm run lint
+npm run build      # genera /out (sitio estático)
+```
+
+## Publicar cambios
+
+```bash
+git add .
+git commit -m "Update projects"
+git push
+```
+Cada `push` a `main` ejecuta `.github/workflows/deploy.yml`: lint → type-check → build → despliegue en GitHub Pages (1–2 min). El estado se ve en la pestaña **Actions** del repositorio.
+
+## Accesibilidad y rendimiento
+
+- `prefers-reduced-motion`: sin intro, sin scroll suave, sin parallax ni animaciones de scroll; el archivo pasa a scroll horizontal nativo.
+- Navegación por teclado, *skip link*, foco visible, modal con *focus trap*, `Esc` para cerrar.
+- Reproductor: `Espacio`/`K` reproducir, `←/→` ±5 s, `M` silencio, `F` pantalla completa, `Shift+←/→` proyecto anterior/siguiente.
+- Los videos se cargan bajo demanda (hover o al entrar en pantalla); el hero usa una versión vertical ligera en móvil y no carga video con *Ahorro de datos*.
+- Enlaces compartibles a cada proyecto: `/#work/<slug>`.
+
+## Créditos de recursos de demostración
+
+Todo el metraje de demostración procede de **[Mixkit](https://mixkit.co/)** bajo la [Mixkit Stock Video Free License](https://mixkit.co/license/#videoFree) (uso comercial y personal, sin atribución obligatoria). Se recortó, re-etalonó (look frío HXNS) y comprimió para web. Clips usados (ID Mixkit): 1038, 9678, 2026, 50438, 51275, 44070, 48509, 43097, 4332, 4451, 46353, 33936, 51757, 50951, 47301, 2374, 48529, 50957, 41154, 4447, 3637, 33896, 51283, 1512, 46351, 44075, 49646.
+
+Sustitúyelos por tu propio material antes de presentar el portafolio como trabajo propio.
