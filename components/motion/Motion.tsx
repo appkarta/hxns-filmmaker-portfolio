@@ -9,6 +9,8 @@ import { scrollToTarget, setLenis } from "@/lib/scroll";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+const PLAY_ONCE = "play none none none";
+
 /**
  * One place for all scroll-driven motion:
  *  - Lenis smooth scroll (desktop pointers, skipped for reduced motion)
@@ -69,7 +71,9 @@ export default function Motion() {
                 duration: 1.25,
                 ease: "expo.out",
                 stagger: 0.09,
-                scrollTrigger: { trigger: el, start: "top 86%", once: true },
+                // Play once, never reverse. (`once: true` makes triggers delete themselves during ScrollTrigger.refresh,
+                // which throws when the page loads already scrolled, e.g. /#services.)
+                scrollTrigger: { trigger: el, start: "top 86%", toggleActions: PLAY_ONCE },
               });
             },
           });
@@ -81,7 +85,7 @@ export default function Motion() {
             autoAlpha: 0,
             duration: 1.2,
             ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 90%", once: true },
+            scrollTrigger: { trigger: el, start: "top 90%", toggleActions: PLAY_ONCE },
           });
         });
 
@@ -92,14 +96,14 @@ export default function Motion() {
             duration: 1,
             ease: "power3.out",
             stagger: 0.07,
-            scrollTrigger: { trigger: el, start: "top 88%", once: true },
+            scrollTrigger: { trigger: el, start: "top 88%", toggleActions: PLAY_ONCE },
           });
         });
 
         // Media: shutter-like clip reveal + settle
         gsap.utils.toArray<HTMLElement>('[data-reveal="media"]').forEach((el) => {
           const inner = el.firstElementChild;
-          const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 88%", once: true } });
+          const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 88%", toggleActions: PLAY_ONCE } });
           tl.fromTo(el, { clipPath: "inset(18% 8% 18% 8%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.6, ease: "expo.out" });
           if (inner) tl.fromTo(inner, { scale: 1.22 }, { scale: 1, duration: 1.8, ease: "expo.out" }, 0);
         });
@@ -144,7 +148,7 @@ export default function Motion() {
             onUpdate: () => {
               el.textContent = String(Math.round(obj.v)).padStart(2, "0");
             },
-            scrollTrigger: { trigger: el, start: "top 90%", once: true },
+            scrollTrigger: { trigger: el, start: "top 90%", toggleActions: PLAY_ONCE },
           });
         });
       });
