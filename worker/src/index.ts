@@ -46,7 +46,7 @@ const TIMINGS = new Set([
   "Lo antes posible", "Este mes", "En 1–3 meses", "Solo estoy explorando",
 ]);
 
-// Fallback limiter (per isolate) in case the rate-limit bindings are missing: 3 requests / minute / IP
+// In-memory limiter (per isolate): 3 requests / minute / IP, combined with the Cloudflare binding
 const hits = new Map<string, number[]>();
 function localLimited(ip: string) {
   const now = Date.now();
@@ -126,7 +126,8 @@ export default {
 
     // Rate limits before any work: per IP and for the whole form (protects the Resend quota)
     const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
-    const ipOk = env.IP_LIMITER ? (await env.IP_LIMITER.limit({ key: `ip:${ip}` })).success : !localLimited(ip);
+    // Cloudflare limiter is shared but eventually consistent; the in-memory one stops bursts hitting the same instance
+    const ipOk = !localLimited(ip) && (env.IP_LIMITER ? (await env.IP_LIMITER.limit({ key: `ip:${ip}` })).success : true);
     const globalOk = env.GLOBAL_LIMITER ? (await env.GLOBAL_LIMITER.limit({ key: "global" })).success : true;
     if (!ipOk || !globalOk) return json({ ok: false, error: "rate_limited" }, 429, { ...headers, "Retry-After": "60" });
 
