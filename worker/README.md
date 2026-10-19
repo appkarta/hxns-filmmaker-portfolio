@@ -50,7 +50,7 @@ Para que funcione en local, crea `worker/.dev.vars` (está ignorado por git) con
 
 | Protección | Detalle |
 | --- | --- |
-| Límite de envíos | Rate limiting de Cloudflare (compartido en toda la red): **3 peticiones/minuto por IP** y **10/minuto en total** para proteger la cuota de Resend, más un límite en memoria que corta ráfagas al instante (el de Cloudflare es aproximado y tarda unos segundos en sincronizarse). Las peticiones inválidas también cuentan. Respuesta `429` + `Retry-After`. |
+| Límite de envíos | Contadores **exactos** en un Durable Object de Cloudflare: **3 peticiones/minuto por IP**, **5 mensajes/día por IP** y **60 mensajes/día en total** (por debajo de los 100/día gratuitos de Resend). Delante, el rate limiting de Cloudflare filtra inundaciones de forma barata. Los límites diarios solo cuentan mensajes válidos, así que las peticiones basura no pueden agotarlos. Respuesta `429` + `Retry-After`. Los valores están en `LIMITS`, dentro de `src/index.ts`. |
 | Origen | Solo acepta peticiones con `Origin` de `https://hxnss.co` o `https://www.hxnss.co`; sin `Origin` (scripts, curl) → `403`. |
 | Formato | Solo `POST` con `Content-Type: application/json` (bloquea formularios CSRF simples), cuerpo máx. 16 KB, JSON tipo objeto. |
 | Bots | Campo trampa oculto, tiempo mínimo de 2,5 s y, opcionalmente, **Cloudflare Turnstile** (ver abajo). Los bots detectados reciben un falso "OK" y no se envía nada. |

@@ -14,17 +14,21 @@ ALLOWED_ORIGINS = "https://hxnss.co,https://www.hxnss.co"
 # After verifying the domain, change it to e.g. "HXNS <hola@hxnss.co>".
 CONTACT_FROM = "HXNS Website <onboarding@resend.dev>"
 
-# Rate limiting (Cloudflare, shared across all edge locations)
-# Per visitor IP: 3 requests per minute
+# Rate limiting
+# 1) Cloudflare binding: fast, approximate first filter against floods (per IP, 3/min)
 [[ratelimits]]
 name = "IP_LIMITER"
 namespace_id = "48101"
 simple = { limit = 3, period = 60 }
 
-# Whole form: 10 requests per minute (protects the Resend quota from distributed floods)
-[[ratelimits]]
-name = "GLOBAL_LIMITER"
-namespace_id = "48102"
-simple = { limit = 10, period = 60 }
+# 2) Durable Object with exact counters: 3 requests/min per IP, 5 messages/day per IP,
+#    60 messages/day in total (limits live in LIMITS inside src/index.ts)
+[[durable_objects.bindings]]
+name = "LIMITER"
+class_name = "Limiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Limiter"]
 
 # Secrets (not stored here): RESEND_API_KEY, CONTACT_TO, optional TURNSTILE_SECRET

@@ -10,7 +10,8 @@
  * Vars (wrangler.toml):
  *   CONTACT_FROM, ALLOWED_ORIGINS
  * Bindings (wrangler.toml):
- *   IP_LIMITER, GLOBAL_LIMITER — Cloudflare rate limiting
+ *   IP_LIMITER — Cloudflare rate limiting (fast, approximate first filter)
+ *   LIMITER    — Durable Object with exact per-IP and daily counters
  */
 
 type RateLimiter = { limit(options: { key: string }): Promise<{ success: boolean }> };
@@ -22,7 +23,7 @@ export interface Env {
   ALLOWED_ORIGINS?: string;
   TURNSTILE_SECRET?: string;
   IP_LIMITER?: RateLimiter;
-  GLOBAL_LIMITER?: RateLimiter;
+  LIMITER?: Namespace;
 }
 
 type Payload = Record<string, unknown>;
@@ -46,16 +47,61 @@ const TIMINGS = new Set([
   "Lo antes posible", "Este mes", "En 1–3 meses", "Solo estoy explorando",
 ]);
 
-// In-memory limiter (per isolate): 3 requests / minute / IP, combined with the Cloudflare binding
-const hits = new Map<string, number[]>();
-function localLimited(ip: string) {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < 60_000);
-  recent.push(now);
-  hits.set(ip, recent);
-  if (hits.size > 5000) hits.clear();
-  return recent.length > 3;
+// ── Exact rate limiting ────────────────────────────────────────────────────────
+// One Durable Object instance per key ("ip:1.2.3.4", "day:global"…). Each instance
+// handles its requests one at a time, so counts are exact across the whole network.
+type Storage = { get(key: string): Promise<unknown>; put(key: string, value: unknown): Promise<void> };
+type Stub = { fetch(url: string, init: RequestInit): Promise<Response> };
+type Namespace = { idFromName(name: string): unknown; get(id: unknown): Stub };
+
+export class Limiter {
+  storage: Storage;
+  constructor(state: { storage: Storage }) {
+    this.storage = state.storage;
+  }
+  async fetch(request: Request): Promise<Response> {
+    const { limit, window } = (await request.json()) as { limit: number; window: number };
+    const now = Date.now();
+    const rec = (await this.storage.get("w")) as { start: number; count: number } | undefined;
+    let start = rec?.start ?? now;
+    let count = rec?.count ?? 0;
+    if (now - start >= window * 1000) {
+      start = now;
+      count = 0;
+    }
+    count += 1;
+    await this.storage.put("w", { start, count });
+    const retry = Math.max(1, Math.ceil((start + window * 1000 - now) / 1000));
+    return new Response(JSON.stringify({ ok: count <= limit, retry }), { headers: { "Content-Type": "application/json" } });
+  }
 }
+
+/** Counts one hit for `key`; returns whether it is within `limit` per `window` seconds. */
+async function hit(env: Env, key: string, limit: number, window: number) {
+  if (!env.LIMITER) return { ok: !localLimited(key, limit, window), retry: window };
+  const stub = env.LIMITER.get(env.LIMITER.idFromName(key));
+  const res = await stub.fetch("https://limiter/hit", { method: "POST", body: JSON.stringify({ limit, window }) });
+  return (await res.json()) as { ok: boolean; retry: number };
+}
+
+// Fallback (no Durable Object binding, e.g. local tests): per-instance memory
+const hits = new Map<string, number[]>();
+function localLimited(key: string, limit: number, window: number) {
+  const now = Date.now();
+  const recent = (hits.get(key) ?? []).filter((t) => now - t < window * 1000);
+  recent.push(now);
+  hits.set(key, recent);
+  if (hits.size > 5000) hits.clear();
+  return recent.length > limit;
+}
+
+/** Limits (requests that reach the worker / messages actually sent). */
+const LIMITS = {
+  ipPerMinute: 3, // any request from one IP
+  ipPerDay: 5, // messages sent from one IP
+  globalPerDay: 60, // messages sent in total — below Resend's free 100/day
+};
+const DAY = 86_400;
 
 /** Trim, drop control characters (incl. CR/LF → no header tricks) and cap length. */
 function clean(v: unknown, max: number, multiline = false) {
@@ -124,12 +170,14 @@ export default {
     // Browsers always send Origin on cross-site POST; scripts without it are rejected too.
     if (!allowed) return json({ ok: false, error: "origin_not_allowed" }, 403, headers);
 
-    // Rate limits before any work: per IP and for the whole form (protects the Resend quota)
+    // Flood protection before any work. The Cloudflare binding is a cheap, approximate first filter;
+    // the Durable Object count is exact.
     const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
-    // Cloudflare limiter is shared but eventually consistent; the in-memory one stops bursts hitting the same instance
-    const ipOk = !localLimited(ip) && (env.IP_LIMITER ? (await env.IP_LIMITER.limit({ key: `ip:${ip}` })).success : true);
-    const globalOk = env.GLOBAL_LIMITER ? (await env.GLOBAL_LIMITER.limit({ key: "global" })).success : true;
-    if (!ipOk || !globalOk) return json({ ok: false, error: "rate_limited" }, 429, { ...headers, "Retry-After": "60" });
+    if (env.IP_LIMITER && !(await env.IP_LIMITER.limit({ key: `ip:${ip}` })).success) {
+      return json({ ok: false, error: "rate_limited" }, 429, { ...headers, "Retry-After": "60" });
+    }
+    const perMinute = await hit(env, `min:${ip}`, LIMITS.ipPerMinute, 60);
+    if (!perMinute.ok) return json({ ok: false, error: "rate_limited" }, 429, { ...headers, "Retry-After": String(perMinute.retry) });
 
     if (!(request.headers.get("Content-Type") ?? "").toLowerCase().startsWith("application/json")) {
       return json({ ok: false, error: "unsupported_media_type" }, 415, headers);
@@ -175,6 +223,12 @@ export default {
     if (!EMAIL_RE.test(email)) invalid.push("email");
     if (message.length < 10) invalid.push("message");
     if (invalid.length) return json({ ok: false, error: "invalid", fields: invalid }, 422, headers);
+
+    // Daily caps count only messages that would really be sent (junk requests can't use them up)
+    const perIpDay = await hit(env, `day:${ip}`, LIMITS.ipPerDay, DAY);
+    if (!perIpDay.ok) return json({ ok: false, error: "rate_limited" }, 429, { ...headers, "Retry-After": String(perIpDay.retry) });
+    const globalDay = await hit(env, "day:global", LIMITS.globalPerDay, DAY);
+    if (!globalDay.ok) return json({ ok: false, error: "rate_limited" }, 429, { ...headers, "Retry-After": String(globalDay.retry) });
 
     const rows: [string, string][] = [
       ["Name", name],
