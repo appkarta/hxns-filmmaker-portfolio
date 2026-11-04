@@ -79,7 +79,7 @@
   color: var(--black);
 }
 .chipCount {
-  font-size: 10px;
+  font-size: 12px;
   opacity: 0.7;
 }
 
@@ -177,6 +177,9 @@
   align-items: center;
   gap: 8px;
   color: var(--white);
+}
+.corner::after {
+  content: attr(data-text);
 }
 .tl {
   top: 14px;
@@ -375,7 +378,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--mist);
   text-align: center;
 }

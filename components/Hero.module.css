@@ -1,5 +1,7 @@
 .hero {
-  --mark-size: 36vw;
+  /* "HXNS" in Geist Bold with this tracking is 2.493em wide → fill the frame between the gutters.
+     Pure CSS (no JS refit), so the largest element paints once, early. */
+  --mark-size: calc((100vw - 2 * var(--gutter)) / 2.493);
   --mark-visible: calc(var(--mark-size) * 0.46);
   --screen-h: min(74svh, 760px);
   position: relative;
@@ -185,7 +187,7 @@
   margin-top: 30px;
 }
 
-/* Full-width wordmark that bleeds off the bottom of the frame (size fitted in JS) */
+/* Full-width wordmark that bleeds off the bottom of the frame */
 .mark {
   position: absolute;
   z-index: 0;
@@ -287,9 +289,6 @@
 }
 
 @media (max-width: 560px) {
-  .hero {
-    --mark-size: 36vw;
-  }
   .content {
     bottom: calc(var(--mark-visible) + 36px);
   }
@@ -297,7 +296,7 @@
     font-size: clamp(36px, 10.6vw, 58px);
   }
   .kicker {
-    font-size: 11px;
+    font-size: 13px;
   }
   .ctas {
     flex-direction: column;

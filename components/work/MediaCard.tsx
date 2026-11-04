@@ -95,14 +95,11 @@ export default function MediaCard({ project, locale, sizes, className = "", labe
         </span>
       </span>
       <span className={styles.shade} aria-hidden="true" />
-      <span className={`${styles.corner} ${styles.tl} mono`} aria-hidden="true">
-        {label ?? category}
-      </span>
-      <span className={`${styles.corner} ${styles.tr} mono`} aria-hidden="true">
-        {aspect}
-      </span>
-      <span className={`${styles.corner} ${styles.bl} mono`} aria-hidden="true">
-        {isImage ? <Images /> : <Play fill="currentColor" />} {isImage ? t.viewPieces : t.playFilm}
+      {/* Decorative labels drawn with CSS (data-text), so they never compete with the link's accessible name */}
+      <span className={`${styles.corner} ${styles.tl} mono`} data-text={label ?? category} aria-hidden="true" />
+      <span className={`${styles.corner} ${styles.tr} mono`} data-text={aspect} aria-hidden="true" />
+      <span className={`${styles.corner} ${styles.bl} mono`} data-text={isImage ? t.viewPieces : t.playFilm} aria-hidden="true">
+        {isImage ? <Images /> : <Play fill="currentColor" />}
       </span>
     </a>
   );

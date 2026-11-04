@@ -62,6 +62,7 @@ export default function Motion() {
         gsap.utils.toArray<HTMLElement>('[data-reveal="lines"]').forEach((el) => {
           SplitText.create(el, {
             type: "lines",
+            aria: "none", // the split text stays readable as-is; no aria-label on generic elements
             mask: "lines",
             autoSplit: true,
             linesClass: "split-line",
@@ -82,7 +83,7 @@ export default function Motion() {
         gsap.utils.toArray<HTMLElement>('[data-reveal="fade"]').forEach((el) => {
           gsap.from(el, {
             y: 36,
-            autoAlpha: 0,
+            opacity: 0, // opacity (not visibility) keeps the text available to screen readers
             duration: 1.2,
             ease: "power3.out",
             scrollTrigger: { trigger: el, start: "top 90%", toggleActions: PLAY_ONCE },
@@ -92,7 +93,7 @@ export default function Motion() {
         gsap.utils.toArray<HTMLElement>('[data-reveal="stagger"]').forEach((el) => {
           gsap.from(el.children, {
             y: 28,
-            autoAlpha: 0,
+            opacity: 0, // opacity (not visibility) keeps the text available to screen readers
             duration: 1,
             ease: "power3.out",
             stagger: 0.07,
@@ -122,6 +123,7 @@ export default function Motion() {
         gsap.utils.toArray<HTMLElement>('[data-scrub="words"]').forEach((el) => {
           SplitText.create(el, {
             type: "words",
+            aria: "none",
             autoSplit: true,
             onSplit(self) {
               return gsap.fromTo(

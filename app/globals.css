@@ -319,6 +319,13 @@ html.has-cursor button {
   cursor: none;
 }
 
+/* Small mono labels stay legible on phones (12 px minimum) */
+@media (max-width: 760px) {
+  :root {
+    --fs-mono: 12px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
