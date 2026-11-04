@@ -64,7 +64,22 @@ export const projects: Project[] = [
     featured: true,
     alt: {
       es: "York Hans hablando a cámara en su estación de edición con luz azul; texto en pantalla: «20 segundos»",
-      en: "York Hans talking to camera at his blue-lit editing desk; on-screen text: “20 segundos”",
+      en: "York Hans in a hood at his blue-lit desk, looking down at his phone; on-screen text: “y las decisiones”",
+    },
+  },
+  {
+    id: "dj-en-cabina",
+    title: { es: "DJ en cabina", en: "DJ in the booth" },
+    category: "personal",
+    tag: { es: "Fotografía", en: "Photography" },
+    // TODO: add the event, artist or year if you want them shown
+    mediaType: "image",
+    media: "/images/projects/personal/dj-en-cabina.webp",
+    thumbnail: "/images/projects/personal/dj-en-cabina.webp",
+    aspect: "3:4",
+    alt: {
+      es: "DJ con gorra y gafas oscuras mezclando en un controlador Denon bajo luces de escenario verdes y amarillas",
+      en: "DJ in a cap and dark glasses mixing on a Denon controller under green and yellow stage lights",
     },
   },
 ];

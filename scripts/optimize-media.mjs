@@ -63,7 +63,7 @@ if (isImage) {
   const duration = Number(run("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", input]));
   const portrait = h > w;
   const r = w / h;
-  aspect = portrait ? (r < 0.7 ? "9:16" : r < 0.9 ? "4:5" : "1:1") : r > 2.2 ? "21:9" : "16:9";
+  aspect = portrait ? (r < 0.7 ? "9:16" : r < 0.78 ? "3:4" : r < 0.9 ? "4:5" : "1:1") : r > 2.2 ? "21:9" : "16:9";
   const scale = portrait ? "scale=720:-2" : "scale=-2:720";
   const small = portrait ? "scale=360:-2" : "scale=640:-2";
 

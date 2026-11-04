@@ -175,9 +175,11 @@ function Personal({ project, ctx }: { project: Project; ctx: Ctx }) {
           HXNS ▸ {project.id.toUpperCase()} ▸ {aspectOf(project)}
         </span>
         <MediaCard project={project} locale={locale} sizes="(max-width: 760px) 86vw, 34vw" />
-        <span className={`mono ${styles.edgeBottom}`} aria-hidden="true">
-          {t.soundOn}
-        </span>
+        {project.mediaType === "video" && (
+          <span className={`mono ${styles.edgeBottom}`} aria-hidden="true">
+            {t.soundOn}
+          </span>
+        )}
       </div>
     </article>
   );

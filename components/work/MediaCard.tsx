@@ -26,6 +26,7 @@ export default function MediaCard({ project, locale, sizes, className = "", labe
   const [active, setActive] = useState(false);
   const aspect = aspectOf(project);
   const isImage = project.mediaType === "image";
+  const viewLabel = (project.gallery?.length ?? 0) > 0 ? t.viewPieces : t.viewPhoto;
   const title = tr(project.title, locale);
   const category = tr(workCategories.find((c) => c.id === project.category)!.label, locale);
   const cover = project.thumbnail ?? (isImage ? project.media : undefined);
@@ -76,7 +77,7 @@ export default function MediaCard({ project, locale, sizes, className = "", labe
       onFocus={start}
       onBlur={stop}
       data-cursor={isImage ? "view" : "play"}
-      aria-label={isImage ? `${t.viewPieces}: ${title} — ${category}` : t.playAria(title, category)}
+      aria-label={isImage ? `${viewLabel}: ${title} — ${category}` : t.playAria(title, category)}
     >
       <span className={styles.reveal} data-reveal="media">
         <span className={styles.mediaInner}>
@@ -98,7 +99,7 @@ export default function MediaCard({ project, locale, sizes, className = "", labe
       {/* Decorative labels drawn with CSS (data-text), so they never compete with the link's accessible name */}
       <span className={`${styles.corner} ${styles.tl} mono`} data-text={label ?? category} aria-hidden="true" />
       <span className={`${styles.corner} ${styles.tr} mono`} data-text={aspect} aria-hidden="true" />
-      <span className={`${styles.corner} ${styles.bl} mono`} data-text={isImage ? t.viewPieces : t.playFilm} aria-hidden="true">
+      <span className={`${styles.corner} ${styles.bl} mono`} data-text={isImage ? viewLabel : t.playFilm} aria-hidden="true">
         {isImage ? <Images /> : <Play fill="currentColor" />}
       </span>
     </a>

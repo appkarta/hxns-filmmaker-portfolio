@@ -26,7 +26,7 @@ export default function Motion() {
     let lenis: Lenis | null = null;
 
     if (!reduce) {
-      lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
+      lenis = new Lenis({ lerp: 0.16, wheelMultiplier: 1, smoothWheel: true });
       setLenis(lenis);
       lenis.on("scroll", ScrollTrigger.update);
       const raf = (time: number) => lenis?.raf(time * 1000);

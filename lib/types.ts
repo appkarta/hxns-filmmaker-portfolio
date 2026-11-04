@@ -6,7 +6,7 @@ export type Text = string | L;
 /** The four areas of the Work section */
 export type WorkCategory = "vertical" | "horizontal" | "brands" | "personal";
 
-export type Aspect = "9:16" | "16:9" | "21:9" | "4:5" | "1:1";
+export type Aspect = "9:16" | "16:9" | "21:9" | "4:5" | "3:4" | "1:1";
 
 export type Project = {
   /** Unique, URL-friendly id. Also the share link: hxnss.co/#work/<id> */

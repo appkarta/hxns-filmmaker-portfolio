@@ -8,7 +8,7 @@ export function aspectOf(p: Project): Aspect {
 }
 
 export function isVertical(aspect: Aspect) {
-  return aspect === "9:16" || aspect === "4:5";
+  return aspect === "9:16" || aspect === "4:5" || aspect === "3:4";
 }
 
 /** Projects of one category, featured first, otherwise in the order of data/projects.ts */
