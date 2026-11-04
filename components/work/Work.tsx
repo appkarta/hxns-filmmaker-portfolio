@@ -126,7 +126,10 @@ function Brand({ project, ctx }: { project: Project; ctx: Ctx }) {
       <div className={styles.brandInfo} data-reveal="stagger">
         {project.tag && <p className={`mono ${styles.kicker}`}>{tr(project.tag, locale)}</p>}
         <h4 className={styles.brandTitle}>{tr(project.title, locale)}</h4>
-        {project.description && <p className={styles.brandDesc}>{tr(project.description, locale)}</p>}
+        {project.quote && <blockquote className={`${styles.quote} ${styles.brandQuote}`}>“{tr(project.quote, locale)}”</blockquote>}
+        {project.description && (
+          <p className={project.quote ? styles.personalDesc : styles.brandDesc}>{tr(project.description, locale)}</p>
+        )}
         <dl className={`mono ${styles.credits}`}>
           {rows.map(([k, v]) => (
             <div key={k}>

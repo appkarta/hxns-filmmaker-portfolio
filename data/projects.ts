@@ -28,9 +28,13 @@ export const projects: Project[] = [
     // TODO: add the year, your role and a short description when you want them shown
     // year: "2026",
     // role: { es: "Rodaje y edición", en: "Shooting & edit" },
+    quote: {
+      es: "Del primer saludo a la última sonrisa: así se siente una cita en Axia.",
+      en: "From the first handshake to the last smile: this is what a visit to Axia feels like.",
+    },
     description: {
-      es: "Video vertical de marca para Axia Odontología.",
-      en: "Vertical brand video for Axia Odontología.",
+      es: "Contenido vertical para las redes de Axia Odontología. El paciente llega, se sienta y el procedimiento avanza en planos cerrados y ritmo ágil, hasta terminar riendo junto al doctor frente al logo de la clínica.",
+      en: "Vertical social content for Axia Odontología. The patient arrives, takes the chair and the procedure moves forward in close shots and a quick pace, ending with a laugh next to the doctor in front of the clinic logo.",
     },
     mediaType: "video",
     media: "/videos/brands/axia-odontologia.mp4",
@@ -73,6 +77,14 @@ export const projects: Project[] = [
     category: "personal",
     tag: { es: "Fotografía", en: "Photography" },
     // TODO: add the event, artist or year if you want them shown
+    quote: {
+      es: "La música no se ve. Pero se nota en las manos, en la luz y en la concentración.",
+      en: "You can't see music. But you can see it in the hands, the light and the focus.",
+    },
+    description: {
+      es: "Retrato en cabina bajo luces de escenario: el controlador, las manos y un DJ metido en su set. Fotografía personal, el mismo ojo de los videos en un solo fotograma.",
+      en: "A booth portrait under stage lights: the decks, the hands and a DJ locked into the set. Personal photography, the same eye as the videos in a single frame.",
+    },
     mediaType: "image",
     media: "/images/projects/personal/dj-en-cabina.webp",
     thumbnail: "/images/projects/personal/dj-en-cabina.webp",
