@@ -28,7 +28,11 @@ export function unlockScroll() {
 export function scrollToTarget(target: string | HTMLElement) {
   const el = typeof target === "string" ? document.querySelector<HTMLElement>(target) : target;
   if (!el) return;
-  if (lenis) lenis.scrollTo(el, { duration: 1.4 });
+  if (lenis) {
+    // Resync first: keyboard focus or other native jumps can move the page without Lenis noticing
+    lenis.scrollTo(window.scrollY, { immediate: true, force: true });
+    lenis.scrollTo(el, { duration: 1.4, force: true });
+  }
   else el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
 }
 

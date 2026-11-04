@@ -37,10 +37,10 @@ const DEFAULT_ORIGINS = "https://hxnss.co,https://www.hxnss.co";
 
 /** Options offered by the form (EN + ES). Anything else is reported as "Other". */
 const PROJECT_TYPES = new Set([
-  "Social media videos", "Music video", "Visualizer / Spotify Canvas", "Graphic pieces (covers, posters…)",
-  "Motion graphics", "Brand or event content", "Something else",
-  "Videos para redes sociales", "Videoclip", "Piezas gráficas (portadas, pósters…)",
-  "Contenido para marca o evento", "Otra cosa",
+  "Contenido vertical (Reels, TikTok)", "Video para mi marca o empresa", "Video corporativo", "Edición de video",
+  "Fotografía", "Proyecto personal o creativo", "Otra cosa",
+  "Vertical content (Reels, TikTok)", "Video for my brand or company", "Corporate video", "Video editing",
+  "Photography", "Personal or creative project", "Something else",
 ]);
 const TIMINGS = new Set([
   "As soon as possible", "This month", "In 1–3 months", "Just exploring",

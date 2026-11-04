@@ -1,23 +1,50 @@
 .hero {
   --mark-size: 36vw;
   --mark-visible: calc(var(--mark-size) * 0.46);
+  --screen-h: min(74svh, 760px);
   position: relative;
   height: 100svh;
-  min-height: 620px;
+  min-height: 640px;
   overflow: clip;
   isolation: isolate;
   background: var(--black);
 }
 
-.mediaWrap {
+/* Ambient: a blurred still of the same footage fills the frame */
+.ambient {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
 }
-.media {
+.ambientImg {
+  object-fit: cover;
+  transform: scale(1.08);
+  filter: blur(6px) saturate(0.9);
+  opacity: 0.55;
+}
+.shade {
   position: absolute;
   inset: 0;
-  transform-origin: 50% 40%;
+  background:
+    radial-gradient(70% 60% at 78% 30%, rgb(66 107 255 / 0.18), transparent 65%),
+    linear-gradient(90deg, rgb(8 10 13 / 0.92) 0%, rgb(8 10 13 / 0.55) 55%, rgb(8 10 13 / 0.35) 100%),
+    linear-gradient(180deg, rgb(8 10 13 / 0.5) 0%, rgb(8 10 13 / 0.1) 30%, rgb(8 10 13 / 0.3) 60%, rgb(8 10 13 / 0.96) 100%);
+}
+
+/* The real footage: a vertical screen on desktop, full bleed on phones */
+.screen {
+  position: absolute;
+  z-index: 1;
+  right: calc(var(--gutter) + 4vw);
+  top: calc(50% - var(--screen-h) / 2 + var(--header-h) / 3);
+  height: var(--screen-h);
+  aspect-ratio: 9 / 16;
+  margin: 0;
+  overflow: hidden;
+  background: var(--carbon);
+  box-shadow:
+    0 50px 120px -40px rgb(0 0 0 / 0.9),
+    0 0 0 1px rgb(242 245 248 / 0.12);
 }
 .poster,
 .video {
@@ -34,13 +61,35 @@
 .video.isPlaying {
   opacity: 1;
 }
-.shade {
+.screenMeta {
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(90% 70% at 85% 0%, rgb(66 107 255 / 0.16), transparent 60%),
-    linear-gradient(90deg, rgb(8 10 13 / 0.55) 0%, rgb(8 10 13 / 0) 55%),
-    linear-gradient(180deg, rgb(8 10 13 / 0.55) 0%, rgb(8 10 13 / 0.08) 28%, rgb(8 10 13 / 0.25) 55%, rgb(8 10 13 / 0.94) 100%);
+  left: 12px;
+  right: 12px;
+  top: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--white);
+  font-size: 10px;
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
+  font-variant-numeric: tabular-nums;
+}
+.rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.recDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff3b3b;
+  animation: blink 1.6s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
 }
 
 /* Viewfinder corners */
@@ -96,24 +145,6 @@
   align-items: flex-end;
   text-align: right;
 }
-.rec {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--white);
-}
-.recDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ff3b3b;
-  animation: blink 1.6s steps(2) infinite;
-}
-@keyframes blink {
-  50% {
-    opacity: 0.15;
-  }
-}
 .avail {
   display: inline-flex;
   align-items: center;
@@ -123,13 +154,22 @@
 
 .content {
   position: absolute;
+  z-index: 2;
   left: var(--gutter);
-  right: var(--gutter);
+  right: calc(var(--gutter) + 4vw + var(--screen-h) * 0.5625 + 32px);
   bottom: calc(var(--mark-visible) + 56px);
-  max-width: 1200px;
+  max-width: 980px;
+}
+.kicker {
+  margin-bottom: 20px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ice);
+  letter-spacing: 0.12em;
+  line-height: 1.5;
 }
 .headline {
-  font-size: clamp(40px, 6.2vw, 112px);
+  font-size: clamp(40px, 5.6vw, 104px);
   font-weight: 600;
   line-height: 0.9;
   letter-spacing: -0.055em;
@@ -137,12 +177,6 @@
 }
 .period {
   color: var(--blue);
-}
-.subtitle {
-  margin-top: 22px;
-  color: rgb(242 245 248 / 0.78);
-  font-size: clamp(14px, 1.15vw, 18px);
-  letter-spacing: 0.01em;
 }
 .ctas {
   display: flex;
@@ -154,6 +188,7 @@
 /* Full-width wordmark that bleeds off the bottom of the frame (size fitted in JS) */
 .mark {
   position: absolute;
+  z-index: 0;
   left: var(--gutter);
   bottom: calc(var(--mark-size) * -0.3);
   width: max-content;
@@ -176,14 +211,16 @@
 
 .scroll {
   position: absolute;
-  right: var(--gutter);
-  bottom: calc(var(--mark-visible) + 58px);
+  z-index: 2;
+  left: calc(var(--gutter) + 4px);
+  top: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
   color: var(--mist);
   writing-mode: vertical-rl;
+  transform: translate(-100%, -50%);
 }
 .scrollLine {
   position: relative;
@@ -209,13 +246,40 @@
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1100px) {
+  .hero {
+    --screen-h: min(62svh, 640px);
+  }
+}
+
+/* Phones & portrait tablets: the footage becomes the background */
+@media (max-width: 860px), (max-aspect-ratio: 4/5) {
+  .ambient {
+    display: none;
+  }
+  .screen {
+    inset: 0;
+    height: auto;
+    aspect-ratio: auto;
+    z-index: -1;
+    box-shadow: none;
+  }
+  .screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* keep the face clear at the top; darken where the clip has its own subtitles */
+    background: linear-gradient(180deg, rgb(8 10 13 / 0.55) 0%, rgb(8 10 13 / 0.1) 22%, rgb(8 10 13 / 0.45) 38%, rgb(8 10 13 / 0.9) 50%, rgb(8 10 13 / 0.95) 70%, rgb(8 10 13 / 0.97) 100%);
+  }
+  .screenMeta {
+    display: none;
+  }
+  .content {
+    right: var(--gutter);
+  }
   .top {
     left: calc(var(--gutter) + 22px);
     right: calc(var(--gutter) + 22px);
-  }
-  .metaRight span:not(.avail) {
-    display: none;
   }
   .scroll {
     display: none;
@@ -226,14 +290,14 @@
   .hero {
     --mark-size: 36vw;
   }
-  .mark {
-    letter-spacing: -0.07em;
-  }
   .content {
     bottom: calc(var(--mark-visible) + 36px);
   }
   .headline {
-    font-size: clamp(38px, 11.4vw, 60px);
+    font-size: clamp(36px, 10.6vw, 58px);
+  }
+  .kicker {
+    font-size: 11px;
   }
   .ctas {
     flex-direction: column;
@@ -242,9 +306,7 @@
   .ctas :global(.btn) {
     justify-content: space-between;
   }
-  .metaRight {
+  .metaRight span:not(.avail) {
     display: none;
   }
 }
-
-

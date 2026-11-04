@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
-import { site } from "@/site.config";
+import { person, site } from "@/site.config";
 import { htmlLang, localeRoute, locales, ogLocale, tr, type Locale } from "./i18n";
 import "@/app/globals.css";
 
@@ -81,10 +81,8 @@ export function buildMetadata(locale: Locale): Metadata {
     title,
     description,
     applicationName: site.name,
-    keywords:
-      locale === "es"
-        ? ["videos para redes sociales", "edición de video", "videoclips", "visualizers", "piezas gráficas", "motion graphics", "diseño de portadas", "HXNS"]
-        : ["social media videos", "video editor", "music videos", "visualizers", "graphic design", "motion graphics", "cover art", "HXNS"],
+    authors: [{ name: person.name, url: `${site.url}/` }],
+    creator: person.name,
     alternates: {
       canonical: url,
       languages: {
@@ -100,7 +98,7 @@ export function buildMetadata(locale: Locale): Metadata {
       description,
       locale: ogLocale[locale],
       alternateLocale: locales.filter((l) => l !== locale).map((l) => ogLocale[l]),
-      images: [{ url: image, width: 1200, height: 630, alt: title }],
+      images: [{ url: image, width: 1200, height: 630, alt: `HXNS — ${person.name}` }],
     },
     twitter: { card: "summary_large_image", title, description, images: [image] },
     robots: { index: true, follow: true },

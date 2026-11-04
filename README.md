@@ -1,129 +1,121 @@
-# HXNS® — Social Video, Music Visuals & Graphic Design
+# HXNS — York Hans · Filmmaker y editor de video en Barranquilla
 
-**Visual identity in motion.** Portafolio de HXNS: videos para redes sociales, videoclips y visuales musicales, motion graphics y piezas gráficas. Intro tipográfica, showreel a pantalla completa, galería editorial de proyectos (video y piezas gráficas), *Behind the edit*, servicios, archivo experimental y formulario de contacto conectado a Resend.
+**HXNS** es la identidad creativa de **York Hans**: filmmaker, editor de video y creativo audiovisual de 21 años en Barranquilla, Colombia. Este repositorio es su portafolio: un sitio vivo pensado para crecer con cada proyecto nuevo.
 
-🔗 **Sitio publicado:** https://hxnss.co/ (English) · https://hxnss.co/es/ (Español)
+🔗 **Sitio:** https://hxnss.co (español) · https://hxnss.co/en/ (English)
 
 ---
 
+## Qué hay en la página
+
+| Sección | Contenido |
+| --- | --- |
+| **Hero** | HXNS, «Cada fotograma tiene algo que decir», video propio (*20 segundos*) en formato vertical, CTA a Trabajo y a Sobre mí |
+| **Trabajo** | Cuatro áreas: **Vertical**, **Horizontal**, **Marcas y comercial**, **Personal / Experimentos**. Las que tienen proyectos aparecen primero; las vacías muestran «En construcción» |
+| **Sobre mí** | York Hans, 21 años, Barranquilla · biografía · dos retratos en composición editorial |
+| **Lo que hago** | Servicios: filmmaking, edición, reels y contenido para redes, videos para empresas y marcas, fotografía |
+| **Contacto** | Formulario conectado a Resend (ver [`worker/README.md`](worker/README.md)) y canales que configures |
+
+Cada proyecto se abre en un reproductor a pantalla completa (MP4 propio, YouTube, Vimeo o imágenes) con enlace compartible: `hxnss.co/#work/<id>`.
+
 ## Stack
 
-| Área | Elección | Por qué |
-| --- | --- | --- |
-| Framework | **Next.js 16** (App Router) + **React 19** + **TypeScript** | Componentes de servidor para el contenido, cliente solo donde hay interacción. |
-| Estilos | **CSS Modules** + tokens en `app/globals.css` | Control total de la composición editorial sin utilidades genéricas. |
-| Movimiento | **GSAP** (ScrollTrigger, SplitText) + **Lenis** | Una sola librería de animación; Lenis solo para scroll suave en escritorio. |
-| Iconos | **lucide-react** | Solo en controles del reproductor y botones. |
-| Tipografía | Geist · Geist Mono · Instrument Serif (`next/font`) | Titulares compactos, metadatos tipo timecode y contrapunto editorial en cursiva. |
-| Hosting | **GitHub Pages** vía GitHub Actions (export estático) | Despliegue automático en cada `push` a `main`. |
+Next.js 16 (export estático) · React 19 · TypeScript · CSS Modules · GSAP + Lenis · GitHub Pages · Cloudflare Worker + Resend para el formulario.
 
 ## Estructura
 
 ```
-site.config.ts          ← ✏️ TODO el contenido editable (en inglés y español): textos, contacto, proyectos, servicios, archivo
-lib/i18n.ts             ← idiomas, etiquetas de interfaz (botones, menús, aria) y nombres de categorías en EN / ES
-lib/types.ts            ← tipos de Project / Service / ArchiveItem y fuentes de video
-lib/document.tsx        ← <html lang>, fuentes y metadatos SEO por idioma (canonical, hreflang, Open Graph)
-app/
-  (en)/                 ← página en inglés  → /
-  (es)/es/              ← página en español → /es/
-  global-not-found.tsx  ← 404 bilingüe
-  sitemap.ts, robots.ts, icon.svg
-components/
-  Site.tsx              ← la landing completa, renderizada una vez por idioma
-  LanguageSwitch.tsx    ← selector EN / ES (header y footer)
-  Intro.tsx             ← intro HXNS + apertura tipo letterbox
-  Hero.tsx              ← showreel de fondo, wordmark a ancho completo, timecode en vivo
-  works/                ← galería editorial (Selected Works): videos y galerías de piezas gráficas
-  player/               ← modal de reproducción: MP4 propio, YouTube o Vimeo
-  About.tsx             ← Behind the edit
-  services/             ← lista de servicios con glifos y preview flotante
-  archive/              ← Visual playground (scroll horizontal fijado en escritorio)
-  Contact.tsx           ← contacto + footer
-  motion/Motion.tsx     ← Lenis + revelados por atributos data-reveal / data-parallax
+data/projects.ts        ← ✏️ TUS PROYECTOS (el único archivo que tocas para añadir trabajo)
+site.config.ts          ← ✏️ textos del hero, Sobre mí, servicios, contacto y datos de York Hans
+lib/i18n.ts             ← etiquetas de interfaz y categorías de Trabajo (ES / EN)
+lib/types.ts            ← tipo Project (qué campos admite cada proyecto)
+scripts/optimize-media.mjs ← prepara videos e imágenes para la web (npm run media)
 public/
-  images/{projects,portraits,stills,archive}/
-  videos/{hero,projects,archive}/
-public/og-image.png     ← imagen para compartir en redes (1200×630)
+├── images/
+│   ├── about/          york-hans-01.webp, york-hans-02.webp
+│   ├── hero/           póster y fondo del hero
+│   └── projects/{vertical,horizontal,brands,personal}/   portadas
+└── videos/
+    ├── hero/           hxns-hero.mp4 (loop sin audio)
+    └── {vertical,horizontal,brands,personal}/            video + preview
+media/originals/        ← originales sin comprimir (NO se suben a git)
+worker/                 ← formulario de contacto → Resend
+app/(es)/  → /          app/(en)/en/ → /en/          app/(es)/es/ → redirige /es/ a /
 ```
 
-## Editar contenido
+## Añadir tu próximo proyecto (3 pasos)
 
-Todo se cambia en **`site.config.ts`**. Lo marcado con `TODO` es un marcador de posición.
+**1. Prepara los archivos** (necesitas [ffmpeg](https://ffmpeg.org/) instalado):
 
-### Idiomas (inglés / español)
-El sitio existe en dos versiones estáticas: **inglés en `/`** y **español en `/es/`**, cada una con su `lang`, título, descripción y enlaces `hreflang` para Google. El selector **EN / ES** del header y del footer cambia de versión conservando la sección o el proyecto abierto (`#services`, `#work/nocturne`…), y recuerda la elección del visitante.
-
-Cada texto de `site.config.ts` se escribe en ambos idiomas:
-```ts
-subtitle: { en: "Filmmaker · Video Editor · Visual Storytelling", es: "Cine · Edición de video · Narrativa visual" },
+```bash
+npm run media -- "C:\ruta\a\mi video.mp4" vertical reel-cafe-luna
 ```
-Las etiquetas de interfaz (botones, menú, reproductor, títulos de sección) están en `lib/i18n.ts` → `ui.en` / `ui.es`; TypeScript avisa si a una de las dos le falta una clave.
 
-> Los textos en español usan formulaciones neutras ("hago cine y edición de video") para no asumir género; cámbialas a tu gusto (p. ej. "soy editor/editora de video").
+- Categorías: `vertical`, `horizontal`, `brands`, `personal`.
+- El id (`reel-cafe-luna`) va en minúsculas, con guiones.
+- El script crea el video web (720p, con audio), un *preview* de 5 s sin audio y la portada; guarda el original en `media/originals/` y te imprime un bloque listo para pegar.
+- Opcional: `--poster-at 4.2` (segundo de la portada) y `--preview-at 10` (inicio del preview).
+- También funciona con imágenes (`.jpg`, `.png`…).
 
-### Contacto
-```ts
-contact: {
-  email: "tu@correo.com",
-  instagram: "https://www.instagram.com/tuusuario",
-  vimeo: "https://vimeo.com/tuusuario",
-  youtube: "https://www.youtube.com/@tuusuario",
-}
-```
-Los campos vacíos se ocultan automáticamente (también `tiktok`). El **formulario de contacto** envía los mensajes con Resend a través de un pequeño worker: ver [`worker/README.md`](worker/README.md) para activarlo (unos 10 minutos, se puede hacer desde el móvil).
+**2. Pega el bloque en `data/projects.ts`** y completa lo que tengas:
 
-### Añadir o sustituir un proyecto
-1. Copia tus archivos a `public/`:
-   - portada: `public/images/projects/mi-proyecto.webp` (o .jpg)
-   - loop corto opcional (3–6 s, sin audio, ~640 px): `public/videos/projects/mi-proyecto-preview.mp4`
-   - video completo: `public/videos/projects/mi-proyecto.mp4`
-2. Añade una entrada en `projects`:
 ```ts
 {
-  slug: "mi-proyecto",
-  title: { en: "My Project", es: "Mi Proyecto" },
-  category: "Music Visuals",          // Social Media Videos, Music Videos, Music Visuals, Graphic Pieces,
-                                       // Motion Graphics, Brand Content, Video Edits, Creative Experiments
-  year: 2026,
-  role: { en: "Direction · Edit · Color", es: "Dirección · Edición · Color" },
-  description: { en: "One or two sentences.", es: "Una o dos frases." },
-  aspect: "16:9",                      // o "9:16" para vertical
-  layout: "wide",                      // feature | wide | wideRight | tall | mid | half
-  cover: "/images/projects/mi-proyecto.webp",
-  preview: "/videos/projects/mi-proyecto-preview.mp4",
-  media: { type: "mp4", src: "/videos/projects/mi-proyecto.mp4" },
-  // media: { type: "youtube", id: "dQw4w9WgXcQ" },
-  // media: { type: "vimeo", id: "123456789" },
-  demo: false,
-}
-```
-> Los proyectos actuales están marcados `demo: true` y muestran la etiqueta **Demo**: son placeholders con metraje de stock, no trabajos reales.
-
-**Recomendación para MP4 propios** (ligeros y con inicio rápido):
-```bash
-ffmpeg -i master.mov -vf "scale=1280:-2" -c:v libx264 -crf 24 -preset slow -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 128k mi-proyecto.mp4
-ffmpeg -ss 5 -t 5 -i master.mov -vf "scale=640:-2" -c:v libx264 -crf 28 -an -movflags +faststart mi-proyecto-preview.mp4
-```
-Para videos largos o pesados, súbelos a YouTube/Vimeo y usa su ID (GitHub no admite archivos > 100 MB).
-
-### Piezas gráficas (portadas, pósters, carruseles…)
-Un proyecto puede ser una galería de imágenes en vez de un video. Cada imagen lleva su propio formato y el visor se adapta (1:1, 4:5, 9:16…); se navega con flechas o con ← / →:
-```ts
-media: {
-  type: "gallery",
-  images: [
-    { src: "/images/graphics/mi-portada.webp", aspect: "1:1", alt: { en: "…", es: "…" }, caption: { en: "Cover", es: "Portada" } },
-    { src: "/images/graphics/mi-poster.webp", aspect: "4:5", alt: { en: "…", es: "…" } },
-  ],
+  id: "reel-cafe-luna",
+  title: "Café Luna",
+  category: "vertical",
+  client: "Café Luna",
+  tag: "Reel / Instagram",
+  year: "2026",
+  role: { es: "Rodaje y edición", en: "Shooting & edit" },
+  description: { es: "Reel de lanzamiento para…", en: "Launch reel for…" },
+  mediaType: "video",
+  media: "/videos/vertical/reel-cafe-luna.mp4",       // o "youtube:ID" / "vimeo:ID"
+  thumbnail: "/images/projects/vertical/reel-cafe-luna.webp",
+  preview: "/videos/vertical/reel-cafe-luna-preview.mp4",
+  aspect: "9:16",                                       // 9:16 · 16:9 · 21:9 · 4:5 · 1:1
+  featured: true,                                       // sale primero en su categoría
+  alt: { es: "Qué se ve en la portada", en: "What the cover shows" },
 },
 ```
 
-### Showreel del hero
-Sustituye `public/videos/hero/hero-reel.mp4` (16:9) y `hero-reel-mobile.mp4` (vertical) y sus pósters en `public/images/stills/`.
+Los textos pueden ser un solo texto (igual en ambos idiomas) o `{ es, en }`. Cualquier campo que omitas simplemente no se muestra.
 
-### Retrato
-Sustituye `public/images/portraits/portrait-placeholder.webp` (4:5) y pon `portraitIsPlaceholder: false`.
+**3. Publica:**
+
+```bash
+git add .
+git commit -m "Add Café Luna reel"
+git push
+```
+
+GitHub Actions compila y publica en 2–3 minutos.
+
+> **Videos largos o pesados** (más de ~50 MB tras optimizar): súbelos a YouTube o Vimeo y usa `media: "youtube:ID"` o `media: "vimeo:ID"`. GitHub no acepta archivos de más de 100 MB.
+
+## Peso de los videos actuales
+
+| Video | Original | Versión web |
+| --- | --- | --- |
+| Axia Odontología (77 s) | 116 MB · 1080×1920 | 16 MB · 720×1280 + preview 0,17 MB |
+| 20 segundos (37 s) | 57 MB · 1080×1920 | 4,7 MB · 720×1280 + preview 0,13 MB |
+| Loop del hero | — | 0,46 MB (10,6 s, sin audio) |
+
+Nada pesado se descarga al abrir la página: el hero carga un loop de 0,46 MB después de mostrarse; los previews solo al pasar el cursor o al entrar en pantalla; los videos completos solo al abrir el proyecto (`preload="metadata"`, *fast start*). Con *Ahorro de datos* no se carga el loop del hero. Recomendación: si Axia crece en duración, súbelo a YouTube/Vimeo.
+
+## Idiomas
+
+Español en `/` (idioma principal, pensado para clientes en Barranquilla) e inglés en `/en/`. El selector ES / EN conserva la sección o el proyecto abierto y recuerda la elección. La antigua dirección `/es/` redirige a `/`.
+
+## SEO local (Barranquilla)
+
+- **Title:** «York Hans | Filmmaker y editor de video en Barranquilla — HXNS»
+- **Description:** «York Hans es filmmaker y editor de video en Barranquilla. Portafolio de HXNS: reels y contenido para redes, videos para marcas y empresas, y proyectos personales.»
+- **H1 único:** «York Hans — Filmmaker y editor de video en Barranquilla» (visible en el hero).
+- **Palabras clave objetivo:** filmmaker en Barranquilla · editor de video en Barranquilla · creador audiovisual en Barranquilla · videos para empresas y marcas · reels y contenido para redes · producción audiovisual (secundaria: muy disputada por productoras y directorios).
+- **Datos estructurados (JSON-LD):** WebSite, ProfilePage, Person (York Hans, ciudad Barranquilla, Atlántico, CO) y un CreativeWork por proyecto. Solo datos visibles en la página: sin dirección, teléfono, empresa, premios ni reseñas.
+- **Técnico:** `sitemap.xml` con alternativas de idioma, `robots.txt`, canonical y `hreflang` (es-CO / en / x-default), Open Graph y Twitter con `og-image.png`, imágenes WebP, carga diferida.
+- **Escalable:** si algún día trabajas en otras ciudades, añádelo en el texto de Sobre mí / servicios de forma natural; no hace falta crear páginas por ciudad.
 
 ## Desarrollo local
 
@@ -134,47 +126,25 @@ npm run lint
 npm run build      # genera /out (sitio estático)
 ```
 
-## Publicar cambios
+El proyecto no depende de rutas locales: tras clonar el repositorio funciona en cualquier computador (los originales de `media/originals/` no hacen falta para ejecutar la web).
 
-```bash
-git add .
-git commit -m "Update projects"
-git push
-```
-Cada `push` a `main` ejecuta `.github/workflows/deploy.yml`: lint → type-check → build → despliegue en GitHub Pages (1–2 min). El estado se ve en la pestaña **Actions** del repositorio.
+## Dominio (hxnss.co)
 
-## Dominio propio (hxnss.co)
-
-El sitio se sirve desde GitHub Pages con el dominio **hxnss.co** (configurado en *Settings → Pages → Custom domain*; `www.hxnss.co` redirige automáticamente). Registros DNS en Namecheap (*Advanced DNS*):
-
-| Tipo | Host | Valor |
-| --- | --- | --- |
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
-| CNAME | `www` | `appkarta.github.io.` |
-
-Sin registros *URL Redirect* ni *parking* para `@` o `www`. Si cambias el dominio, actualiza también `site.url` en `site.config.ts` (canonical, sitemap y Open Graph).
+GitHub Pages con dominio propio (*Settings → Pages*), HTTPS forzado. DNS en Namecheap: cuatro registros A de `@` a `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` y CNAME `www` → `appkarta.github.io`. Si cambias de dominio, actualiza `site.url` en `site.config.ts`.
 
 ## Seguridad
 
-- **Content-Security-Policy** (en `<meta>`, porque GitHub Pages no permite cabeceras propias): scripts, estilos, fuentes y conexiones solo del propio sitio, del worker de contacto, de los reproductores de YouTube/Vimeo y, si se activa, de Turnstile. `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `upgrade-insecure-requests`. Bloquea scripts externos, iframes ajenos y envíos de datos a terceros.
-- **Referrer-Policy** `strict-origin-when-cross-origin`; HTTPS forzado en el dominio.
-- **Formulario**: rate limiting, validación estricta y antispam en el worker → ver [`worker/README.md`](worker/README.md#seguridad).
-- **Secretos**: ninguna clave en el código ni en el historial de git; GitHub *secret scanning* y *push protection* activados.
-- **Dependencias**: 0 vulnerabilidades en las dependencias que se publican. `npm audit` señala `braces` (dependencia de ESLint, solo en desarrollo, sin versión corregida y no explotable aquí). Dependabot (`.github/dependabot.yml`) propone actualizaciones cada semana.
+- Content-Security-Policy en `<meta>` (solo el propio sitio, el worker de contacto, YouTube/Vimeo y, si se activa, Turnstile) y Referrer-Policy.
+- Formulario: límites exactos por IP y diarios, validación estricta y antispam → [`worker/README.md`](worker/README.md#seguridad).
+- Sin claves en el código; secret scanning y push protection activos; Dependabot semanal.
 
-## Accesibilidad y rendimiento
+## Accesibilidad
 
-- `prefers-reduced-motion`: sin intro, sin scroll suave, sin parallax ni animaciones de scroll; el archivo pasa a scroll horizontal nativo.
-- Navegación por teclado, *skip link*, foco visible, modal con *focus trap*, `Esc` para cerrar.
-- Reproductor: `Espacio`/`K` reproducir, `←/→` ±5 s, `M` silencio, `F` pantalla completa, `Shift+←/→` proyecto anterior/siguiente.
-- Los videos se cargan bajo demanda (hover o al entrar en pantalla); el hero usa una versión vertical ligera en móvil y no carga video con *Ahorro de datos*.
-- Enlaces compartibles a cada proyecto: `/#work/<slug>`.
+`prefers-reduced-motion` (sin intro, sin scroll suave ni animaciones), navegación por teclado, *skip link*, foco visible, reproductor con atajos (`Espacio`/`K`, `←/→`, `M`, `F`, `Shift+←/→`, `Esc`) y textos alternativos en todas las imágenes.
 
-## Créditos de recursos de demostración
+## Pendiente de completar
 
-Todo el metraje de demostración procede de **[Mixkit](https://mixkit.co/)** bajo la [Mixkit Stock Video Free License](https://mixkit.co/license/#videoFree) (uso comercial y personal, sin atribución obligatoria). Se recortó, re-etalonó (look frío HXNS) y comprimió para web. Clips usados (ID Mixkit): 1038, 48509, 33896, 51757, 50438, 51275, 44070, 4332, 4451, 50951, 4447, 2374, 41154, 50957, 33936, 48529, 51283, 46351, 44075. Las piezas gráficas (`public/images/graphics/`) y el video *Type in Motion* son diseños de demostración hechos para este sitio.
-
-Sustitúyelos por tu propio material antes de presentar el portafolio como trabajo propio.
+- `site.config.ts → contact`: correo, Instagram, TikTok, Vimeo, YouTube (vacíos = ocultos).
+- `data/projects.ts → axia-odontologia`: año, rol y descripción final.
+- `site.config.ts → availability`: confirmar si estás disponible para nuevos proyectos.
+- Proyectos para **Vertical** y **Horizontal** (por ahora muestran «En construcción»).

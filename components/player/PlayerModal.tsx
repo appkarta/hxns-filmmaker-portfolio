@@ -5,7 +5,8 @@ import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 import { pad2 } from "@/lib/asset";
-import { categoryLabels, tr, ui, type Locale } from "@/lib/i18n";
+import { tr, ui, workCategories, type Locale } from "@/lib/i18n";
+import { aspectOf } from "@/lib/projects";
 import ProjectStage from "./ProjectStage";
 import styles from "./Player.module.css";
 
@@ -24,6 +25,17 @@ type Props = {
 export default function PlayerModal({ locale, project, index, total, prev, next, onPrev, onNext, onClose }: Props) {
   const t = ui[locale];
   const title = tr(project.title, locale);
+  const category = workCategories.find((c) => c.id === project.category) ?? workCategories[0];
+  // Only fields that are filled in are shown
+  const meta = (
+    [
+      [t.client, project.client],
+      [t.category, project.tag ? tr(project.tag, locale) : undefined],
+      [t.role, project.role ? tr(project.role, locale) : undefined],
+      [t.year, project.year],
+      [t.format, aspectOf(project)],
+    ] as [string, string | undefined][]
+  ).filter((row): row is [string, string] => Boolean(row[1]));
   const dialog = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
 
@@ -85,37 +97,22 @@ export default function PlayerModal({ locale, project, index, total, prev, next,
         </button>
       </div>
 
-      <ProjectStage key={project.slug} project={project} locale={locale} />
+      <ProjectStage key={project.id} project={project} locale={locale} />
 
-      <div className={styles.info} key={`${project.slug}-info`}>
+      <div className={styles.info} key={`${project.id}-info`}>
         <div className={styles.titleBlock}>
-          <p className="mono dim">
-            {tr(categoryLabels[project.category], locale)}
-            {project.demo && <span className={styles.demo}>{t.demo}</span>}
-          </p>
+          <p className="mono dim">{tr(category.label, locale)}</p>
           <h2 id="player-title" className={styles.title}>
             {title}
           </h2>
-          <p className={styles.desc}>{tr(project.description, locale)}</p>
+          {project.description && <p className={styles.desc}>{tr(project.description, locale)}</p>}
         </div>
 
         <dl className={`${styles.meta} mono`}>
-          <div>
-            <dt>{t.year}</dt>
-            <dd>{project.year}</dd>
-          </div>
-          <div>
-            <dt>{t.work}</dt>
-            <dd>{tr(project.role, locale)}</dd>
-          </div>
-          <div>
-            <dt>{t.format}</dt>
-            <dd>{project.media.type === "gallery" ? [...new Set(project.media.images.map((i) => i.aspect))].join(" · ") : project.aspect}</dd>
-          </div>
-          {project.details?.map((d) => (
-            <div key={d.label.en}>
-              <dt>{tr(d.label, locale)}</dt>
-              <dd>{tr(d.value, locale)}</dd>
+          {meta.map(([label, value]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
             </div>
           ))}
         </dl>

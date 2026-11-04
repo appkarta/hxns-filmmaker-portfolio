@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { site } from "@/site.config";
-import { asset, pad2 } from "@/lib/asset";
+import { person, site } from "@/site.config";
+import { asset } from "@/lib/asset";
 import { tr, ui, type Locale } from "@/lib/i18n";
 import AccentTitle from "./AccentTitle";
 import styles from "./About.module.css";
@@ -8,6 +8,13 @@ import styles from "./About.module.css";
 export default function About({ locale }: { locale: Locale }) {
   const { about } = site;
   const t = ui[locale];
+  const [main, second] = about.photos;
+  const facts: [string, string][] = [
+    [t.name, person.name],
+    [t.age, locale === "es" ? `${person.age} años` : `${person.age}`],
+    [t.basedIn, `${person.city}, ${person.region} — ${tr(person.country, locale)}`],
+    [t.focus, tr(about.focus, locale)],
+  ];
 
   return (
     <section id="about" className={styles.section} aria-labelledby="about-title">
@@ -16,23 +23,30 @@ export default function About({ locale }: { locale: Locale }) {
           {t.aboutLabel}
         </p>
 
-        <figure className={styles.portrait}>
-          <div className={styles.portraitMedia} data-parallax="0.14">
-            <div className={styles.parallaxInner}>
-              <Image
-                src={asset(about.portrait)}
-                alt={tr(about.portraitAlt, locale)}
-                fill
-                sizes="(max-width: 760px) 100vw, 36vw"
-                className={styles.img}
-              />
+        <div className={styles.photos}>
+          <figure className={styles.photoMain}>
+            <div className={styles.photoFrame} data-parallax="0.12">
+              <div className={styles.parallaxInner}>
+                <Image src={asset(main.src)} alt={tr(main.alt, locale)} fill sizes="(max-width: 760px) 80vw, 34vw" className={styles.img} />
+              </div>
             </div>
-          </div>
-          <figcaption className="mono dim">
-            {about.portraitIsPlaceholder ? t.portraitPlaceholder : site.name}
-            <span>{tr(site.concept, locale)}</span>
-          </figcaption>
-        </figure>
+            <figcaption className="mono dim">
+              <span>FR 01</span> {person.name}
+            </figcaption>
+          </figure>
+          {second && (
+            <figure className={styles.photoSecond}>
+              <div className={styles.photoFrame} data-reveal="media">
+                <div className={styles.revealInner}>
+                  <Image src={asset(second.src)} alt={tr(second.alt, locale)} fill sizes="(max-width: 760px) 46vw, 18vw" className={styles.img} />
+                </div>
+              </div>
+              <figcaption className="mono dim">
+                <span>FR 02</span> HXNS
+              </figcaption>
+            </figure>
+          )}
+        </div>
 
         <div className={styles.text}>
           <h2 id="about-title" className={`display ${styles.title}`}>
@@ -40,44 +54,22 @@ export default function About({ locale }: { locale: Locale }) {
               <AccentTitle parts={t.aboutTitle} />
             </span>
           </h2>
-          <p className={styles.statement} data-scrub="words">
-            {tr(about.statement, locale)}
+          <p className={styles.intro} data-scrub="words">
+            {tr(about.intro, locale)}
           </p>
-
-          <div className={styles.cols} data-reveal="stagger">
-            <div>
-              <p className="mono dim">{t.vision}</p>
-              <p>{tr(about.vision, locale)}</p>
-            </div>
-            <div>
-              <p className="mono dim">{t.approach}</p>
-              <p>{tr(about.approach, locale)}</p>
-            </div>
+          <div className={styles.body} data-reveal="stagger">
+            {about.paragraphs.map((p) => (
+              <p key={p.es}>{tr(p, locale)}</p>
+            ))}
           </div>
-        </div>
-
-        <ol className={styles.principles} aria-label={t.principles}>
-          {about.principles.map((p, i) => (
-            <li key={p.en} data-reveal="fade">
-              <span className="mono dim">{pad2(i + 1)}</span>
-              <span className={styles.principle}>{tr(p, locale)}</span>
-            </li>
-          ))}
-        </ol>
-
-        <div className={styles.stills}>
-          {about.stills.slice(0, 4).map((s, i) => (
-            <figure key={s.src} className={`${styles.still} ${styles[`s${i + 1}`]}`}>
-              <div className={styles.stillMedia} data-reveal="media">
-                <div className={styles.stillInner}>
-                  <Image src={asset(s.src)} alt={tr(s.alt, locale)} fill sizes="(max-width: 760px) 50vw, 25vw" className={styles.img} />
-                </div>
+          <dl className={`mono ${styles.facts}`} data-reveal="stagger">
+            {facts.map(([k, v]) => (
+              <div key={k}>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
               </div>
-              <figcaption className="mono dim">
-                <span>FR {pad2(i + 1)}</span> {tr(s.caption, locale)}
-              </figcaption>
-            </figure>
-          ))}
+            ))}
+          </dl>
         </div>
       </div>
     </section>

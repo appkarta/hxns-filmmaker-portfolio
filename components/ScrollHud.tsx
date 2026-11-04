@@ -5,7 +5,7 @@ import { timecode } from "@/lib/asset";
 import { ui, type Locale } from "@/lib/i18n";
 import styles from "./ScrollHud.module.css";
 
-const SECTION_IDS = ["top", "work", "about", "services", "archive", "contact"];
+const SECTION_IDS = ["top", "work", "about", "contact"];
 
 /** The page reads like a timeline: scroll progress bar + running timecode + current "scene". */
 export default function ScrollHud({ locale }: { locale: Locale }) {

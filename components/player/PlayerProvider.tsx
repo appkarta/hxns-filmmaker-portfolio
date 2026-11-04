@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { projects } from "@/site.config";
+import { orderedProjects as projects } from "@/lib/projects";
 import type { Locale } from "@/lib/i18n";
 import PlayerModal from "./PlayerModal";
 
@@ -21,7 +21,7 @@ export default function PlayerProvider({ children, locale }: { children: React.R
   const indexFromHash = () => {
     const h = decodeURIComponent(window.location.hash);
     if (!h.startsWith(HASH)) return null;
-    const i = projects.findIndex((p) => p.slug === h.slice(HASH.length));
+    const i = projects.findIndex((p) => p.id === h.slice(HASH.length));
     return i >= 0 ? i : null;
   };
 
@@ -39,7 +39,7 @@ export default function PlayerProvider({ children, locale }: { children: React.R
   }, []);
 
   const open = useCallback((slug: string) => {
-    const i = projects.findIndex((p) => p.slug === slug);
+    const i = projects.findIndex((p) => p.id === slug);
     if (i < 0) return;
     opener.current = document.activeElement as HTMLElement | null;
     history.pushState({ hxnsPlayer: true }, "", `${HASH}${slug}`);
@@ -51,7 +51,7 @@ export default function PlayerProvider({ children, locale }: { children: React.R
     setIndex((cur) => {
       if (cur === null) return cur;
       const next = (cur + dir + projects.length) % projects.length;
-      history.replaceState(history.state, "", `${HASH}${projects[next].slug}`);
+      history.replaceState(history.state, "", `${HASH}${projects[next].id}`);
       return next;
     });
   }, []);

@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { VideoSource } from "@/lib/types";
 import { ui, type Locale } from "@/lib/i18n";
 import styles from "./Player.module.css";
 
-type Props = { source: Extract<VideoSource, { type: "youtube" | "vimeo" }>; title: string; locale: Locale };
+type Props = { source: { type: "youtube" | "vimeo"; id: string; hash?: string }; title: string; locale: Locale };
 
 /** YouTube (privacy-enhanced) or Vimeo embed. Loaded only when the project opens. */
 export default function EmbedPlayer({ source, title, locale }: Props) {

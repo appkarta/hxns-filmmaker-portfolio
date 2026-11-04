@@ -32,6 +32,11 @@ export default function Header({ locale }: { locale: Locale }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Let sticky elements (the Work category bar) sit below the header only while it is visible
+  useEffect(() => {
+    document.documentElement.dataset.header = hidden && !open ? "hidden" : "shown";
+  }, [hidden, open]);
+
   // Mobile menu: lock scroll, trap focus, close on Escape
   useEffect(() => {
     if (!open) return;

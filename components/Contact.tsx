@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { site } from "@/site.config";
+import { person, site } from "@/site.config";
 import { tr, ui, type Locale } from "@/lib/i18n";
 import LanguageSwitch from "./LanguageSwitch";
 import ContactForm from "./contact/ContactForm";
@@ -37,6 +37,7 @@ export default function Contact({ locale }: { locale: Locale }) {
                 ) : (
                   line
                 )}
+                {i === 0 && " "}
               </span>
             ))}
           </h2>
@@ -91,11 +92,9 @@ export default function Contact({ locale }: { locale: Locale }) {
             <span>
               © <Year /> {site.name}. {tr(site.concept, locale)}.
             </span>
-            {site.mediaCredit && (
-              <a href={site.mediaCredit.url} target="_blank" rel="noopener noreferrer">
-                {tr(site.mediaCredit.label, locale)}
-              </a>
-            )}
+            <span>
+              {person.name} · {person.city}, {tr(person.country, locale)}
+            </span>
             <LanguageSwitch locale={locale} className={styles.footLang} />
             <a href="#top">{t.backToTopLink}</a>
           </div>

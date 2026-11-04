@@ -1,81 +1,45 @@
 import type { L } from "./i18n";
 
-/** Every text field is written in both languages: { en: "...", es: "..." } */
-export type Category =
-  | "Social Media Videos"
-  | "Music Videos"
-  | "Music Visuals"
-  | "Graphic Pieces"
-  | "Motion Graphics"
-  | "Brand Content"
-  | "Video Edits"
-  | "Creative Experiments";
+/** Text shown on the site: one string for both languages, or { es: "…", en: "…" } */
+export type Text = string | L;
 
-export type Aspect = "16:9" | "9:16" | "4:5" | "1:1" | "2.39:1";
+/** The four areas of the Work section */
+export type WorkCategory = "vertical" | "horizontal" | "brands" | "personal";
 
-/**
- * What opens when someone selects a project.
- * - mp4:     a file in /public (e.g. "/videos/projects/my-film.mp4") or any direct MP4 URL
- * - youtube: the video ID from youtube.com/watch?v=<ID>
- * - vimeo:   the numeric ID from vimeo.com/<ID>
- * - gallery: still pieces (covers, posters, carousels…) shown one by one
- */
-export type VideoSource =
-  | { type: "mp4"; src: string; poster?: string }
-  | { type: "youtube"; id: string }
-  | { type: "vimeo"; id: string; hash?: string };
-
-export type GallerySource = {
-  type: "gallery";
-  images: { src: string; alt: L; aspect: Aspect; caption?: L }[];
-};
-
-export type ProjectMedia = VideoSource | GallerySource;
-
-/**
- * How a project sits in the Selected Works grid (desktop).
- * feature   – full width, hero card
- * wide      – large card, left aligned (≈ 2/3 width)
- * wideRight – large card, right aligned
- * tall      – vertical 9:16 card next to a wide card
- * mid       – medium card, slightly inset
- * half      – half width (use two in a row)
- */
-export type WorkLayout = "feature" | "wide" | "wideRight" | "tall" | "mid" | "half";
+export type Aspect = "9:16" | "16:9" | "21:9" | "4:5" | "1:1";
 
 export type Project = {
-  slug: string;
-  title: L;
-  category: Category;
-  year: number;
-  /** Type of work, e.g. { en: "Edit · Motion · Color", es: "Edición · Motion · Color" } */
-  role: L;
-  /** One or two sentences */
-  description: L;
-  /** Shape of the card in the grid */
-  aspect: Aspect;
-  layout: WorkLayout;
-  /** Cover image shown in the grid (also used as the player poster) */
-  cover: string;
-  /** Optional short muted loop (3–6 s) that plays on hover / in view */
-  preview?: string;
-  media: ProjectMedia;
-  /** Extra lines shown inside the player, e.g. { label: "Client", value: "..." } */
-  details?: { label: L; value: L }[];
-  /** true = placeholder content, shows a "Demo" tag. Set false for your real work. */
-  demo?: boolean;
-};
-
-export type ArchiveItem = {
+  /** Unique, URL-friendly id. Also the share link: hxnss.co/#work/<id> */
   id: string;
-  title: L;
-  kind: L;
-  year: number;
-  image: string;
-  /** Optional muted loop */
-  loop?: string;
-  aspect: Aspect;
-  alt: L;
+  title: Text;
+  category: WorkCategory;
+  /** Client or brand (leave out for personal work) */
+  client?: string;
+  /** Short label such as "Brand Content / Social Media" */
+  tag?: Text;
+  year?: string;
+  /** What you did, e.g. "Edición" or { es: "Rodaje y edición", en: "Shooting & edit" } */
+  role?: Text;
+  description?: Text;
+  /** Optional line shown large next to the project (used in Personal / Experiments) */
+  quote?: Text;
+  /**
+   * - video: media is an MP4 in /public ("/videos/…"), or "youtube:<ID>" / "vimeo:<ID>"
+   * - image: media is an image in /public; add more in `gallery`
+   */
+  mediaType: "video" | "image";
+  media: string;
+  gallery?: string[];
+  /** Cover image (poster). Strongly recommended for videos */
+  thumbnail?: string;
+  /** Short muted loop (3–6 s) that plays on hover / when on screen */
+  preview?: string;
+  /** Defaults: 9:16 for vertical work, 16:9 for everything else */
+  aspect?: Aspect;
+  /** Featured projects are shown first inside their category */
+  featured?: boolean;
+  /** Description of the cover image for screen readers and search engines */
+  alt?: Text;
 };
 
 export type Service = {
@@ -83,6 +47,6 @@ export type Service = {
   description: L;
   /** Small technical note shown as a graphic detail */
   detail: L;
-  glyph: "frame" | "timeline" | "brand" | "vertical" | "wave" | "wheel" | "poster" | "type";
+  glyph: "frame" | "timeline" | "brand" | "vertical" | "wave" | "wheel" | "poster" | "type" | "camera";
   image: string;
 };

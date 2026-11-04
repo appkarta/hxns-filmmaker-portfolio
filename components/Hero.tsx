@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
-import { site } from "@/site.config";
+import { person, site } from "@/site.config";
 import { asset, timecode } from "@/lib/asset";
 import { tr, ui, type Locale } from "@/lib/i18n";
 import { REVEAL_EVENT } from "./Intro";
@@ -19,21 +20,19 @@ export default function Hero({ locale }: { locale: Locale }) {
   const { hero } = site;
   const t = ui[locale];
   const headline = tr(hero.headline, locale);
-  const specialty = tr(hero.meta.specialty, locale);
-  const location = tr(hero.meta.location, locale);
+  const location = `${person.city} — ${tr(person.country, locale)}`;
 
-  // Pick the right reel: vertical crop on phones, nothing on data-saver / 2G
+  // The muted loop loads after the page is interactive; nothing on data-saver / 2G (the poster stays)
   useEffect(() => {
     const v = video.current;
     if (!v) return;
     const conn = (navigator as Navigator & { connection?: NetInfo }).connection;
     if (conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? "")) return;
-    const mobile = window.matchMedia("(max-width: 767px), (max-aspect-ratio: 4/5)").matches;
-    v.src = asset(mobile ? hero.video.mobile : hero.video.desktop);
+    v.src = asset(hero.video.src);
     v.play().catch(() => {
       /* autoplay blocked — the poster stays */
     });
-  }, [hero.video.desktop, hero.video.mobile]);
+  }, [hero.video.src]);
 
   // Fit the HXNS wordmark to the full width of the frame
   useEffect(() => {
@@ -90,18 +89,20 @@ export default function Hero({ locale }: { locale: Locale }) {
       gsap.set(q("[data-hero-line] > span"), { yPercent: 110 });
       gsap.set(q("[data-hero-fade]"), { autoAlpha: 0, y: 18 });
       gsap.set(q(`.${styles.mark} span`), { yPercent: 100 });
-      gsap.set(q(`.${styles.media}`), { scale: 1.18 });
+      gsap.set(q(`.${styles.screen}`), { scale: 1.08, autoAlpha: 0 });
+      gsap.set(q(`.${styles.ambient}`), { scale: 1.15 });
     }, el);
 
     const play = () => {
       ctx.add(() => {
         const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-        tl.to(q(`.${styles.media}`), { scale: 1, duration: 2.4 })
+        tl.to(q(`.${styles.ambient}`), { scale: 1, duration: 2.4 })
+          .to(q(`.${styles.screen}`), { scale: 1, autoAlpha: 1, duration: 1.6 }, 0.2)
           .to(q(`.${styles.mark} span`), { yPercent: 0, duration: 1.6, stagger: 0.07 }, 0.15)
           .to(q("[data-hero-line] > span"), { yPercent: 0, duration: 1.3, stagger: 0.1 }, 0.35)
           .to(q("[data-hero-fade]"), { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.06 }, 0.6);
 
-        gsap.to(q(`.${styles.mediaWrap}`), {
+        gsap.to(q(`.${styles.ambient}`), {
           yPercent: 18,
           ease: "none",
           scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
@@ -124,26 +125,31 @@ export default function Hero({ locale }: { locale: Locale }) {
 
   return (
     <section id="top" ref={root} className={styles.hero} aria-label={t.heroLabel}>
-      <div className={styles.mediaWrap} aria-hidden="true">
-        <div className={styles.media}>
-          <picture>
-            <source media="(max-width: 767px), (max-aspect-ratio: 4/5)" srcSet={asset(hero.video.posterMobile)} />
-            <img className={styles.poster} src={asset(hero.video.poster)} alt="" fetchPriority="high" />
-          </picture>
-          <video
-            ref={video}
-            className={`${styles.video} ${playing ? styles.isPlaying : ""}`}
-            muted
-            loop
-            playsInline
-            preload="auto"
-            disablePictureInPicture
-            onPlaying={() => setPlaying(true)}
-            tabIndex={-1}
-          />
-        </div>
+      <div className={styles.ambient} aria-hidden="true">
+        <Image className={styles.ambientImg} src={asset(hero.video.ambient)} alt="" fill sizes="100vw" />
         <div className={styles.shade} />
       </div>
+
+      <figure className={styles.screen} aria-hidden="true">
+        <Image className={styles.poster} src={asset(hero.video.poster)} alt="" fill sizes="(max-width: 860px) 100vw, 40vw" priority />
+        <video
+          ref={video}
+          className={`${styles.video} ${playing ? styles.isPlaying : ""}`}
+          muted
+          loop
+          playsInline
+          preload="none"
+          disablePictureInPicture
+          onPlaying={() => setPlaying(true)}
+          tabIndex={-1}
+        />
+        <figcaption className={`mono ${styles.screenMeta}`}>
+          <span className={styles.rec}>
+            <span className={styles.recDot} /> {tr(hero.video.label, locale)}
+          </span>
+          <span ref={tc}>00:00:00:00</span>
+        </figcaption>
+      </figure>
 
       <div className={styles.frame} aria-hidden="true">
         <span />
@@ -154,14 +160,10 @@ export default function Hero({ locale }: { locale: Locale }) {
 
       <div className={styles.top}>
         <p className={`mono ${styles.meta}`} data-hero-fade>
-          <span className={styles.rec}>
-            <span className={styles.recDot} /> {t.showreel}
-          </span>
-          <span ref={tc}>00:00:00:00</span>
+          <span>{tr(hero.roles, locale)}</span>
         </p>
         <p className={`mono ${styles.meta} ${styles.metaRight}`} data-hero-fade>
-          {specialty && <span>{specialty}</span>}
-          {location && <span>{location}</span>}
+          <span>{location}</span>
           {site.availability.open && (
             <span className={styles.avail}>
               <span className="dot" aria-hidden="true" /> {tr(site.availability.label, locale)}
@@ -171,34 +173,31 @@ export default function Hero({ locale }: { locale: Locale }) {
       </div>
 
       <div className={styles.content}>
-        <h1 className={styles.headline}>
-          <span className="sr-only">
-            {site.name} — {headline.join(" ")}
-          </span>
+        <h1 className={`mono ${styles.kicker}`} data-hero-fade>
+          {tr(hero.h1, locale)}
+        </h1>
+        <p className={styles.headline}>
           {headline.map((line, i) => (
-            <span key={i} className="line-mask" data-hero-line aria-hidden="true">
+            <span key={i} className="line-mask" data-hero-line>
               <span>
                 {i === headline.length - 1 ? (
                   <>
-                    {line.replace(/\.$/, "")}
+                    {line.replace(/.$/, "")}
                     <span className={styles.period}>.</span>
                   </>
                 ) : (
-                  line
+                  `${line} `
                 )}
               </span>
             </span>
           ))}
-        </h1>
-        <p className={styles.subtitle} data-hero-fade>
-          {tr(hero.subtitle, locale)}
         </p>
         <div className={styles.ctas} data-hero-fade>
           <a href="#work" className="btn btn--solid">
             {tr(hero.primaryCta, locale)}
             <ArrowDownRight aria-hidden="true" />
           </a>
-          <a href="#contact" className="btn">
+          <a href="#about" className="btn">
             {tr(hero.secondaryCta, locale)}
             <ArrowUpRight aria-hidden="true" />
           </a>

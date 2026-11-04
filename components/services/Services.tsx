@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
-import { services } from "@/site.config";
+import { services, site } from "@/site.config";
 import { asset, pad2 } from "@/lib/asset";
 import { tr, ui, type Locale } from "@/lib/i18n";
 import AccentTitle from "../AccentTitle";
@@ -46,7 +46,7 @@ export default function Services({ locale }: { locale: Locale }) {
           </span>
         </h2>
         <p className={styles.lead} data-reveal="fade">
-          {t.servicesLead}
+          {tr(site.servicesLead, locale)}
         </p>
       </div>
 

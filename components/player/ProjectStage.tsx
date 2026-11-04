@@ -3,53 +3,62 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { GallerySource, Project } from "@/lib/types";
+import type { Project } from "@/lib/types";
 import { asset, pad2, ratio } from "@/lib/asset";
 import { tr, ui, type Locale } from "@/lib/i18n";
+import { aspectOf, parseMedia } from "@/lib/projects";
 import VideoPlayer from "./VideoPlayer";
 import EmbedPlayer from "./EmbedPlayer";
 import styles from "./Player.module.css";
 
-/** The screen area of the player: a video, an embed or a gallery of still pieces. */
+/** The screen area of the player: a video, an embed or one or more images. */
 export default function ProjectStage({ project, locale }: { project: Project; locale: Locale }) {
   const title = tr(project.title, locale);
-  const media = project.media;
+  const media = parseMedia(project);
   const [piece, setPiece] = useState(0);
-  const gallery = media.type === "gallery" ? media : null;
-  const aspect = gallery ? gallery.images[piece].aspect : project.aspect;
 
   return (
-    <div className={styles.stage} style={{ "--r": ratio(aspect) } as React.CSSProperties}>
+    <div className={styles.stage} style={{ "--r": ratio(aspectOf(project)) } as React.CSSProperties}>
       <div className={styles.screen}>
-        {media.type === "mp4" && (
-          <VideoPlayer src={media.src} poster={media.poster ?? project.cover} title={title} locale={locale} />
+        {media.kind === "mp4" && <VideoPlayer src={media.src} poster={project.thumbnail} title={title} locale={locale} />}
+        {(media.kind === "youtube" || media.kind === "vimeo") && (
+          <EmbedPlayer source={{ type: media.kind, id: media.id }} title={title} locale={locale} />
         )}
-        {(media.type === "youtube" || media.type === "vimeo") && <EmbedPlayer source={media} title={title} locale={locale} />}
-        {gallery && <Gallery gallery={gallery} index={piece} onChange={setPiece} title={title} locale={locale} />}
+        {media.kind === "images" && (
+          <Gallery
+            images={media.images}
+            alt={project.alt ? tr(project.alt, locale) : title}
+            index={piece}
+            onChange={setPiece}
+            title={title}
+            locale={locale}
+          />
+        )}
       </div>
     </div>
   );
 }
 
 function Gallery({
-  gallery,
+  images,
+  alt,
   index,
   onChange,
   title,
   locale,
 }: {
-  gallery: GallerySource;
+  images: string[];
+  alt: string;
   index: number;
   onChange: (i: number) => void;
   title: string;
   locale: Locale;
 }) {
   const t = ui[locale];
-  const total = gallery.images.length;
+  const total = images.length;
   const go = (dir: 1 | -1) => onChange((index + dir + total) % total);
-  const img = gallery.images[index];
 
-  // ← / → move between pieces (Shift + arrows still switch projects)
+  // ← / → move between images (Shift + arrows still switch projects)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -62,8 +71,8 @@ function Gallery({
 
   return (
     <figure className={styles.gallery} aria-roledescription="carousel" aria-label={title}>
-      <div className={styles.galleryImg} key={img.src}>
-        <Image src={asset(img.src)} alt={tr(img.alt, locale)} fill sizes="(max-width: 760px) 100vw, 70vw" className={styles.galleryPic} priority />
+      <div className={styles.galleryImg} key={images[index]}>
+        <Image src={asset(images[index])} alt={alt} fill sizes="(max-width: 760px) 100vw, 70vw" className={styles.galleryPic} priority />
       </div>
       {total > 1 && (
         <>
@@ -73,14 +82,13 @@ function Gallery({
           <button type="button" className={`${styles.galleryNav} ${styles.galleryNext}`} onClick={() => go(1)} aria-label={t.nextPiece}>
             <ArrowRight aria-hidden="true" />
           </button>
+          <figcaption className={`${styles.galleryCap} mono`} aria-live="polite">
+            <span>
+              {t.piece} {pad2(index + 1)} / {pad2(total)}
+            </span>
+          </figcaption>
         </>
       )}
-      <figcaption className={`${styles.galleryCap} mono`} aria-live="polite">
-        <span>
-          {t.piece} {pad2(index + 1)} / {pad2(total)}
-        </span>
-        {img.caption && <span>{tr(img.caption, locale)}</span>}
-      </figcaption>
     </figure>
   );
 }

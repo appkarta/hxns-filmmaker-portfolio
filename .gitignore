@@ -47,3 +47,7 @@ Thumbs.db
 # worker local secrets
 worker/.dev.vars
 worker/.wrangler/
+
+# Raw footage and original media (kept out of git; web versions live in public/)
+VIDEOS BASE/
+media/originals/

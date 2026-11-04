@@ -1,19 +1,26 @@
-import type { Category } from "./types";
+import type { WorkCategory } from "./types";
 
-export const locales = ["en", "es"] as const;
+/** Spanish is the main language (served at "/"); English lives at "/en/". */
+export const locales = ["es", "en"] as const;
 export type Locale = (typeof locales)[number];
-export const defaultLocale: Locale = "en";
+export const defaultLocale: Locale = "es";
 
-/** A value written once per language: { en: "...", es: "..." } */
+/** A value written once per language: { es: "...", en: "..." } */
 export type L<T = string> = Record<Locale, T>;
 
-export function tr<T>(value: L<T>, locale: Locale): T {
-  return value[locale] ?? value[defaultLocale];
+function isLocalized<T>(value: unknown): value is L<T> {
+  return typeof value === "object" && value !== null && !Array.isArray(value) && "es" in value && "en" in value;
+}
+
+/** Picks the right language. Plain values (same in every language) pass through. */
+export function tr<T>(value: L<T> | T, locale: Locale): T {
+  if (isLocalized<T>(value)) return value[locale] ?? value[defaultLocale];
+  return value;
 }
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-/** Site-relative path of a locale's home page ("/" or "/es/"), without the deploy base path. */
+/** Site-relative path of a locale's home page ("/" or "/en/"), without the deploy base path. */
 export function localeRoute(locale: Locale) {
   return locale === defaultLocale ? "/" : `/${locale}/`;
 }
@@ -23,132 +30,55 @@ export function localeHref(locale: Locale) {
   return `${BASE}${localeRoute(locale)}`;
 }
 
-export const localeNames: L = { en: "English", es: "Español" };
-export const htmlLang: L = { en: "en", es: "es" };
-export const ogLocale: L = { en: "en_US", es: "es_ES" };
+export const localeNames: L = { es: "Español", en: "English" };
+export const htmlLang: L = { es: "es-CO", en: "en" };
+export const ogLocale: L = { es: "es_CO", en: "en_US" };
 
-export const categoryLabels: Record<Category, L> = {
-  "Social Media Videos": { en: "Social Media Videos", es: "Videos para redes" },
-  "Music Videos": { en: "Music Videos", es: "Videoclips" },
-  "Music Visuals": { en: "Music Visuals", es: "Visuales musicales" },
-  "Graphic Pieces": { en: "Graphic Pieces", es: "Piezas gráficas" },
-  "Motion Graphics": { en: "Motion Graphics", es: "Motion graphics" },
-  "Brand Content": { en: "Brand Content", es: "Contenido de marca" },
-  "Video Edits": { en: "Video Edits", es: "Edición de video" },
-  "Creative Experiments": { en: "Creative Experiments", es: "Experimentos creativos" },
-};
+/** The four areas of the Work section, in the order they are listed. */
+export const workCategories: { id: WorkCategory; label: L; description: L; empty: L }[] = [
+  {
+    id: "vertical",
+    label: { es: "Vertical", en: "Vertical" },
+    description: {
+      es: "Reels, TikToks y contenido corto pensado para la pantalla del móvil.",
+      en: "Reels, TikToks and short-form content made for the phone screen.",
+    },
+    empty: { es: "Los próximos reels y piezas verticales aparecerán aquí.", en: "Upcoming reels and vertical pieces will appear here." },
+  },
+  {
+    id: "horizontal",
+    label: { es: "Horizontal", en: "Horizontal" },
+    description: {
+      es: "Piezas cinematográficas, videos comerciales y corporativos, storytelling y proyectos personales en 16:9 o más.",
+      en: "Cinematic pieces, commercial and corporate videos, storytelling and personal films in 16:9 and wider.",
+    },
+    empty: { es: "Los próximos videos horizontales aparecerán aquí.", en: "Upcoming horizontal films will appear here." },
+  },
+  {
+    id: "brands",
+    label: { es: "Marcas y comercial", en: "Brands & Commercial" },
+    description: {
+      es: "Trabajo hecho para marcas, negocios y clientes.",
+      en: "Work made for brands, businesses and clients.",
+    },
+    empty: { es: "Los próximos proyectos para marcas aparecerán aquí.", en: "Upcoming brand projects will appear here." },
+  },
+  {
+    id: "personal",
+    label: { es: "Personal / Experimentos", en: "Personal / Experiments" },
+    description: {
+      es: "Piezas propias: estilo, pruebas, storytelling y edición sin brief.",
+      en: "My own pieces: style, tests, storytelling and editing with no brief.",
+    },
+    empty: { es: "Los próximos experimentos aparecerán aquí.", en: "Upcoming experiments will appear here." },
+  },
+];
 
 /** Headings with an italic serif accent: [before, accent, after] */
 type Accent = [string, string, string];
 
-/** Interface copy (labels, buttons, aria text). Content copy lives in site.config.ts. */
+/** Interface copy (labels, buttons, aria text). Content lives in site.config.ts and data/projects.ts. */
 export const ui = {
-  en: {
-    skip: "Skip to content",
-    backToTop: "back to top",
-    letsTalk: "Let's talk",
-    openMenu: "Open menu",
-    closeMenu: "Close menu",
-    menu: "Menu",
-    close: "Close",
-    language: "Language",
-    primaryNav: "Primary",
-    mobileNav: "Mobile",
-    footerNav: "Footer",
-    heroLabel: "Introduction",
-    showreel: "Showreel",
-    scroll: "Scroll",
-    workLabel: "(01) Selected Works",
-    workTitle: ["Selected", "works", ""] as Accent,
-    workLead: "Social videos, music visuals and graphic pieces built on intention, rhythm and emotion. Select a project to open it.",
-    categories: "Categories",
-    projectsCount: (n: number) => `${n} projects`,
-    demo: "Demo",
-    demoNotice: "Placeholder projects with licensed stock footage — not client work.",
-    playFilm: "Play film",
-    viewProject: "View project",
-    playAria: (title: string, cat: string, year: number) => `Play ${title} — ${cat}, ${year}`,
-    selectedWorks: "Selected Works",
-    year: "Year",
-    work: "Work",
-    format: "Format",
-    previous: "Previous",
-    next: "Next",
-    projectNav: "Project navigation",
-    loadingVideo: "Loading video",
-    videoError: "This video couldn't be loaded.",
-    retry: "Try again",
-    play: "Play",
-    pause: "Pause",
-    mute: "Mute",
-    unmute: "Unmute",
-    fullscreen: "Fullscreen",
-    exitFullscreen: "Exit fullscreen",
-    seek: "Seek",
-    seekText: (t: number, d: number) => `${t} of ${d} seconds`,
-    videoSuffix: "video",
-    aboutLabel: "(02) Behind the edit",
-    aboutTitle: ["Behind", "the", "edit"] as Accent,
-    vision: "Vision",
-    approach: "Approach",
-    principles: "Principles",
-    portraitPlaceholder: "Portrait — placeholder",
-    servicesLabel: "(03) Services",
-    servicesTitle: ["What", "I", "make"] as Accent,
-    servicesLead: "From the first frame to the last post — edit, motion and design in one place, so every piece keeps the same voice on every platform.",
-    archiveLabel: "(04) Visual playground",
-    archiveTitle: ["Archive", "/ unclassified", ""] as Accent,
-    archiveLead: "Personal edits, color tests, motion studies, posters and stills. Work without a client — where the visual language gets tested first.",
-    archiveCount: (n: number) => `${n} entries`,
-    archiveHint: "— scroll →",
-    archiveAria: "Archive reel, scroll horizontally",
-    contactLabel: "(05) Contact",
-    startProject: "Start a project",
-    mailSubject: "New project — HXNS",
-    getInTouchOn: (c: string) => `Get in touch on ${c}`,
-    contactPending: "Contact channels opening soon.",
-    viewPieces: "View pieces",
-    viewCursor: "View",
-    piece: "Piece",
-    prevPiece: "Previous piece",
-    nextPiece: "Next piece",
-    form: {
-      title: "Tell me about your project",
-      name: "Name",
-      email: "Email",
-      type: "What do you need?",
-      types: [
-        "Social media videos",
-        "Music video",
-        "Visualizer / Spotify Canvas",
-        "Graphic pieces (covers, posters…)",
-        "Motion graphics",
-        "Brand or event content",
-        "Something else",
-      ],
-      timing: "When do you need it?",
-      timings: ["As soon as possible", "This month", "In 1–3 months", "Just exploring"],
-      optional: "optional",
-      message: "Message",
-      messagePlaceholder: "The idea, the format, the platform, any references…",
-      send: "Send message",
-      sending: "Sending…",
-      success: "Thanks! Your message is on its way — I'll get back to you soon.",
-      error: "Something went wrong and the message wasn't sent. Please try again in a moment.",
-      offline: "The form isn't active yet — it will be very soon.",
-      required: "This field is required.",
-      invalidEmail: "Enter a valid email address.",
-      shortMessage: "Tell me a little more (at least 10 characters).",
-      shortName: "Enter at least 2 characters.",
-      rateLimited: "Too many messages in a short time. Please wait a minute and try again.",
-      captcha: "Please complete the verification and send again.",
-      privacy: "Your details are only used to reply to you.",
-      sendAnother: "Send another message",
-    },
-    scenes: ["00 — Showreel", "01 — Selected works", "02 — Behind the edit", "03 — Services", "04 — Archive", "05 — Contact"],
-    playCursor: "Play",
-    backToTopLink: "Back to top ↑",
-  },
   es: {
     skip: "Saltar al contenido",
     backToTop: "volver arriba",
@@ -161,22 +91,23 @@ export const ui = {
     primaryNav: "Principal",
     mobileNav: "Móvil",
     footerNav: "Pie de página",
-    heroLabel: "Introducción",
-    showreel: "Showreel",
+    heroLabel: "Presentación",
     scroll: "Desliza",
-    workLabel: "(01) Proyectos destacados",
-    workTitle: ["Proyectos", "destacados", ""] as Accent,
-    workLead: "Videos para redes, visuales musicales y piezas gráficas construidos con intención, ritmo y emoción. Selecciona un proyecto para abrirlo.",
-    categories: "Categorías",
-    projectsCount: (n: number) => `${n} proyectos`,
-    demo: "Demo",
-    demoNotice: "Proyectos de muestra con metraje de stock con licencia — no son trabajos para clientes.",
-    playFilm: "Ver film",
+    workLabel: "(01) Trabajo",
+    workTitle: ["Mi", "trabajo", ""] as Accent,
+    workLead: "Un archivo vivo: lo que estoy haciendo hoy, organizado por formato. Crece conmigo.",
+    workNav: "Categorías de trabajo",
+    projectsCount: (n: number) => `${n} ${n === 1 ? "proyecto" : "proyectos"}`,
+    inProgress: "En construcción",
+    playFilm: "Reproducir",
     viewProject: "Ver proyecto",
-    playAria: (title: string, cat: string, year: number) => `Reproducir ${title} — ${cat}, ${year}`,
-    selectedWorks: "Proyectos destacados",
+    playAria: (title: string, cat: string) => `Reproducir ${title} — ${cat}`,
+    viewPieces: "Ver piezas",
+    selectedWorks: "Trabajo",
+    client: "Cliente",
+    category: "Categoría",
+    role: "Rol",
     year: "Año",
-    work: "Trabajo",
     format: "Formato",
     previous: "Anterior",
     next: "Siguiente",
@@ -193,50 +124,38 @@ export const ui = {
     seek: "Buscar",
     seekText: (t: number, d: number) => `${t} de ${d} segundos`,
     videoSuffix: "video",
-    aboutLabel: "(02) Detrás de la edición",
-    aboutTitle: ["Detrás", "de la", "edición"] as Accent,
-    vision: "Visión",
-    approach: "Enfoque",
-    principles: "Principios",
-    portraitPlaceholder: "Retrato — marcador de posición",
-    servicesLabel: "(03) Servicios",
-    servicesTitle: ["Lo", "que", "hago"] as Accent,
-    servicesLead: "Del primer fotograma a la última publicación: edición, motion y diseño en un solo lugar, para que cada pieza mantenga la misma voz en todas las plataformas.",
-    archiveLabel: "(04) Laboratorio visual",
-    archiveTitle: ["Archivo", "/ sin clasificar", ""] as Accent,
-    archiveLead: "Edits personales, pruebas de color, estudios de motion, pósters y fotografía. Trabajo sin cliente: donde el lenguaje visual se pone a prueba primero.",
-    archiveCount: (n: number) => `${n} piezas`,
-    archiveHint: "— desliza →",
-    archiveAria: "Archivo, desplázate en horizontal",
-    contactLabel: "(05) Contacto",
-    startProject: "Empezar un proyecto",
-    mailSubject: "Nuevo proyecto — HXNS",
-    getInTouchOn: (c: string) => `Escríbeme por ${c}`,
-    contactPending: "Canales de contacto disponibles muy pronto.",
-    viewPieces: "Ver piezas",
-    viewCursor: "Ver",
     piece: "Pieza",
     prevPiece: "Pieza anterior",
     nextPiece: "Pieza siguiente",
+    soundOn: "Abre el proyecto para verlo con sonido",
+    aboutLabel: "(02) Sobre mí",
+    aboutTitle: ["York", "Hans", ""] as Accent,
+    name: "Nombre",
+    age: "Edad",
+    basedIn: "Base",
+    focus: "Enfoque",
+    servicesLabel: "Servicios",
+    servicesTitle: ["Lo", "que", "hago"] as Accent,
+    contactLabel: "(03) Contacto",
     form: {
       title: "Cuéntame tu proyecto",
       name: "Nombre",
       email: "Correo",
       type: "¿Qué necesitas?",
       types: [
-        "Videos para redes sociales",
-        "Videoclip",
-        "Visualizer / Spotify Canvas",
-        "Piezas gráficas (portadas, pósters…)",
-        "Motion graphics",
-        "Contenido para marca o evento",
+        "Contenido vertical (Reels, TikTok)",
+        "Video para mi marca o empresa",
+        "Video corporativo",
+        "Edición de video",
+        "Fotografía",
+        "Proyecto personal o creativo",
         "Otra cosa",
       ],
       timing: "¿Para cuándo lo necesitas?",
       timings: ["Lo antes posible", "Este mes", "En 1–3 meses", "Solo estoy explorando"],
       optional: "opcional",
       message: "Mensaje",
-      messagePlaceholder: "La idea, el formato, la plataforma, referencias…",
+      messagePlaceholder: "La idea, el formato, dónde se va a publicar, referencias…",
       send: "Enviar mensaje",
       sending: "Enviando…",
       success: "¡Gracias! Tu mensaje ya está en camino; te respondo pronto.",
@@ -251,12 +170,109 @@ export const ui = {
       privacy: "Tus datos solo se usan para responderte.",
       sendAnother: "Enviar otro mensaje",
     },
-    scenes: ["00 — Showreel", "01 — Proyectos destacados", "02 — Detrás de la edición", "03 — Servicios", "04 — Archivo", "05 — Contacto"],
+    scenes: ["00 — HXNS", "01 — Trabajo", "02 — Sobre mí", "03 — Contacto"],
     playCursor: "Ver",
+    viewCursor: "Ver",
     backToTopLink: "Volver arriba ↑",
+  },
+  en: {
+    skip: "Skip to content",
+    backToTop: "back to top",
+    letsTalk: "Let's talk",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    menu: "Menu",
+    close: "Close",
+    language: "Language",
+    primaryNav: "Primary",
+    mobileNav: "Mobile",
+    footerNav: "Footer",
+    heroLabel: "Introduction",
+    scroll: "Scroll",
+    workLabel: "(01) Work",
+    workTitle: ["My", "work", ""] as Accent,
+    workLead: "A living archive: what I'm making today, organized by format. It grows as I do.",
+    workNav: "Work categories",
+    projectsCount: (n: number) => `${n} ${n === 1 ? "project" : "projects"}`,
+    inProgress: "In progress",
+    playFilm: "Play",
+    viewProject: "View project",
+    playAria: (title: string, cat: string) => `Play ${title} — ${cat}`,
+    viewPieces: "View pieces",
+    selectedWorks: "Work",
+    client: "Client",
+    category: "Category",
+    role: "Role",
+    year: "Year",
+    format: "Format",
+    previous: "Previous",
+    next: "Next",
+    projectNav: "Project navigation",
+    loadingVideo: "Loading video",
+    videoError: "This video couldn't be loaded.",
+    retry: "Try again",
+    play: "Play",
+    pause: "Pause",
+    mute: "Mute",
+    unmute: "Unmute",
+    fullscreen: "Fullscreen",
+    exitFullscreen: "Exit fullscreen",
+    seek: "Seek",
+    seekText: (t: number, d: number) => `${t} of ${d} seconds`,
+    videoSuffix: "video",
+    piece: "Piece",
+    prevPiece: "Previous piece",
+    nextPiece: "Next piece",
+    soundOn: "Open the project to watch it with sound",
+    aboutLabel: "(02) About",
+    aboutTitle: ["York", "Hans", ""] as Accent,
+    name: "Name",
+    age: "Age",
+    basedIn: "Based in",
+    focus: "Focus",
+    servicesLabel: "Services",
+    servicesTitle: ["What", "I", "do"] as Accent,
+    contactLabel: "(03) Contact",
+    form: {
+      title: "Tell me about your project",
+      name: "Name",
+      email: "Email",
+      type: "What do you need?",
+      types: [
+        "Vertical content (Reels, TikTok)",
+        "Video for my brand or company",
+        "Corporate video",
+        "Video editing",
+        "Photography",
+        "Personal or creative project",
+        "Something else",
+      ],
+      timing: "When do you need it?",
+      timings: ["As soon as possible", "This month", "In 1–3 months", "Just exploring"],
+      optional: "optional",
+      message: "Message",
+      messagePlaceholder: "The idea, the format, where it will be published, references…",
+      send: "Send message",
+      sending: "Sending…",
+      success: "Thanks! Your message is on its way — I'll get back to you soon.",
+      error: "Something went wrong and the message wasn't sent. Please try again in a moment.",
+      offline: "The form isn't active yet — it will be very soon.",
+      required: "This field is required.",
+      invalidEmail: "Enter a valid email address.",
+      shortMessage: "Tell me a little more (at least 10 characters).",
+      shortName: "Enter at least 2 characters.",
+      rateLimited: "Too many messages in a short time. Please wait a minute and try again.",
+      captcha: "Please complete the verification and send again.",
+      privacy: "Your details are only used to reply to you.",
+      sendAnother: "Send another message",
+    },
+    scenes: ["00 — HXNS", "01 — Work", "02 — About", "03 — Contact"],
+    playCursor: "Play",
+    viewCursor: "View",
+    backToTopLink: "Back to top ↑",
   },
 };
 
-export type UI = (typeof ui)["en"];
-// Compile-time check: the Spanish dictionary must have exactly the same keys as English
-ui.es satisfies UI;
+export type UI = (typeof ui)["es"];
+// Compile-time check: the English dictionary must have exactly the same keys as Spanish
+ui.en satisfies UI;

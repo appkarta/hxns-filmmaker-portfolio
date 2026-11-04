@@ -75,6 +75,16 @@ export default function Glyph({ name, className }: { name: Service["glyph"]; cla
           <circle cx="31" cy="38" r="1.6" fill="currentColor" />
         </svg>
       );
+    case "camera":
+      return (
+        <svg {...common}>
+          <rect x="5" y="14" width="38" height="26" rx="2" />
+          <path d="M17 14l3-5h8l3 5" />
+          <circle cx="24" cy="27" r="7.5" />
+          <circle cx="24" cy="27" r="3" strokeDasharray="2 2" />
+          <circle cx="37" cy="19" r="1.4" fill="currentColor" />
+        </svg>
+      );
     case "type":
       return (
         <svg {...common}>
