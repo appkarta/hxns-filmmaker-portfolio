@@ -4,7 +4,7 @@
   z-index: 200;
   pointer-events: auto;
   /* Fail-safe: never block the page if scripts are slow or disabled */
-  animation: failsafe 0.01s linear 5s forwards;
+  animation: failsafe 0.01s linear 3s forwards;
 }
 
 @keyframes failsafe {

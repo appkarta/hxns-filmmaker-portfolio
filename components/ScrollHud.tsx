@@ -16,19 +16,30 @@ export default function ScrollHud({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     let raf = 0;
+    let lastTc = "";
     const RUNTIME = 180; // the whole page = a 3-minute film
+    // Section positions are measured once (and when the layout changes), not on every scroll frame
+    let tops: number[] = [];
+    let max = 0;
+    const measure = () => {
+      tops = SECTION_IDS.map((id) => {
+        const el = document.getElementById(id);
+        return el ? el.getBoundingClientRect().top + window.scrollY : Infinity;
+      });
+      max = document.documentElement.scrollHeight - window.innerHeight;
+    };
     const update = () => {
       raf = 0;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      const y = window.scrollY;
+      const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
       if (bar.current) bar.current.style.transform = `scaleX(${p})`;
-      if (tc.current) tc.current.textContent = timecode(p * RUNTIME);
+      const nextTc = timecode(p * RUNTIME);
+      if (tc.current && nextTc !== lastTc) tc.current.textContent = lastTc = nextTc;
       if (scene.current) {
-        const mid = window.innerHeight * 0.45;
+        const mid = y + window.innerHeight * 0.45;
         let label = scenes[0];
-        SECTION_IDS.forEach((id, i) => {
-          const el = document.getElementById(id);
-          if (el && el.getBoundingClientRect().top <= mid) label = scenes[i];
+        tops.forEach((top, i) => {
+          if (top <= mid) label = scenes[i];
         });
         if (scene.current.textContent !== label) scene.current.textContent = label;
       }
@@ -36,12 +47,20 @@ export default function ScrollHud({ locale }: { locale: Locale }) {
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
+    const onResize = () => {
+      measure();
+      onScroll();
+    };
+    measure();
     update();
+    const ro = new ResizeObserver(onResize);
+    ro.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
+      ro.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
     };
   }, [scenes]);

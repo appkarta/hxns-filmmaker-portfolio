@@ -34,15 +34,29 @@ export default function Hero({ locale }: { locale: Locale }) {
     });
   }, [hero.video.src]);
 
-  // Live timecode tied to the reel
+  // Live timecode tied to the reel — only while the hero is on screen, and only when the value changes
   useEffect(() => {
+    const el = root.current;
+    if (!el) return;
     let raf = 0;
+    let last = "";
     const tick = () => {
-      if (tc.current && video.current) tc.current.textContent = timecode(video.current.currentTime);
+      const v = video.current;
+      if (tc.current && v) {
+        const next = timecode(v.currentTime);
+        if (next !== last) tc.current.textContent = last = next;
+      }
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    const io = new IntersectionObserver(([entry]) => {
+      cancelAnimationFrame(raf);
+      if (entry.isIntersecting) raf = requestAnimationFrame(tick);
+    });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   // Pause the reel when the hero is off screen

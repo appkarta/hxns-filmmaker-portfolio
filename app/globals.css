@@ -319,6 +319,13 @@ html.has-cursor button {
   cursor: none;
 }
 
+/* The full-screen grain layer is skipped on touch devices: costly to composite, barely visible on small screens */
+@media (hover: none), (pointer: coarse) {
+  .grain {
+    display: none;
+  }
+}
+
 /* Small mono labels stay legible on phones (12 px minimum) */
 @media (max-width: 760px) {
   :root {
