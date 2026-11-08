@@ -14,9 +14,13 @@ type Props = { project: Project; locale: Locale; sizes: string; className?: stri
 
 type NetInfo = { saveData?: boolean };
 
+/** Seconds each photo of a gallery stays on its card */
+const SLIDE_SECONDS = 4;
+
 /**
  * A project's poster that opens the player. The short muted preview loop only loads
  * on hover (desktop) or while the card is in the middle of the screen (touch).
+ * Photo galleries crossfade through their photos on the card while it is on screen.
  */
 export default function MediaCard({ project, locale, sizes, className = "", label }: Props) {
   const t = ui[locale];
@@ -30,6 +34,10 @@ export default function MediaCard({ project, locale, sizes, className = "", labe
   const title = tr(project.title, locale);
   const category = tr(workCategories.find((c) => c.id === project.category)!.label, locale);
   const cover = project.thumbnail ?? (isImage ? project.media : undefined);
+  const extra = isImage ? (project.gallery ?? []) : [];
+  // 0 = the cover; 1… = gallery photos layered on top of it (loaded once the card is first on screen)
+  const [shown, setShown] = useState(0);
+  const [slidesOn, setSlidesOn] = useState(false);
 
   const start = () => {
     const v = video.current;
@@ -62,6 +70,26 @@ export default function MediaCard({ project, locale, sizes, className = "", labe
     return () => io.disconnect();
   }, [project.preview]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Galleries: next photo every few seconds — only while the card is on screen and the tab is visible
+  useEffect(() => {
+    const el = card.current;
+    if (!el || extra.length === 0) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let onScreen = false;
+    const io = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      if (onScreen) setSlidesOn(true);
+    });
+    io.observe(el);
+    const id = window.setInterval(() => {
+      if (onScreen && !document.hidden) setShown((i) => (i + 1) % (extra.length + 1));
+    }, SLIDE_SECONDS * 1000);
+    return () => {
+      io.disconnect();
+      window.clearInterval(id);
+    };
+  }, [extra.length]);
+
   return (
     <a
       ref={card}
@@ -90,6 +118,17 @@ export default function MediaCard({ project, locale, sizes, className = "", labe
               className={styles.cover}
             />
           )}
+          {slidesOn &&
+            extra.map((src, i) => (
+              <Image
+                key={src}
+                src={asset(src)}
+                alt=""
+                fill
+                sizes={sizes}
+                className={`${styles.cover} ${styles.slide} ${shown === i + 1 ? styles.isShown : ""}`}
+              />
+            ))}
           {project.preview && (
             <video ref={video} className={styles.preview} muted loop playsInline preload="none" tabIndex={-1} aria-hidden="true" />
           )}

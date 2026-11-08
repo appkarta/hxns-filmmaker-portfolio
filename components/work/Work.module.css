@@ -138,6 +138,17 @@
 .cover {
   filter: saturate(0.9) brightness(0.9);
 }
+/* Gallery photos sit on top of the cover and fade in one at a time */
+.cover.slide {
+  opacity: 0;
+  transition:
+    transform 1.4s var(--ease-out),
+    opacity 1.2s ease,
+    filter 0.8s ease;
+}
+.cover.slide.isShown {
+  opacity: 1;
+}
 .preview {
   position: absolute;
   inset: 0;
