@@ -1,21 +1,53 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { person, site } from "@/site.config";
-import { asset } from "@/lib/asset";
+import { asset, pad2 } from "@/lib/asset";
 import { tr, ui, type Locale } from "@/lib/i18n";
 import { REVEAL_EVENT } from "./Intro";
 import styles from "./Hero.module.css";
 
 export default function Hero({ locale }: { locale: Locale }) {
   const root = useRef<HTMLElement>(null);
+  // Only the first photo loads with the page; the rest join once it has loaded (never with reduced motion)
+  const [allLoaded, setAllLoaded] = useState(false);
+  const [current, setCurrent] = useState(0);
   const { hero } = site;
   const t = ui[locale];
   const headline = tr(hero.headline, locale);
   const location = `${person.city} — ${tr(person.country, locale)}`;
+
+  const slides = allLoaded ? hero.slides : hero.slides.slice(0, 1);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ready = () => setAllLoaded(true);
+    if (document.readyState === "complete") {
+      const id = requestAnimationFrame(ready);
+      return () => cancelAnimationFrame(id);
+    }
+    window.addEventListener("load", ready, { once: true });
+    return () => window.removeEventListener("load", ready);
+  }, []);
+
+  // Crossfade to the next photo every few seconds — only while the hero is on screen and the tab is visible
+  useEffect(() => {
+    const el = root.current;
+    if (!el || !allLoaded || hero.slides.length < 2) return;
+    let onScreen = true;
+    const io = new IntersectionObserver(([entry]) => (onScreen = entry.isIntersecting));
+    io.observe(el);
+    const id = window.setInterval(() => {
+      if (onScreen && !document.hidden) setCurrent((i) => (i + 1) % hero.slides.length);
+    }, hero.slideSeconds * 1000);
+    return () => {
+      io.disconnect();
+      window.clearInterval(id);
+    };
+  }, [allLoaded, hero.slides.length, hero.slideSeconds]);
 
   // Entrance, synced with the intro, plus a slow scroll-out
   useEffect(() => {
@@ -63,16 +95,40 @@ export default function Hero({ locale }: { locale: Locale }) {
   return (
     <section id="top" ref={root} className={styles.hero} aria-label={t.heroLabel}>
       <div className={styles.ambient} aria-hidden="true">
-        <Image className={styles.ambientImg} src={asset(hero.image.ambient)} alt="" fill sizes="100vw" />
+        {slides.map((s, i) => (
+          <Image
+            key={s.ambient}
+            className={`${styles.ambientImg} ${styles.slide} ${i === current ? styles.isActive : ""}`}
+            src={asset(s.ambient)}
+            alt=""
+            fill
+            sizes="100vw"
+          />
+        ))}
         <div className={styles.shade} />
       </div>
 
       <figure className={styles.screen} aria-hidden="true">
-        <Image className={styles.poster} src={asset(hero.image.src)} alt="" fill sizes="(max-width: 860px) 100vw, 40vw" priority />
+        {slides.map((s, i) => (
+          <Image
+            key={s.src}
+            className={`${styles.poster} ${styles.slide} ${i === current ? styles.isActive : ""}`}
+            src={asset(s.src)}
+            alt=""
+            fill
+            sizes="(max-width: 860px) 100vw, 40vw"
+            priority={i === 0}
+          />
+        ))}
         <figcaption className={`mono ${styles.screenMeta}`}>
           <span className={styles.rec}>
-            <span className={styles.recDot} /> {tr(hero.image.label, locale)}
+            <span className={styles.recDot} /> {tr(hero.slides[current].label, locale)}
           </span>
+          {slides.length > 1 && (
+            <span>
+              {pad2(current + 1)} / {pad2(hero.slides.length)}
+            </span>
+          )}
         </figcaption>
       </figure>
 

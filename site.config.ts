@@ -43,12 +43,34 @@ export const site = {
     roles: { es: "Filmmaker · Editor de video · Creativo visual", en: "Filmmaker · Video Editor · Visual Creative" },
     primaryCta: { es: "Explora mi trabajo", en: "Explore my work" },
     secondaryCta: { es: "Conóceme", en: "Get to know me" },
-    /** Vertical still on desktop, full-bleed background on phones; ambient = blurred backdrop */
-    image: {
-      src: "/images/projects/events/en-vivo-haffit.webp",
-      ambient: "/images/hero/hero-live-ambient.webp",
-      label: { es: "En vivo — Haffit", en: "Live — Haffit" },
-    },
+    /**
+     * Photos that crossfade in the hero (vertical screen on desktop, full-bleed on phones).
+     * The first one loads first and stays put with reduced motion. ambient = blurred backdrop.
+     */
+    slides: [
+      {
+        src: "/images/projects/events/en-vivo-haffit.webp",
+        ambient: "/images/hero/ambient-haffit.webp",
+        label: { es: "En vivo — Haffit", en: "Live — Haffit" },
+      },
+      {
+        src: "/images/projects/events/en-vivo-el-vega.webp",
+        ambient: "/images/hero/ambient-el-vega.webp",
+        label: { es: "En vivo — El Vega", en: "Live — El Vega" },
+      },
+      {
+        src: "/images/projects/events/dj-en-cabina.webp",
+        ambient: "/images/hero/ambient-dj.webp",
+        label: { es: "DJ en cabina", en: "DJ in the booth" },
+      },
+      {
+        src: "/images/projects/events/en-vivo-el-vega-02.webp",
+        ambient: "/images/hero/ambient-el-vega-02.webp",
+        label: { es: "En vivo — El Vega", en: "Live — El Vega" },
+      },
+    ],
+    /** Seconds each photo stays on screen */
+    slideSeconds: 5,
   },
 
   /** Availability badge (hero, mobile menu and contact). Set `open: false` to hide it. */
