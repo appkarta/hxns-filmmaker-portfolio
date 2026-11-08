@@ -17,11 +17,9 @@ export function projectsIn(category: WorkCategory): Project[] {
   return [...list.filter((p) => p.featured), ...list.filter((p) => !p.featured)];
 }
 
-/** Categories in display order: the ones with work first, empty ones last */
+/** Categories shown on the page: only the ones with work, in the order of workCategories */
 export function categoriesInDisplayOrder() {
-  const withWork = workCategories.filter((c) => projectsIn(c.id).length > 0);
-  const empty = workCategories.filter((c) => projectsIn(c.id).length === 0);
-  return [...withWork, ...empty];
+  return workCategories.filter((c) => projectsIn(c.id).length > 0);
 }
 
 /** Every project in the order it appears on the page (used by the player's previous / next) */

@@ -13,7 +13,8 @@
  *
  *  Text can be one string (same in both languages) or { es: "…", en: "…" }.
  *  Leave out any field you don't have yet — it simply won't be shown.
- *  Categories: "vertical" | "horizontal" | "brands" | "personal"
+ *  Categories: "vertical" | "horizontal" | "brands" | "events" | "personal"
+ *  A category only appears on the page once it has at least one project.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 import type { Project } from "@/lib/types";
@@ -74,7 +75,7 @@ export const projects: Project[] = [
   {
     id: "dj-en-cabina",
     title: { es: "DJ en cabina", en: "DJ in the booth" },
-    category: "personal",
+    category: "events",
     tag: { es: "Fotografía", en: "Photography" },
     // TODO: add the event, artist or year if you want them shown
     quote: {
@@ -82,16 +83,51 @@ export const projects: Project[] = [
       en: "You can't see music. But you can see it in the hands, the light and the focus.",
     },
     description: {
-      es: "Retrato en cabina bajo luces de escenario: el controlador, las manos y un DJ metido en su set. Fotografía personal, el mismo ojo de los videos en un solo fotograma.",
-      en: "A booth portrait under stage lights: the decks, the hands and a DJ locked into the set. Personal photography, the same eye as the videos in a single frame.",
+      es: "Retrato en cabina bajo luces de escenario: el controlador, las manos y un DJ metido en su set. La misma mirada de los videos, en un solo fotograma.",
+      en: "A booth portrait under stage lights: the decks, the hands and a DJ locked into the set. The same eye as the videos, in a single frame.",
     },
     mediaType: "image",
-    media: "/images/projects/personal/dj-en-cabina.webp",
-    thumbnail: "/images/projects/personal/dj-en-cabina.webp",
+    media: "/images/projects/events/dj-en-cabina.webp",
+    thumbnail: "/images/projects/events/dj-en-cabina.webp",
     aspect: "3:4",
     alt: {
       es: "DJ con gorra y gafas oscuras mezclando en un controlador Denon bajo luces de escenario verdes y amarillas",
       en: "DJ in a cap and dark glasses mixing on a Denon controller under green and yellow stage lights",
     },
+  },
+  {
+    id: "en-vivo",
+    title: { es: "En vivo", en: "Live" },
+    category: "events",
+    tag: { es: "Fotografía de conciertos", en: "Concert photography" },
+    // TODO: add the events, cities or years if you want them shown
+    quote: {
+      es: "Desde el público, con la cámara arriba: lo que se vive en un show también se puede guardar en una foto.",
+      en: "From the crowd, camera up: what you feel at a show can also live in a photo.",
+    },
+    description: {
+      es: "Fotografía de conciertos: luces, humo, chispas y miles de pantallas encendidas. El Vega y Haffit en tarima.",
+      en: "Concert photography: lights, smoke, sparks and thousands of phone screens lit up. El Vega and Haffit on stage.",
+    },
+    mediaType: "image",
+    media: "/images/projects/events/en-vivo-el-vega.webp",
+    gallery: ["/images/projects/events/en-vivo-haffit.webp", "/images/projects/events/en-vivo-el-vega-02.webp"],
+    thumbnail: "/images/projects/events/en-vivo-el-vega.webp",
+    aspect: "5:4",
+    featured: true,
+    alt: {
+      es: "El Vega cantando agachado en tarima entre dos columnas de chispas, con luces azules y el público en primer plano",
+      en: "El Vega singing crouched on stage between two columns of sparks, blue lights above and the crowd in the foreground",
+    },
+    galleryAlt: [
+      {
+        es: "Concierto de Haffit visto desde lo alto: tarima con luces verdes y naranjas, pantalla gigante con un personaje animado y un público enorme con celulares encendidos",
+        en: "Haffit concert seen from above: stage with green and orange lights, a giant screen with an animated character and a huge crowd holding up lit phones",
+      },
+      {
+        es: "El Vega cantando con el micrófono en alto entre humo y luces moradas",
+        en: "El Vega singing with the mic raised among smoke and purple lights",
+      },
+    ],
   },
 ];

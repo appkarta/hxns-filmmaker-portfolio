@@ -34,8 +34,8 @@ export const localeNames: L = { es: "Español", en: "English" };
 export const htmlLang: L = { es: "es-CO", en: "en" };
 export const ogLocale: L = { es: "es_CO", en: "en_US" };
 
-/** The four areas of the Work section, in the order they are listed. */
-export const workCategories: { id: WorkCategory; label: L; description: L; empty: L }[] = [
+/** The areas of the Work section, in the order they are listed. Only the ones with projects are shown. */
+export const workCategories: { id: WorkCategory; label: L; description: L }[] = [
   {
     id: "vertical",
     label: { es: "Vertical", en: "Vertical" },
@@ -43,7 +43,6 @@ export const workCategories: { id: WorkCategory; label: L; description: L; empty
       es: "Reels, TikToks y contenido corto pensado para la pantalla del móvil.",
       en: "Reels, TikToks and short-form content made for the phone screen.",
     },
-    empty: { es: "Los próximos reels y piezas verticales aparecerán aquí.", en: "Upcoming reels and vertical pieces will appear here." },
   },
   {
     id: "horizontal",
@@ -52,7 +51,6 @@ export const workCategories: { id: WorkCategory; label: L; description: L; empty
       es: "Piezas cinematográficas, videos comerciales y corporativos, storytelling y proyectos personales en 16:9 o más.",
       en: "Cinematic pieces, commercial and corporate videos, storytelling and personal films in 16:9 and wider.",
     },
-    empty: { es: "Los próximos videos horizontales aparecerán aquí.", en: "Upcoming horizontal films will appear here." },
   },
   {
     id: "brands",
@@ -61,7 +59,14 @@ export const workCategories: { id: WorkCategory; label: L; description: L; empty
       es: "Trabajo hecho para marcas, negocios y clientes.",
       en: "Work made for brands, businesses and clients.",
     },
-    empty: { es: "Los próximos proyectos para marcas aparecerán aquí.", en: "Upcoming brand projects will appear here." },
+  },
+  {
+    id: "events",
+    label: { es: "Artistas y eventos", en: "Artists & Events" },
+    description: {
+      es: "Conciertos, artistas en tarima y la energía de los eventos en vivo.",
+      en: "Concerts, artists on stage and the energy of live events.",
+    },
   },
   {
     id: "personal",
@@ -70,7 +75,6 @@ export const workCategories: { id: WorkCategory; label: L; description: L; empty
       es: "Piezas propias: estilo, pruebas, storytelling y edición sin brief.",
       en: "My own pieces: style, tests, storytelling and editing with no brief.",
     },
-    empty: { es: "Los próximos experimentos aparecerán aquí.", en: "Upcoming experiments will appear here." },
   },
 ];
 
@@ -98,7 +102,6 @@ export const ui = {
     workLead: "Un archivo vivo: lo que estoy haciendo hoy, organizado por formato. Crece conmigo.",
     workNav: "Categorías de trabajo",
     projectsCount: (n: number) => `${n} ${n === 1 ? "proyecto" : "proyectos"}`,
-    inProgress: "En construcción",
     playFilm: "Reproducir",
     viewProject: "Ver proyecto",
     playAria: (title: string, cat: string) => `Reproducir ${title} — ${cat}`,
@@ -195,7 +198,6 @@ export const ui = {
     workLead: "A living archive: what I'm making today, organized by format. It grows as I do.",
     workNav: "Work categories",
     projectsCount: (n: number) => `${n} ${n === 1 ? "project" : "projects"}`,
-    inProgress: "In progress",
     playFilm: "Play",
     viewProject: "View project",
     playAria: (title: string, cat: string) => `Play ${title} — ${cat}`,

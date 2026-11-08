@@ -15,7 +15,7 @@ import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, statSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
 
-const CATEGORIES = ["vertical", "horizontal", "brands", "personal"];
+const CATEGORIES = ["vertical", "horizontal", "brands", "events", "personal"];
 const args = process.argv.slice(2);
 const flag = (name) => {
   const i = args.indexOf(name);

@@ -10,7 +10,7 @@ import styles from "./Work.module.css";
 
 type Ctx = { locale: Locale; t: (typeof ui)[Locale] };
 
-/** Work: Vertical · Horizontal · Brands & Commercial · Personal / Experiments, all driven by data/projects.ts */
+/** Work: Vertical · Horizontal · Brands & Commercial · Artists & Events · Personal / Experiments, all driven by data/projects.ts */
 export default function Work({ locale }: { locale: Locale }) {
   const t = ui[locale];
   const ctx = { locale, t };
@@ -44,14 +44,14 @@ export default function Work({ locale }: { locale: Locale }) {
       {categories.map((c, i) => {
         const items = projectsIn(c.id);
         return (
-          <div key={c.id} id={`work-${c.id}`} className={`container ${styles.block} ${items.length ? "" : styles.blockEmpty}`}>
+          <div key={c.id} id={`work-${c.id}`} className={`container ${styles.block}`}>
             <header className={styles.blockHead} data-reveal="stagger">
               <span className={`mono ${styles.blockNum}`}>{pad2(i + 1)}</span>
               <h3 className={styles.blockTitle}>{tr(c.label, locale)}</h3>
               <p className={styles.blockDesc}>{tr(c.description, locale)}</p>
               <span className="mono dim">{t.projectsCount(items.length)}</span>
             </header>
-            {items.length === 0 ? <Empty category={c.id} text={tr(c.empty, locale)} t={t} /> : <Projects category={c.id} items={items} ctx={ctx} />}
+            <Projects category={c.id} items={items} ctx={ctx} />
           </div>
         );
       })}
@@ -173,7 +173,7 @@ function Personal({ project, ctx }: { project: Project; ctx: Ctx }) {
           <OpenButton id={project.id} label={t.viewProject} />
         </div>
       </div>
-      <div className={styles.personalMedia}>
+      <div className={`${styles.personalMedia} ${isVertical(aspectOf(project)) ? "" : styles.personalMediaWide}`}>
         <span className={`mono ${styles.edge}`} aria-hidden="true">
           HXNS ▸ {project.id.toUpperCase()} ▸ {aspectOf(project)}
         </span>
@@ -188,13 +188,3 @@ function Personal({ project, ctx }: { project: Project; ctx: Ctx }) {
   );
 }
 
-/** Honest placeholder for a category that has no work yet */
-function Empty({ category, text, t }: { category: WorkCategory; text: string; t: Ctx["t"] }) {
-  return (
-    <div className={styles.empty}>
-      <span className={`${styles.emptyFrame} ${category === "vertical" ? styles.emptyVertical : ""}`} aria-hidden="true" />
-      <p>{text}</p>
-      <span className={`mono ${styles.emptyTag}`}>{t.inProgress}</span>
-    </div>
-  );
-}

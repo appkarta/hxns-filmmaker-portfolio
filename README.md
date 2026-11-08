@@ -11,7 +11,7 @@
 | Sección | Contenido |
 | --- | --- |
 | **Hero** | HXNS, «Cada fotograma tiene algo que decir», video propio (*20 segundos*) en formato vertical, CTA a Trabajo y a Sobre mí |
-| **Trabajo** | Cuatro áreas: **Vertical**, **Horizontal**, **Marcas y comercial**, **Personal / Experimentos**. Las que tienen proyectos aparecen primero; las vacías muestran «En construcción» |
+| **Trabajo** | Cinco áreas: **Vertical**, **Horizontal**, **Marcas y comercial**, **Artistas y eventos**, **Personal / Experimentos**. Solo se muestran las que tienen al menos un proyecto |
 | **Sobre mí** | York Hans, 21 años, Barranquilla · biografía · dos retratos en composición editorial |
 | **Lo que hago** | Servicios: filmmaking, edición, reels y contenido para redes, videos para empresas y marcas, fotografía |
 | **Contacto** | Formulario conectado a Resend (ver [`worker/README.md`](worker/README.md)) y canales que configures |
@@ -34,10 +34,10 @@ public/
 ├── images/
 │   ├── about/          york-hans-01.webp, york-hans-02.webp
 │   ├── hero/           póster y fondo del hero
-│   └── projects/{vertical,horizontal,brands,personal}/   portadas
+│   └── projects/{vertical,horizontal,brands,events,personal}/   portadas
 └── videos/
     ├── hero/           hxns-hero.mp4 (loop sin audio)
-    └── {vertical,horizontal,brands,personal}/            video + preview
+    └── {vertical,horizontal,brands,events,personal}/     video + preview
 media/originals/        ← originales sin comprimir (NO se suben a git)
 worker/                 ← formulario de contacto → Resend
 app/(es)/  → /          app/(en)/en/ → /en/          app/(es)/es/ → redirige /es/ a /
@@ -51,7 +51,7 @@ app/(es)/  → /          app/(en)/en/ → /en/          app/(es)/es/ → rediri
 npm run media -- "C:\ruta\a\mi video.mp4" vertical reel-cafe-luna
 ```
 
-- Categorías: `vertical`, `horizontal`, `brands`, `personal`.
+- Categorías: `vertical`, `horizontal`, `brands`, `events` (artistas y eventos), `personal`. Una categoría aparece en la página en cuanto tiene un proyecto.
 - El id (`reel-cafe-luna`) va en minúsculas, con guiones.
 - El script crea el video web (720p, con audio), un *preview* de 5 s sin audio y la portada; guarda el original en `media/originals/` y te imprime un bloque listo para pegar.
 - Opcional: `--poster-at 4.2` (segundo de la portada) y `--preview-at 10` (inicio del preview).

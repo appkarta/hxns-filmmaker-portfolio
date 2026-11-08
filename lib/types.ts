@@ -4,9 +4,9 @@ import type { L } from "./i18n";
 export type Text = string | L;
 
 /** The four areas of the Work section */
-export type WorkCategory = "vertical" | "horizontal" | "brands" | "personal";
+export type WorkCategory = "vertical" | "horizontal" | "brands" | "events" | "personal";
 
-export type Aspect = "9:16" | "16:9" | "21:9" | "4:5" | "3:4" | "1:1";
+export type Aspect = "9:16" | "16:9" | "21:9" | "5:4" | "4:5" | "3:4" | "1:1";
 
 export type Project = {
   /** Unique, URL-friendly id. Also the share link: hxnss.co/#work/<id> */
@@ -30,6 +30,8 @@ export type Project = {
   mediaType: "video" | "image";
   media: string;
   gallery?: string[];
+  /** Alt text for each `gallery` image, in the same order (falls back to `alt`) */
+  galleryAlt?: Text[];
   /** Cover image (poster). Strongly recommended for videos */
   thumbnail?: string;
   /** Short muted loop (3–6 s) that plays on hover / when on screen */

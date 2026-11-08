@@ -27,7 +27,7 @@ export default function ProjectStage({ project, locale }: { project: Project; lo
         {media.kind === "images" && (
           <Gallery
             images={media.images}
-            alt={project.alt ? tr(project.alt, locale) : title}
+            alts={[project.alt, ...(project.galleryAlt ?? [])].map((a) => (a ? tr(a, locale) : title))}
             index={piece}
             onChange={setPiece}
             title={title}
@@ -41,14 +41,15 @@ export default function ProjectStage({ project, locale }: { project: Project; lo
 
 function Gallery({
   images,
-  alt,
+  alts,
   index,
   onChange,
   title,
   locale,
 }: {
   images: string[];
-  alt: string;
+  /** One per image; missing entries reuse the first */
+  alts: string[];
   index: number;
   onChange: (i: number) => void;
   title: string;
@@ -72,7 +73,7 @@ function Gallery({
   return (
     <figure className={styles.gallery} aria-roledescription="carousel" aria-label={title}>
       <div className={styles.galleryImg} key={images[index]}>
-        <Image src={asset(images[index])} alt={alt} fill sizes="(max-width: 760px) 100vw, 70vw" className={styles.galleryPic} priority />
+        <Image src={asset(images[index])} alt={alts[index] ?? alts[0]} fill sizes="(max-width: 760px) 100vw, 70vw" className={styles.galleryPic} priority />
       </div>
       {total > 1 && (
         <>
