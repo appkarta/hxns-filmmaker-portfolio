@@ -6,7 +6,7 @@ import styles from "./Work.module.css";
 
 type Item = { id: string; label: string; count: number };
 
-/** Vertical · Horizontal · Brands · Personal — sticky chips that follow the reader through Work. */
+/** One chip per category with work — sticky chips that follow the reader through Work. */
 export default function CategoryNav({ items, label }: { items: Item[]; label: string }) {
   const [current, setCurrent] = useState(items[0]?.id);
 

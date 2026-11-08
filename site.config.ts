@@ -29,8 +29,8 @@ export const site = {
     en: "York Hans | Filmmaker & Video Editor in Barranquilla — HXNS",
   },
   description: {
-    es: "York Hans es filmmaker y editor de video en Barranquilla. Portafolio de HXNS: reels y contenido para redes, videos para marcas y empresas, y proyectos personales.",
-    en: "York Hans is a filmmaker and video editor in Barranquilla, Colombia. The HXNS portfolio: reels and social content, videos for brands and companies, and personal projects.",
+    es: "York Hans es filmmaker y editor de video en Barranquilla. Portafolio de HXNS: reels y contenido para redes, videos para marcas y empresas, y fotografía de artistas y eventos.",
+    en: "York Hans is a filmmaker and video editor in Barranquilla, Colombia. The HXNS portfolio: reels and social content, videos for brands and companies, and artist and event photography.",
   },
 
   hero: {
@@ -43,11 +43,11 @@ export const site = {
     roles: { es: "Filmmaker · Editor de video · Creativo visual", en: "Filmmaker · Video Editor · Visual Creative" },
     primaryCta: { es: "Explora mi trabajo", en: "Explore my work" },
     secondaryCta: { es: "Conóceme", en: "Get to know me" },
-    video: {
-      src: "/videos/hero/hxns-hero.mp4",
-      poster: "/images/hero/hero-poster.webp",
-      ambient: "/images/hero/hero-ambient.webp",
-      label: { es: "20 segundos — HXNS", en: "20 seconds — HXNS" },
+    /** Vertical still on desktop, full-bleed background on phones; ambient = blurred backdrop */
+    image: {
+      src: "/images/projects/events/en-vivo-haffit.webp",
+      ambient: "/images/hero/hero-live-ambient.webp",
+      label: { es: "En vivo — Haffit", en: "Live — Haffit" },
     },
   },
 
@@ -151,7 +151,7 @@ export const services: Service[] = [
     },
     detail: { es: "Corte / Ritmo / Color", en: "Cut / Pace / Color" },
     glyph: "timeline",
-    image: "/images/projects/personal/20-segundos-hxns.webp",
+    image: "/images/projects/events/dj-en-cabina.webp",
   },
   {
     title: { es: "Reels y contenido para redes", en: "Reels & social media content" },
@@ -161,7 +161,7 @@ export const services: Service[] = [
     },
     detail: { es: "9:16 / Gancho / Ritmo", en: "9:16 / Hook / Pace" },
     glyph: "vertical",
-    image: "/images/hero/hero-poster.webp",
+    image: "/images/projects/events/en-vivo-haffit.webp",
   },
   {
     title: { es: "Videos para empresas y marcas", en: "Videos for companies & brands" },
@@ -181,6 +181,6 @@ export const services: Service[] = [
     },
     detail: { es: "Retrato / Contenido / Editorial", en: "Portrait / Content / Editorial" },
     glyph: "camera",
-    image: "/images/about/york-hans-01.webp",
+    image: "/images/projects/events/en-vivo-el-vega.webp",
   },
 ];

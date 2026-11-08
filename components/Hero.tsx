@@ -1,77 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { person, site } from "@/site.config";
-import { asset, timecode } from "@/lib/asset";
+import { asset } from "@/lib/asset";
 import { tr, ui, type Locale } from "@/lib/i18n";
 import { REVEAL_EVENT } from "./Intro";
 import styles from "./Hero.module.css";
 
-type NetInfo = { saveData?: boolean; effectiveType?: string };
-
 export default function Hero({ locale }: { locale: Locale }) {
   const root = useRef<HTMLElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
-  const tc = useRef<HTMLSpanElement>(null);
-  const [playing, setPlaying] = useState(false);
   const { hero } = site;
   const t = ui[locale];
   const headline = tr(hero.headline, locale);
   const location = `${person.city} — ${tr(person.country, locale)}`;
-
-  // The muted loop loads after the page is interactive; nothing on data-saver / 2G (the poster stays)
-  useEffect(() => {
-    const v = video.current;
-    if (!v) return;
-    const conn = (navigator as Navigator & { connection?: NetInfo }).connection;
-    if (conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? "")) return;
-    v.src = asset(hero.video.src);
-    v.play().catch(() => {
-      /* autoplay blocked — the poster stays */
-    });
-  }, [hero.video.src]);
-
-  // Live timecode tied to the reel — only while the hero is on screen, and only when the value changes
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    let raf = 0;
-    let last = "";
-    const tick = () => {
-      const v = video.current;
-      if (tc.current && v) {
-        const next = timecode(v.currentTime);
-        if (next !== last) tc.current.textContent = last = next;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    const io = new IntersectionObserver(([entry]) => {
-      cancelAnimationFrame(raf);
-      if (entry.isIntersecting) raf = requestAnimationFrame(tick);
-    });
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  // Pause the reel when the hero is off screen
-  useEffect(() => {
-    const v = video.current;
-    const el = root.current;
-    if (!v || !el) return;
-    const io = new IntersectionObserver(([entry]) => {
-      if (!v.src) return;
-      if (entry.isIntersecting) v.play().catch(() => {});
-      else v.pause();
-    });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   // Entrance, synced with the intro, plus a slow scroll-out
   useEffect(() => {
@@ -119,28 +63,16 @@ export default function Hero({ locale }: { locale: Locale }) {
   return (
     <section id="top" ref={root} className={styles.hero} aria-label={t.heroLabel}>
       <div className={styles.ambient} aria-hidden="true">
-        <Image className={styles.ambientImg} src={asset(hero.video.ambient)} alt="" fill sizes="100vw" />
+        <Image className={styles.ambientImg} src={asset(hero.image.ambient)} alt="" fill sizes="100vw" />
         <div className={styles.shade} />
       </div>
 
       <figure className={styles.screen} aria-hidden="true">
-        <Image className={styles.poster} src={asset(hero.video.poster)} alt="" fill sizes="(max-width: 860px) 100vw, 40vw" priority />
-        <video
-          ref={video}
-          className={`${styles.video} ${playing ? styles.isPlaying : ""}`}
-          muted
-          loop
-          playsInline
-          preload="none"
-          disablePictureInPicture
-          onPlaying={() => setPlaying(true)}
-          tabIndex={-1}
-        />
+        <Image className={styles.poster} src={asset(hero.image.src)} alt="" fill sizes="(max-width: 860px) 100vw, 40vw" priority />
         <figcaption className={`mono ${styles.screenMeta}`}>
           <span className={styles.rec}>
-            <span className={styles.recDot} /> {tr(hero.video.label, locale)}
+            <span className={styles.recDot} /> {tr(hero.image.label, locale)}
           </span>
-          <span ref={tc}>00:00:00:00</span>
         </figcaption>
       </figure>
 

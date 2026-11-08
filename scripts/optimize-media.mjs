@@ -2,7 +2,7 @@
 /**
  * Prepares a new project's media for the web (requires ffmpeg + ffprobe in PATH).
  *
- *   npm run media -- "<path to file>" <vertical|horizontal|brands|personal> <project-id> [--poster-at 3.5] [--preview-at 8]
+ *   npm run media -- "<path to file>" <vertical|horizontal|brands|events> <project-id> [--poster-at 3.5] [--preview-at 8]
  *
  * Video → public/videos/<category>/<id>.mp4            (H.264, 720p short side, AAC audio, fast start)
  *         public/videos/<category>/<id>-preview.mp4    (5 s muted loop for hover / in-view previews)
@@ -15,7 +15,7 @@ import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, statSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
 
-const CATEGORIES = ["vertical", "horizontal", "brands", "events", "personal"];
+const CATEGORIES = ["vertical", "horizontal", "brands", "events"];
 const args = process.argv.slice(2);
 const flag = (name) => {
   const i = args.indexOf(name);
@@ -24,7 +24,7 @@ const flag = (name) => {
 const [input, category, id] = args.filter((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"));
 
 if (!input || !CATEGORIES.includes(category) || !/^[a-z0-9-]+$/.test(id ?? "")) {
-  console.error('Usage: npm run media -- "<file>" <vertical|horizontal|brands|personal> <project-id>');
+  console.error('Usage: npm run media -- "<file>" <vertical|horizontal|brands|events> <project-id>');
   console.error("       project-id: lowercase letters, numbers and dashes, e.g. reel-cafe-2026");
   process.exit(1);
 }

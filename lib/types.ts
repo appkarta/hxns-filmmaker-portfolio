@@ -4,7 +4,7 @@ import type { L } from "./i18n";
 export type Text = string | L;
 
 /** The four areas of the Work section */
-export type WorkCategory = "vertical" | "horizontal" | "brands" | "events" | "personal";
+export type WorkCategory = "vertical" | "horizontal" | "brands" | "events";
 
 export type Aspect = "9:16" | "16:9" | "21:9" | "5:4" | "4:5" | "3:4" | "1:1";
 
@@ -21,7 +21,7 @@ export type Project = {
   /** What you did, e.g. "Edición" or { es: "Rodaje y edición", en: "Shooting & edit" } */
   role?: Text;
   description?: Text;
-  /** Optional line shown large next to the project (used in Personal / Experiments) */
+  /** Optional line shown large next to the project (brands and artists & events) */
   quote?: Text;
   /**
    * - video: media is an MP4 in /public ("/videos/…"), or "youtube:<ID>" / "vimeo:<ID>"

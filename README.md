@@ -10,8 +10,8 @@
 
 | Sección | Contenido |
 | --- | --- |
-| **Hero** | HXNS, «Cada fotograma tiene algo que decir», video propio (*20 segundos*) en formato vertical, CTA a Trabajo y a Sobre mí |
-| **Trabajo** | Cinco áreas: **Vertical**, **Horizontal**, **Marcas y comercial**, **Artistas y eventos**, **Personal / Experimentos**. Solo se muestran las que tienen al menos un proyecto |
+| **Hero** | HXNS, «Cada fotograma tiene algo que decir», foto vertical propia de concierto (Haffit, *En vivo*), CTA a Trabajo y a Sobre mí |
+| **Trabajo** | Cuatro áreas: **Vertical**, **Horizontal**, **Marcas y comercial**, **Artistas y eventos**. Solo se muestran las que tienen al menos un proyecto |
 | **Sobre mí** | York Hans, 21 años, Barranquilla · biografía · dos retratos en composición editorial |
 | **Lo que hago** | Servicios: filmmaking, edición, reels y contenido para redes, videos para empresas y marcas, fotografía |
 | **Contacto** | Formulario conectado a Resend (ver [`worker/README.md`](worker/README.md)) y canales que configures |
@@ -33,11 +33,10 @@ scripts/optimize-media.mjs ← prepara videos e imágenes para la web (npm run m
 public/
 ├── images/
 │   ├── about/          york-hans-01.webp, york-hans-02.webp
-│   ├── hero/           póster y fondo del hero
-│   └── projects/{vertical,horizontal,brands,events,personal}/   portadas
+│   ├── hero/           fondo desenfocado del hero
+│   └── projects/{vertical,horizontal,brands,events}/   portadas
 └── videos/
-    ├── hero/           hxns-hero.mp4 (loop sin audio)
-    └── {vertical,horizontal,brands,events,personal}/     video + preview
+    └── {vertical,horizontal,brands,events}/     video + preview
 media/originals/        ← originales sin comprimir (NO se suben a git)
 worker/                 ← formulario de contacto → Resend
 app/(es)/  → /          app/(en)/en/ → /en/          app/(es)/es/ → redirige /es/ a /
@@ -51,7 +50,7 @@ app/(es)/  → /          app/(en)/en/ → /en/          app/(es)/es/ → rediri
 npm run media -- "C:\ruta\a\mi video.mp4" vertical reel-cafe-luna
 ```
 
-- Categorías: `vertical`, `horizontal`, `brands`, `events` (artistas y eventos), `personal`. Una categoría aparece en la página en cuanto tiene un proyecto.
+- Categorías: `vertical`, `horizontal`, `brands`, `events` (artistas y eventos). Una categoría aparece en la página en cuanto tiene un proyecto.
 - El id (`reel-cafe-luna`) va en minúsculas, con guiones.
 - El script crea el video web (720p, con audio), un *preview* de 5 s sin audio y la portada; guarda el original en `media/originals/` y te imprime un bloque listo para pegar.
 - Opcional: `--poster-at 4.2` (segundo de la portada) y `--preview-at 10` (inicio del preview).
@@ -98,10 +97,8 @@ GitHub Actions compila y publica en 2–3 minutos.
 | Video | Original | Versión web |
 | --- | --- | --- |
 | Axia Odontología (77 s) | 116 MB · 1080×1920 | 16 MB · 720×1280 + preview 0,17 MB |
-| 20 segundos (37 s) | 57 MB · 1080×1920 | 4,7 MB · 720×1280 + preview 0,13 MB |
-| Loop del hero | — | 0,46 MB (10,6 s, sin audio) |
 
-Nada pesado se descarga al abrir la página: el hero carga un loop de 0,46 MB después de mostrarse; los previews solo al pasar el cursor o al entrar en pantalla; los videos completos solo al abrir el proyecto (`preload="metadata"`, *fast start*). Con *Ahorro de datos* no se carga el loop del hero. Recomendación: si Axia crece en duración, súbelo a YouTube/Vimeo.
+Nada pesado se descarga al abrir la página: el hero es una sola foto WebP (≈0,2 MB); los previews solo al pasar el cursor o al entrar en pantalla; los videos completos solo al abrir el proyecto (`preload="metadata"`, *fast start*). Recomendación: si Axia crece en duración, súbelo a YouTube/Vimeo.
 
 ## Idiomas
 
@@ -110,7 +107,7 @@ Español en `/` (idioma principal, pensado para clientes en Barranquilla) e ingl
 ## SEO local (Barranquilla)
 
 - **Title:** «York Hans | Filmmaker y editor de video en Barranquilla — HXNS»
-- **Description:** «York Hans es filmmaker y editor de video en Barranquilla. Portafolio de HXNS: reels y contenido para redes, videos para marcas y empresas, y proyectos personales.»
+- **Description:** «York Hans es filmmaker y editor de video en Barranquilla. Portafolio de HXNS: reels y contenido para redes, videos para marcas y empresas, y fotografía de artistas y eventos.»
 - **H1 único:** «York Hans — Filmmaker y editor de video en Barranquilla» (visible en el hero).
 - **Palabras clave objetivo:** filmmaker en Barranquilla · editor de video en Barranquilla · creador audiovisual en Barranquilla · videos para empresas y marcas · reels y contenido para redes · producción audiovisual (secundaria: muy disputada por productoras y directorios).
 - **Datos estructurados (JSON-LD):** WebSite, ProfilePage, Person (York Hans, ciudad Barranquilla, Atlántico, CO) y un CreativeWork por proyecto. Solo datos visibles en la página: sin dirección, teléfono, empresa, premios ni reseñas.

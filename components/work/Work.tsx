@@ -10,7 +10,7 @@ import styles from "./Work.module.css";
 
 type Ctx = { locale: Locale; t: (typeof ui)[Locale] };
 
-/** Work: Vertical · Horizontal · Brands & Commercial · Artists & Events · Personal / Experiments, all driven by data/projects.ts */
+/** Work: Vertical · Horizontal · Brands & Commercial · Artists & Events, all driven by data/projects.ts */
 export default function Work({ locale }: { locale: Locale }) {
   const t = ui[locale];
   const ctx = { locale, t };
@@ -63,7 +63,7 @@ function Projects({ category, items, ctx }: { category: WorkCategory; items: Pro
   if (category === "vertical") return <VerticalRow items={items} ctx={ctx} />;
   if (category === "horizontal") return <HorizontalStack items={items} ctx={ctx} />;
   if (category === "brands") return <>{items.map((p) => <Brand key={p.id} project={p} ctx={ctx} />)}</>;
-  return <>{items.map((p) => <Personal key={p.id} project={p} ctx={ctx} />)}</>;
+  return <>{items.map((p) => <Editorial key={p.id} project={p} ctx={ctx} />)}</>;
 }
 
 /** 9:16 pieces side by side, large, swipeable on phones */
@@ -144,8 +144,8 @@ function Brand({ project, ctx }: { project: Project; ctx: Ctx }) {
   );
 }
 
-/** Personal work: more editorial — the idea first, the piece beside it */
-function Personal({ project, ctx }: { project: Project; ctx: Ctx }) {
+/** Artists & events: editorial — the idea first, the piece beside it */
+function Editorial({ project, ctx }: { project: Project; ctx: Ctx }) {
   const { t, locale } = ctx;
   return (
     <article className={styles.personal}>

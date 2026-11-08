@@ -13,7 +13,7 @@
  *
  *  Text can be one string (same in both languages) or { es: "…", en: "…" }.
  *  Leave out any field you don't have yet — it simply won't be shown.
- *  Categories: "vertical" | "horizontal" | "brands" | "events" | "personal"
+ *  Categories: "vertical" | "horizontal" | "brands" | "events"
  *  A category only appears on the page once it has at least one project.
  * ─────────────────────────────────────────────────────────────────────────────
  */
@@ -46,30 +46,6 @@ export const projects: Project[] = [
     alt: {
       es: "Odontólogo con lupas y careta trabajando en una consulta de Axia Odontología",
       en: "Dentist wearing loupes and a face shield at work in an Axia Odontología clinic",
-    },
-  },
-  {
-    id: "20-segundos",
-    title: { es: "20 segundos", en: "20 seconds" },
-    category: "personal",
-    tag: { es: "Proyecto personal", en: "Personal project" },
-    quote: {
-      es: "Este video puede durar 20 segundos. Pero esos 20 segundos no cuentan toda la historia.",
-      en: "This video may only last 20 seconds. But those 20 seconds don't tell the whole story.",
-    },
-    description: {
-      es: "Una pieza personal sobre lo que no se ve: 20 segundos en pantalla, muchas decisiones detrás.",
-      en: "A personal piece about what you don't see: 20 seconds on screen, many decisions behind them.",
-    },
-    mediaType: "video",
-    media: "/videos/personal/20-segundos-hxns.mp4",
-    thumbnail: "/images/projects/personal/20-segundos-hxns.webp",
-    preview: "/videos/personal/20-segundos-hxns-preview.mp4",
-    aspect: "9:16",
-    featured: true,
-    alt: {
-      es: "York Hans hablando a cámara en su estación de edición con luz azul; texto en pantalla: «20 segundos»",
-      en: "York Hans in a hood at his blue-lit desk, looking down at his phone; on-screen text: “y las decisiones”",
     },
   },
   {

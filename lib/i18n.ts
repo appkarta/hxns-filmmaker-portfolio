@@ -68,14 +68,6 @@ export const workCategories: { id: WorkCategory; label: L; description: L }[] = 
       en: "Concerts, artists on stage and the energy of live events.",
     },
   },
-  {
-    id: "personal",
-    label: { es: "Personal / Experimentos", en: "Personal / Experiments" },
-    description: {
-      es: "Piezas propias: estilo, pruebas, storytelling y edición sin brief.",
-      en: "My own pieces: style, tests, storytelling and editing with no brief.",
-    },
-  },
 ];
 
 /** Headings with an italic serif accent: [before, accent, after] */
